@@ -1,15 +1,48 @@
-import { SoundChannel, SoundChannelType } from './types';
+import { CreateSample, SoundChannel, SoundChannelType } from './types';
+import { AudioContext } from './util/audioContext';
+import SampleManager from 'sample-manager';
 
 type AddChannelOptions = {
   initialVolume?: number;
 };
 
+type ConstructorProps = {
+  samplesPath: string;
+  samplesExtension: string;
+  audioContext?: AudioContext;
+  samples?: Array<CreateSample>;
+};
+
 export class Channels {
   private readonly context: AudioContext;
   private readonly channels: Record<string, SoundChannel> = {};
+  public readonly sampleManager: SampleManager;
 
-  constructor(audioContext: AudioContext) {
-    this.context = audioContext;
+  constructor({
+    audioContext,
+    samplesExtension,
+    samplesPath,
+    samples,
+  }: ConstructorProps) {
+    this.context = audioContext || new AudioContext();
+
+    if (!this.context) {
+      throw new Error('Failed to create an AudioContext');
+    }
+
+    this.sampleManager = new SampleManager(
+      this.context,
+      samplesPath,
+      samplesExtension
+    );
+
+    if (samples && samples.length > 0) {
+      this.sampleManager.addSamples(samples);
+    }
+  }
+
+  public loadAllSamples(onProgress?: (value: number) => void) {
+    return this.sampleManager.loadAllSamples(onProgress);
   }
 
   public addChannel(
