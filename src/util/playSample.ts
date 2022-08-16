@@ -10,13 +10,11 @@ type PlaySampleOptions = {
 export const playSample = (
   context: AudioContext,
   sample: Sample,
-  { fadeInTime = 0, loop = false, volume = 1, channel }: PlaySampleOptions
+  { loop = false, volume = 1, channel }: PlaySampleOptions
 ): PlayingSample => {
   if (!sample.audioBuffer) {
     throw new Error(`Sample '${sample.name}' is not loaded`);
   }
-
-  const tester2 = 1;
 
   const bufferSourceNode = context.createBufferSource();
   const gainNode = context.createGain();
