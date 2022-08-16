@@ -16,6 +16,8 @@ export const playSample = (
     throw new Error(`Sample '${sample.name}' is not loaded`);
   }
 
+  const test = 1;
+
   const bufferSourceNode = context.createBufferSource();
   const gainNode = context.createGain();
 
