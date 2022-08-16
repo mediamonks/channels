@@ -25,8 +25,8 @@ export type SoundChannel = PolyphonicSoundChannel | MonophonicSoundChannel;
 export type PlayingSample = {
   context: AudioContext;
   sample: Sample;
-  bufferSource: AudioBufferSourceNode;
-  gain: GainNode;
+  bufferSourceNode: AudioBufferSourceNode;
+  gainNode: GainNode;
   channel?: SoundChannel;
-  panner?: PannerNode;
+  // panner?: PannerNode;
 };
