@@ -35,7 +35,9 @@ export const playSound = (
     bufferSourceNode,
     gainNode,
     channel: channel || undefined,
-    // todo: stop method
+    stop: () => {
+      bufferSourceNode.stop(0);
+    },
   };
 
   // if (fadeInTime) {

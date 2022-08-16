@@ -7,7 +7,6 @@ export type CreateSound = ICreateSample;
 type BaseSoundChannel = {
   name: string;
   gain: GainNode;
-  // playingSounds: PlayingSound[];
   type: SoundChannelType;
   initialVolume: number;
 };
@@ -28,5 +27,5 @@ export type PlayingSound = {
   bufferSourceNode: AudioBufferSourceNode;
   gainNode: GainNode;
   channel?: SoundChannel;
-  // panner?: PannerNode;
+  stop: () => void;
 };
