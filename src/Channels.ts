@@ -93,6 +93,13 @@ export class Channels {
     return this.playingSounds;
   }
 
+  private removePlayingSound(sound: PlayingSound) {
+    const index = this.playingSounds.indexOf(sound);
+    if (index > -1) {
+      this.playingSounds.splice(index, 1);
+    }
+  }
+
   public play(
     name: string,
     { channel: channelName, volume = 1, fadeInTime, loop }: PlayOptions = {}
@@ -127,6 +134,10 @@ export class Channels {
       fadeInTime,
       loop,
     });
+
+    playingSound.bufferSourceNode.onended = () => {
+      this.removePlayingSound(playingSound);
+    };
 
     this.playingSounds.push(playingSound);
 

@@ -16,15 +16,18 @@ export const playSound = (
     throw new Error(`Sound '${sound.name}' is not loaded`);
   }
 
+  // create buffer source
   const bufferSourceNode = context.createBufferSource();
-  const gainNode = context.createGain();
-
-  gainNode.gain.setValueAtTime(volume, 0);
-
-  gainNode.connect(channel ? channel.gain : context.destination);
-  bufferSourceNode.connect(gainNode);
   bufferSourceNode.buffer = sound.audioBuffer;
   bufferSourceNode.loop = loop;
+
+  // create gain
+  const gainNode = context.createGain();
+  gainNode.gain.setValueAtTime(volume, 0);
+
+  // connect nodes
+  gainNode.connect(channel ? channel.gain : context.destination);
+  bufferSourceNode.connect(gainNode);
 
   const playingSound: PlayingSound = {
     context,
