@@ -1,19 +1,19 @@
-import { PlayingSample, Sample, SoundChannel } from '../types';
+import { PlayingSound, Sound, SoundChannel } from '../types';
 
-type PlaySampleOptions = {
+type PlaySoundOptions = {
   channel?: SoundChannel;
   volume?: number;
   fadeInTime?: number;
   loop?: boolean;
 };
 
-export const playSample = (
+export const playSound = (
   context: AudioContext,
-  sample: Sample,
-  { loop = false, volume = 1, channel }: PlaySampleOptions
-): PlayingSample => {
-  if (!sample.audioBuffer) {
-    throw new Error(`Sample '${sample.name}' is not loaded`);
+  sound: Sound,
+  { loop = false, volume = 1, channel }: PlaySoundOptions
+): PlayingSound => {
+  if (!sound.audioBuffer) {
+    throw new Error(`Sound '${sound.name}' is not loaded`);
   }
 
   const bufferSourceNode = context.createBufferSource();
@@ -23,12 +23,12 @@ export const playSample = (
 
   gainNode.connect(channel ? channel.gain : context.destination);
   bufferSourceNode.connect(gainNode);
-  bufferSourceNode.buffer = sample.audioBuffer;
+  bufferSourceNode.buffer = sound.audioBuffer;
   bufferSourceNode.loop = loop;
 
-  const playingSample: PlayingSample = {
+  const playingSound: PlayingSound = {
     context,
-    sample,
+    sound,
     bufferSourceNode,
     gainNode,
     channel: channel || undefined,
@@ -53,5 +53,5 @@ export const playSample = (
   // }
 
   bufferSourceNode.start(0);
-  return playingSample;
+  return playingSound;
 };

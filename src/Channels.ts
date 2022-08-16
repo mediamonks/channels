@@ -1,22 +1,22 @@
 import {
-  CreateSample,
-  PlayingSample,
+  CreateSound,
+  PlayingSound,
   SoundChannel,
   SoundChannelType,
 } from './types';
 import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
-import { playSample } from './util/playSample';
+import { playSound } from './util/playSound';
 
 type AddChannelOptions = {
   initialVolume?: number;
 };
 
 type ConstructorProps = {
-  samplesPath: string;
-  samplesExtension: string;
+  soundsPath: string;
+  soundsExtension: string;
   audioContext?: AudioContext;
-  samples?: Array<CreateSample>;
+  sounds?: Array<CreateSound>;
 };
 
 type PlayOptions = {
@@ -31,14 +31,14 @@ type PlayOptions = {
 export class Channels {
   private readonly context: AudioContext;
   private readonly channels: Record<string, SoundChannel> = {};
-  private readonly playingSamples: Array<PlayingSample> = [];
+  private readonly playingSounds: Array<PlayingSound> = [];
   public readonly sampleManager: SampleManager;
 
   constructor({
     audioContext,
-    samplesExtension,
-    samplesPath,
-    samples,
+    soundsExtension,
+    soundsPath,
+    sounds,
   }: ConstructorProps) {
     this.context = audioContext || new AudioContext();
 
@@ -48,16 +48,16 @@ export class Channels {
 
     this.sampleManager = new SampleManager(
       this.context,
-      samplesPath,
-      samplesExtension
+      soundsPath,
+      soundsExtension
     );
 
-    if (samples && samples.length > 0) {
-      this.sampleManager.addSamples(samples);
+    if (sounds) {
+      this.sampleManager.addSamples(sounds);
     }
   }
 
-  public loadAllSamples(onProgress?: (value: number) => void) {
+  public loadAllSounds(onProgress?: (value: number) => void) {
     return this.sampleManager.loadAllSamples(onProgress);
   }
 
@@ -85,20 +85,20 @@ export class Channels {
       type,
       name,
       gain,
-      playingSamples: [],
+      // playingSamples: [],
     };
   }
 
-  public getPlayingSamples() {
-    return this.playingSamples;
+  public getPlayingSounds() {
+    return this.playingSounds;
   }
 
   public play(
     name: string,
     { channel: channelName, volume = 1, fadeInTime, loop }: PlayOptions = {}
-  ): PlayingSample {
-    const sample = this.sampleManager.getSampleByName(name);
-    if (!sample) {
+  ): PlayingSound {
+    const sound = this.sampleManager.getSampleByName(name);
+    if (!sound) {
       throw new Error(`Cannot find sample '${name}`);
     }
     const channel = channelName ? this.channels[channelName] : undefined;
@@ -121,14 +121,14 @@ export class Channels {
     //   }
     // }
 
-    const playingSample = playSample(this.context, sample, {
+    const playingSound = playSound(this.context, sound, {
       channel,
       volume,
       fadeInTime,
       loop,
     });
 
-    this.playingSamples.push(playingSample);
+    this.playingSounds.push(playingSound);
 
     // if (channel) {
     //   if (channel.isMonophonic) {
@@ -144,6 +144,6 @@ export class Channels {
     //   };
     // }
 
-    return playingSample;
+    return playingSound;
   }
 }

@@ -1,13 +1,13 @@
 import { ICreateSample, ISample } from 'sample-manager';
 
 export type SoundChannelType = 'monophonic' | 'polyphonic';
-export type Sample = ISample;
-export type CreateSample = ICreateSample;
+export type Sound = ISample;
+export type CreateSound = ICreateSample;
 
 type BaseSoundChannel = {
   name: string;
   gain: GainNode;
-  playingSamples: PlayingSample[];
+  // playingSounds: PlayingSound[];
   type: SoundChannelType;
   initialVolume: number;
 };
@@ -22,9 +22,9 @@ export type MonophonicSoundChannel = BaseSoundChannel & {
 
 export type SoundChannel = PolyphonicSoundChannel | MonophonicSoundChannel;
 
-export type PlayingSample = {
+export type PlayingSound = {
   context: AudioContext;
-  sample: Sample;
+  sound: Sound;
   bufferSourceNode: AudioBufferSourceNode;
   gainNode: GainNode;
   channel?: SoundChannel;
