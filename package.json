@@ -19,6 +19,9 @@
       "pre-commit": "lint-staged"
     }
   },
+  "lint-staged": {
+    "**/*.ts": "eslint"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/petervdn/channels.git"
