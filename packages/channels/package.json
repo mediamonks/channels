@@ -1,0 +1,20 @@
+{
+  "name": "channels",
+  "version": "1.0.0",
+  "description": "Channel-based sound player",
+  "main": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "./dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --ignore-path .gitignore --ext .ts .",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
+  },
+  "dependencies": {
+    "sample-manager": "^2.1.4"
+  }
+}

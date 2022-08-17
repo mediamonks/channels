@@ -1,38 +1,15 @@
 {
   "name": "channels",
-  "version": "1.0.0",
-  "description": "Simple channel-based sound player",
-  "main": "dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "./dist"
+  "private": true,
+  "workspaces": [
+    "packages/*"
   ],
   "scripts": {
-    "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint --ignore-path .gitignore --ext .ts .",
-    "typecheck": "tsc --project tsconfig.json --noEmit",
-    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
     "prepare": "husky install"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
-    "**/*.ts": "eslint"
+    "packages/channels/**/*.ts": "eslint"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/petervdn/channels.git"
-  },
-  "author": "Peter van der Noord",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/petervdn/channels/issues"
-  },
-  "homepage": "https://github.com/petervdn/channels#readme",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.33.0",
     "@typescript-eslint/parser": "^5.33.0",
@@ -41,8 +18,5 @@
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "typescript": "^4.7.4"
-  },
-  "dependencies": {
-    "sample-manager": "^2.1.4"
   }
 }
