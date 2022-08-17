@@ -17,6 +17,7 @@ const channels = new Channels({
 });
 
 channels.addChannel('main');
+channels.addChannel('music');
 
 function App() {
   const [isLoadComplete, setIsLoadComplete] = useState(false);

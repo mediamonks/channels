@@ -8,6 +8,11 @@ type Props = {
 
 export const ChannelsView = ({ channelsInstance }: Props) => {
   const channels = channelsInstance.getChannels();
+
+  const stopAllOnChannel = (channelName: string) => {
+    channelsInstance.stopAllOnChannel(channelName);
+  };
+
   return (
     <div>
       <h2>Channels</h2>
@@ -20,8 +25,11 @@ export const ChannelsView = ({ channelsInstance }: Props) => {
             margin: 10,
           }}
         >
-          {name}
-          <VolumeSlider gain={gain} />
+          <strong>{name}</strong>
+          <button onClick={() => stopAllOnChannel(name)}>stop all</button>
+          <div>
+            <VolumeSlider gain={gain} />
+          </div>
         </div>
       ))}
     </div>

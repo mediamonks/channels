@@ -102,6 +102,18 @@ export class Channels {
     }
   }
 
+  public stopAllOnChannel(channelName: string) {
+    const channel = this.channelsByName[channelName];
+
+    if (!channel) {
+      throw new Error(`Channel '${channelName}' does not exist`);
+    }
+
+    this.playingSounds
+      .filter(({ channel }) => channel?.name === channelName)
+      .forEach(playingSound => playingSound.stop());
+  }
+
   public play(
     name: string,
     { channel: channelName, volume = 1, fadeInTime, loop }: PlayOptions = {}
