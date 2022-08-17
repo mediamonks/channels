@@ -10,6 +10,7 @@ import { playSound } from './util/playSound';
 
 type AddChannelOptions = {
   initialVolume?: number;
+  type?: SoundChannelType;
 };
 
 type ConstructorProps = {
@@ -63,8 +64,7 @@ export class Channels {
 
   public addChannel(
     name: string,
-    type: SoundChannelType,
-    { initialVolume = 1 }: AddChannelOptions
+    { initialVolume = 1, type = 'polyphonic' }: AddChannelOptions = {}
   ) {
     if (name === '') {
       throw new Error('Channel name cannot be blank');
