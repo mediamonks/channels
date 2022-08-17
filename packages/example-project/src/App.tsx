@@ -1,24 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Channels } from 'channels';
+import React, { useEffect, useState } from 'react';
+
+import { ChannelsView } from './components/ChannelsView';
+import { VolumeSlider } from './components/VolumeSlider';
+import { Sounds } from './components/Sounds';
+import { PlayingSounds } from './components/PlayingSounds';
+
+const soundsToLoad = ['bd', 'pink-panther', 'starwars'].map(sample => ({
+  name: sample,
+}));
+
+const channels = new Channels({
+  soundsExtension: 'wav',
+  soundsPath: process.env.PUBLIC_URL,
+  sounds: soundsToLoad,
+});
+
+channels.addChannel('main');
 
 function App() {
+  const [isLoadComplete, setIsLoadComplete] = useState(false);
+
+  useEffect(() => {
+    const loadSamples = async () => {
+      await channels.loadAllSounds();
+      setIsLoadComplete(true);
+    };
+
+    loadSamples();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ margin: 20 }}>
+      <h1>Channels testing ground</h1>
+      {!isLoadComplete && <p>loading...</p>}
+      {isLoadComplete && (
+        <div>
+          <div
+            style={{ backgroundColor: 'lightgreen', padding: 10, margin: 10 }}
+          >
+            <VolumeSlider gain={channels.mainGain} name="main volume" />
+          </div>
+          <Sounds channelsInstance={channels} />
+          <ChannelsView channelsInstance={channels} />
+          <PlayingSounds channelsInstance={channels} />
+        </div>
+      )}
     </div>
   );
 }
