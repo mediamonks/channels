@@ -31,7 +31,7 @@ type PlayOptions = {
 
 export class Channels {
   public readonly context: AudioContext;
-  public readonly channels: Record<string, SoundChannel> = {};
+  public readonly channelsByName: Record<string, SoundChannel> = {};
   public readonly playingSounds: Array<PlayingSound> = [];
   public readonly sampleManager: SampleManager;
   public readonly mainGain: GainNode;
@@ -74,7 +74,7 @@ export class Channels {
     if (name === '') {
       throw new Error('Channel name cannot be blank');
     }
-    if (this.channels[name]) {
+    if (this.channelsByName[name]) {
       throw new Error(`Channel '${name}' already exists`);
     }
 
@@ -82,7 +82,7 @@ export class Channels {
     gain.gain.setValueAtTime(initialVolume, 0);
     gain.connect(this.mainGain);
 
-    this.channels[name] = {
+    this.channelsByName[name] = {
       initialVolume,
       type,
       name,
@@ -105,7 +105,7 @@ export class Channels {
     if (!sound) {
       throw new Error(`Cannot find sample '${name}`);
     }
-    const channel = channelName ? this.channels[channelName] : undefined;
+    const channel = channelName ? this.channelsByName[channelName] : undefined;
 
     if (channelName && !channel) {
       throw new Error(`Channel '${channelName}' does not exist`);
