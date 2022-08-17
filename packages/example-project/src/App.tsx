@@ -15,7 +15,7 @@ const channels = new Channels({
   soundsPath: process.env.PUBLIC_URL,
   sounds: soundsToLoad,
 });
-const test = 1;
+const test = 2;
 channels.addChannel('main');
 
 function App() {

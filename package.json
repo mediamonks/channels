@@ -1,14 +1,12 @@
 {
   "name": "channels",
   "private": true,
+  "type": "module",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
     "prepare": "husky install"
-  },
-  "lint-staged": {
-    "packages/channels/**/*.ts": "eslint"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.33.0",
