@@ -1,13 +1,13 @@
-import React from "react";
-import { Channels, Sound, SoundChannel } from "channels";
+import React from 'react';
+import { Channels } from 'channels';
 
 type Props = {
   channelsInstance: Channels;
 };
 
 export const Sounds = ({ channelsInstance }: Props) => {
-  const playSound = ({ name }: Sound, channel?: SoundChannel) => {
-    channelsInstance.play(name, { channel: channel?.name });
+  const playSound = (soundName: string, channelName?: string) => {
+    channelsInstance.play(soundName, { channel: channelName });
   };
 
   const channels = channelsInstance.getChannels();
@@ -15,21 +15,27 @@ export const Sounds = ({ channelsInstance }: Props) => {
   return (
     <div>
       <h2>Available sounds</h2>
-      {channelsInstance.sampleManager.getAllSamples().map((sound) => (
-        <div
-          key={sound.name}
-          style={{ backgroundColor: "lightcoral", padding: 10, margin: 10 }}
-        >
-          <strong>{sound.name}</strong>
-          <div>
-            {channels.map((channel) => (
-              <button onClick={() => playSound(sound, channel)}>
-                play on '{channel.name}'
-              </button>
-            ))}
+      {channelsInstance.sampleManager
+        .getAllSamples()
+        .map(({ name: soundName }) => (
+          <div
+            key={soundName}
+            style={{ backgroundColor: 'lightcoral', padding: 10, margin: 10 }}
+          >
+            <strong>{soundName}</strong>
+            <div>
+              <button onClick={() => playSound(soundName)}>play</button>
+              {channels.map(({ name: channelName }) => (
+                <button
+                  key={channelName}
+                  onClick={() => playSound(soundName, channelName)}
+                >
+                  play on '{channelName}'
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
     </div>
   );
 };
