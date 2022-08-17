@@ -90,6 +90,11 @@ export class Channels {
     };
   }
 
+  public getChannels(): Array<SoundChannel> {
+    const channelNames = Object.keys(this.channelsByName);
+    return channelNames.map(channelName => this.channelsByName[channelName]);
+  }
+
   private removePlayingSound(sound: PlayingSound) {
     const index = this.playingSounds.indexOf(sound);
     if (index > -1) {
