@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Channels } from 'channels';
 
 type Props = {
@@ -6,8 +6,13 @@ type Props = {
 };
 
 export const Sounds = ({ channelsInstance }: Props) => {
+  const [loopIsChecked, setLoopIsChecked] = useState(false);
+
   const playSound = (soundName: string, channelName?: string) => {
-    channelsInstance.play(soundName, { channel: channelName });
+    channelsInstance.play(soundName, {
+      channel: channelName,
+      loop: loopIsChecked,
+    });
   };
 
   const channels = channelsInstance.getChannels();
@@ -15,6 +20,16 @@ export const Sounds = ({ channelsInstance }: Props) => {
   return (
     <div>
       <h2>Available sounds</h2>
+      <div>
+        <label>
+          play looped
+          <input
+            type={'checkbox'}
+            checked={loopIsChecked}
+            onChange={() => setLoopIsChecked(value => !value)}
+          />
+        </label>
+      </div>
       {channelsInstance.sampleManager
         .getAllSamples()
         .map(({ name: soundName }) => (
