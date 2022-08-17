@@ -6,6 +6,8 @@ type Props = {
   channelsInstance: Channels;
 };
 
+const test = 1;
+
 export const ChannelsView = ({ channelsInstance }: Props) => {
   const channels = channelsInstance.getChannels();
   return (
