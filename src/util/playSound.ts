@@ -9,6 +9,7 @@ type PlaySoundOptions = {
 
 export const playSound = (
   context: AudioContext,
+  destination: AudioNode,
   sound: Sound,
   { loop = false, volume = 1, channel }: PlaySoundOptions
 ): PlayingSound => {
@@ -26,7 +27,7 @@ export const playSound = (
   gainNode.gain.setValueAtTime(volume, 0);
 
   // connect nodes
-  gainNode.connect(channel ? channel.gain : context.destination);
+  gainNode.connect(destination);
   bufferSourceNode.connect(gainNode);
 
   const playingSound: PlayingSound = {

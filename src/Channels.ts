@@ -30,10 +30,11 @@ type PlayOptions = {
 };
 
 export class Channels {
-  private readonly context: AudioContext;
-  private readonly channels: Record<string, SoundChannel> = {};
-  private readonly playingSounds: Array<PlayingSound> = [];
+  public readonly context: AudioContext;
+  public readonly channels: Record<string, SoundChannel> = {};
+  public readonly playingSounds: Array<PlayingSound> = [];
   public readonly sampleManager: SampleManager;
+  public readonly mainGain: GainNode;
 
   constructor({
     audioContext,
@@ -56,6 +57,10 @@ export class Channels {
     if (sounds) {
       this.sampleManager.addSamples(sounds);
     }
+
+    // main gain is final node in audio graph
+    this.mainGain = this.context.createGain();
+    this.mainGain.connect(this.context.destination);
   }
 
   public loadAllSounds(onProgress?: (value: number) => void) {
@@ -72,25 +77,17 @@ export class Channels {
     if (this.channels[name]) {
       throw new Error(`Channel '${name}' already exists`);
     }
-    // if (monophonicFadeOutTime < 0) {
-    //   throw new Error('monophonicFadeOutTime can not be negative');
-    // }
 
     const gain = this.context.createGain();
     gain.gain.setValueAtTime(initialVolume, 0);
-    gain.connect(this.context.destination);
+    gain.connect(this.mainGain);
 
     this.channels[name] = {
       initialVolume,
       type,
       name,
       gain,
-      // playingSamples: [],
     };
-  }
-
-  public getPlayingSounds() {
-    return this.playingSounds;
   }
 
   private removePlayingSound(sound: PlayingSound) {
@@ -128,12 +125,17 @@ export class Channels {
     //   }
     // }
 
-    const playingSound = playSound(this.context, sound, {
-      channel,
-      volume,
-      fadeInTime,
-      loop,
-    });
+    const playingSound = playSound(
+      this.context,
+      channel?.gain || this.mainGain,
+      sound,
+      {
+        channel,
+        volume,
+        fadeInTime,
+        loop,
+      }
+    );
 
     playingSound.bufferSourceNode.onended = () => {
       this.removePlayingSound(playingSound);
