@@ -1,12 +1,10 @@
-import { Channels } from "channels";
-import React from "react";
-import { VolumeSlider } from "./VolumeSlider";
+import { Channels } from 'channels';
+import React from 'react';
+import { VolumeSlider } from './VolumeSlider';
 
 type Props = {
   channelsInstance: Channels;
 };
-
-const test = 1;
 
 export const ChannelsView = ({ channelsInstance }: Props) => {
   const channels = channelsInstance.getChannels();
@@ -17,7 +15,7 @@ export const ChannelsView = ({ channelsInstance }: Props) => {
         <div
           key={name}
           style={{
-            backgroundColor: "lightsteelblue",
+            backgroundColor: 'lightsteelblue',
             padding: 10,
             margin: 10,
           }}
