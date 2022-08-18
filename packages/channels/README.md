@@ -7,28 +7,31 @@ Channel based sound player.
 npm install @mediamonks/channels
 ```
 
-### Quick start 
+### Quick start
 
 ```javascript
 import { Channels } from '@mediamonks/channels';
 
-//  create Array<{name: string}> list of filenames without extension 
+//  create {name: string} list of filenames without extension 
 const soundFiles = ['sound1', 'sound2'].map(name => ({
     name,
 }));
 
-// create a Channels instance
+// create a Channels instance (extension and path are required)
 const channels = new Channels({
     soundsExtension: 'mp3',
     soundsPath: 'static/audio/',
-    sounds: soundFiles,
+    sounds: soundFiles, // not required, can be set later
 });
 
-// optionally, create a channel
-channels.addChannel('background-music');
+// load all sound files
+await channels.loadAllSounds();
 
-// play a sound, on a channel or not
+// play a sound
 channels.play('sound1');
+
+// or play it on a channel
+channels.addChannel('background-music');
 channels.play('sound2', {channel: 'background-music'});
 
 // stop a sound
