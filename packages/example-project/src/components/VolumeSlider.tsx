@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState } from 'react';
 
 type Props = {
   gain: GainNode;
@@ -18,7 +18,7 @@ export const VolumeSlider = ({ name, gain }: Props) => {
   };
   return (
     <label>
-      {name}
+      <strong>{name}</strong>
       <input
         type="range"
         onChange={onSliderChange}

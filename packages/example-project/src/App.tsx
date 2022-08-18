@@ -36,16 +36,14 @@ function App() {
       <h1>Channels testing ground</h1>
       {!isLoadComplete && <p>loading...</p>}
       {isLoadComplete && (
-        <div>
-          <div
-            style={{ backgroundColor: 'lightgreen', padding: 10, margin: 10 }}
-          >
+        <ul className="blocks">
+          <li style={{ backgroundColor: 'lightgreen' }}>
             <VolumeSlider gain={channels.mainGain} name="main volume" />
-          </div>
+          </li>
           <Sounds channelsInstance={channels} />
           <ChannelsView channelsInstance={channels} />
           <PlayingSounds channelsInstance={channels} />
-        </div>
+        </ul>
       )}
     </div>
   );

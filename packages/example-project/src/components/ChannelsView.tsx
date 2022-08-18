@@ -16,22 +16,22 @@ export const ChannelsView = ({ channelsInstance }: Props) => {
   return (
     <div>
       <h2>Channels</h2>
-      {channels.map(({ name, gain }) => (
-        <div
-          key={name}
-          style={{
-            backgroundColor: 'lightsteelblue',
-            padding: 10,
-            margin: 10,
-          }}
-        >
-          <strong>{name}</strong>
-          <button onClick={() => stopAllOnChannel(name)}>stop all</button>
-          <div>
-            <VolumeSlider gain={gain} />
-          </div>
-        </div>
-      ))}
+      <ul className="blocks">
+        {channels.map(({ name, gain }) => (
+          <li
+            key={name}
+            style={{
+              backgroundColor: 'lightsteelblue',
+            }}
+          >
+            <strong>{name}</strong>
+            <button onClick={() => stopAllOnChannel(name)}>stop all</button>
+            <div>
+              <VolumeSlider gain={gain} />
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
