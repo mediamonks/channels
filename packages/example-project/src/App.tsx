@@ -6,8 +6,8 @@ import { VolumeSlider } from './components/VolumeSlider';
 import { Sounds } from './components/Sounds';
 import { PlayingSounds } from './components/PlayingSounds';
 
-const soundsToLoad = ['bd', 'pink-panther', 'starwars'].map(sample => ({
-  name: sample,
+const soundsToLoad = ['bd', 'pink-panther', 'starwars'].map(name => ({
+  name,
 }));
 
 const channels = new Channels({
