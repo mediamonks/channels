@@ -1,4 +1,4 @@
-import { Channels } from 'channels';
+import { Channels } from '@mediamonks/channels';
 import React from 'react';
 import { VolumeSlider } from './VolumeSlider';
 

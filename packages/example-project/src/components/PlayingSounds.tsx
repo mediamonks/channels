@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Channels, PlayingSound } from 'channels';
+import { Channels, PlayingSound } from '@mediamonks/channels';
 import { useInterval } from '../hooks/useInterval';
 
 type Props = {

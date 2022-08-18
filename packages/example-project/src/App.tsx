@@ -1,4 +1,4 @@
-import { Channels } from 'channels';
+import { Channels } from '@mediamonks/channels';
 import React, { useEffect, useState } from 'react';
 
 import { ChannelsView } from './components/ChannelsView';

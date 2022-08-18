@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Channels } from 'channels';
+import { Channels } from '@mediamonks/channels';
 
 type Props = {
   channelsInstance: Channels;
