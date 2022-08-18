@@ -1,4 +1,4 @@
-# channels
+# Channels
 Channel based sound player.
 
 
