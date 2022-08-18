@@ -17,7 +17,7 @@ export const ChannelsView = ({ channelsInstance }: Props) => {
     <div>
       <h2>Channels</h2>
       <ul className="blocks">
-        {channels.map(({ name, gain }) => (
+        {channels.map(({ name }) => (
           <li
             key={name}
             style={{
@@ -27,7 +27,10 @@ export const ChannelsView = ({ channelsInstance }: Props) => {
             <strong>{name}</strong>
             <button onClick={() => stopAllOnChannel(name)}>stop all</button>
             <div>
-              <VolumeSlider gain={gain} />
+              <VolumeSlider
+                channelsInstance={channelsInstance}
+                channelName={name}
+              />
             </div>
           </li>
         ))}

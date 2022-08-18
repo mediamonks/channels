@@ -10,21 +10,21 @@ const soundsToLoad = ['bd', 'pink-panther', 'starwars'].map(name => ({
   name,
 }));
 
-const channels = new Channels({
+const channelsInstance = new Channels({
   soundsExtension: 'wav',
   soundsPath: process.env.PUBLIC_URL,
   sounds: soundsToLoad,
 });
 
-channels.addChannel('main');
-channels.addChannel('music');
+channelsInstance.addChannel('main');
+channelsInstance.addChannel('music');
 
 function App() {
   const [isLoadComplete, setIsLoadComplete] = useState(false);
 
   useEffect(() => {
     const loadSamples = async () => {
-      await channels.loadAllSounds();
+      await channelsInstance.loadAllSounds();
       setIsLoadComplete(true);
     };
 
@@ -38,11 +38,14 @@ function App() {
       {isLoadComplete && (
         <ul className="blocks">
           <li style={{ backgroundColor: 'lightgreen' }}>
-            <VolumeSlider gain={channels.mainGain} name="main volume" />
+            <VolumeSlider
+              label="main volume"
+              channelsInstance={channelsInstance}
+            />
           </li>
-          <Sounds channelsInstance={channels} />
-          <ChannelsView channelsInstance={channels} />
-          <PlayingSounds channelsInstance={channels} />
+          <Sounds channelsInstance={channelsInstance} />
+          <ChannelsView channelsInstance={channelsInstance} />
+          <PlayingSounds channelsInstance={channelsInstance} />
         </ul>
       )}
     </div>

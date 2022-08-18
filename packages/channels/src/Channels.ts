@@ -29,6 +29,10 @@ type PlayOptions = {
   // position: Array<number> | null = null,
 };
 
+type SetVolumeOptions = {
+  channel?: string;
+};
+
 const DEFAULT_CHANNEL_NAME = '_DEFAULT_CHANNEL_';
 
 export class Channels {
@@ -118,6 +122,29 @@ export class Channels {
       .forEach(playingSound => playingSound.stop());
   }
 
+  public getChannel(channelName?: string) {
+    const channel = this.channelsByName[channelName || DEFAULT_CHANNEL_NAME];
+
+    if (!channel) {
+      throw new Error(`Channel '${channelName}' does not exist`);
+    }
+
+    return channel;
+  }
+
+  public getVolume(channelName?: string) {
+    const channel = this.getChannel(channelName);
+    return channel.gain.gain.value;
+  }
+
+  public setVolume(
+    value: number,
+    { channel: channelName }: SetVolumeOptions = {}
+  ) {
+    const channel = this.getChannel(channelName);
+    channel.gain.gain.setValueAtTime(value, 0);
+  }
+
   public play(
     name: string,
     { channel: channelName, volume = 1, fadeInTime, loop }: PlayOptions = {}
@@ -126,11 +153,7 @@ export class Channels {
     if (!sound) {
       throw new Error(`Cannot find sample '${name}`);
     }
-    const channel = this.channelsByName[channelName || DEFAULT_CHANNEL_NAME];
-
-    if (channelName && !channel) {
-      throw new Error(`Channel '${channelName}' does not exist`);
-    }
+    const channel = this.getChannel(channelName);
 
     // if (channel && channel.playingSamples.length > 0) {
     //   const alreadyPlaying = channel.playingSamples.find(
