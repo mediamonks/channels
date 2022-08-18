@@ -37,7 +37,6 @@ export const Sounds = ({ channelsInstance }: Props) => {
             <li key={soundName} style={{ backgroundColor: 'lightcoral' }}>
               <strong>{soundName}</strong>
               <div>
-                <button onClick={() => playSound(soundName)}>play</button>
                 {channels.map(({ name: channelName }) => (
                   <button
                     key={channelName}

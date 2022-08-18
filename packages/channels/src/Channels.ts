@@ -29,6 +29,8 @@ type PlayOptions = {
   // position: Array<number> | null = null,
 };
 
+const DEFAULT_CHANNEL_NAME = '_DEFAULT_CHANNEL_';
+
 export class Channels {
   public readonly context: AudioContext;
   public readonly channelsByName: Record<string, SoundChannel> = {};
@@ -61,6 +63,8 @@ export class Channels {
     // main gain is final node in audio graph
     this.mainGain = this.context.createGain();
     this.mainGain.connect(this.context.destination);
+
+    this.addChannel(DEFAULT_CHANNEL_NAME);
   }
 
   public loadAllSounds(onProgress?: (value: number) => void) {
@@ -122,7 +126,7 @@ export class Channels {
     if (!sound) {
       throw new Error(`Cannot find sample '${name}`);
     }
-    const channel = channelName ? this.channelsByName[channelName] : undefined;
+    const channel = this.channelsByName[channelName || DEFAULT_CHANNEL_NAME];
 
     if (channelName && !channel) {
       throw new Error(`Channel '${channelName}' does not exist`);
