@@ -38,7 +38,7 @@ channels.play('sound2', {channel: 'background-music'});
 const sound1 = channels.play('sound1');
 sound1.stop();
 
-// stop all sounds, or only the one on a channel
+// stop all sounds, or only the ones on a channel
 channels.stopAll();
 channels.stopAll({channel: 'background-music'});
 
@@ -65,8 +65,19 @@ const channels = new Channels({
 })
 ```
 
+> Do not create more than one `Channels` instance. It will work, but it's a bad habit.
 
-> Note that you should not have to create more than one instance.
+When instantiating a `Channels` object, an `audioContext` will automatically be created. If you want, you can also pass an `audioContext` in the constructor options. 
+
+```javascript
+new Channels({
+    soundsPath,
+    soundsExtension,
+    audioContext: myAudioContext,
+})
+```
+
+Note that an `AudioContext` created without user interaction will be in the `suspended` state, and has to be resumed (on a user interaction) before sounds can be played. This can happen for example if you create a `Channels` instance on page landing.
 
 ### Loading files
 `Channels` uses the [sample-manager](https://www.npmjs.com/package/sample-manager) for dealing with files, and creates an instance of it named `sampleManager`. 
@@ -84,19 +95,19 @@ const soundFiles = [{name: 'sound1'}, {name: 'sound2'}];
 
 // list can be used when instantiating Channels 
 const channels = new Channels({
-    soundsPath: '...',
-    soundsExtension: '...',
+    soundsPath,
+    soundsExtension,
     sound: soundFiles,
 })
 
 // or can be set at a later stage
 channels.sampleManager.addSamples(soundFiles);
 
-// either way, you can load them when you want
+// either way, loading can be done like so:
 await channels.loadAllSounds();
 
 // you can optionally keep track of progress
-await channels.loadAllSounds((progress) => showProgress(progress));
+await channels.loadAllSounds((progress) => {...});
 ```
 If you are in need of different configurations with regards to filenames, please take a look at the options listed on the [sample-manager page](https://www.npmjs.com/package/sample-manager). 
 
