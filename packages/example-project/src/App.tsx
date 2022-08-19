@@ -26,15 +26,23 @@ function App() {
       <h1>Channels testing ground</h1>
       {!isLoadComplete && <p>loading...</p>}
       {isLoadComplete && (
-        <ul className="blocks">
-          <li style={{ backgroundColor: 'lightgreen' }}>
-            <VolumeControlsView channelsInstance={channels} />
-          </li>
-          <button onClick={() => channels.stopAll()}>stop all sounds</button>
-          <Sounds />
-          <ChannelsView />
-          <PlayingSounds />
-        </ul>
+        <>
+          <ul className="blocks">
+            <li style={{ backgroundColor: 'lightgreen' }}>
+              <VolumeControlsView channelsInstance={channels} />
+            </li>
+          </ul>
+
+          <div style={{ display: 'flex' }}>
+            <div style={{ width: '50%', padding: 5 }}>
+              <Sounds />
+              <ChannelsView />
+            </div>
+            <div style={{ width: '50%', padding: 5 }}>
+              <PlayingSounds />
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

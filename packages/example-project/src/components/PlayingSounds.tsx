@@ -11,10 +11,12 @@ export const PlayingSounds = () => {
     setPlayingSounds([...channelsInstance.playingSounds]);
   }, 10);
 
+  const stopAll = () => channelsInstance.stopAll();
+
   return (
     <div>
       <h2>Playing sounds</h2>
-
+      <button onClick={stopAll}>stop all sounds</button>
       <ul className={'blocks'}>
         {playingSounds.map((playingSound, index) => (
           <li key={index} style={{ backgroundColor: 'lightblue' }}>
