@@ -109,8 +109,26 @@ await channels.loadAllSounds();
 // you can optionally keep track of progress
 await channels.loadAllSounds((progress) => {...});
 ```
-If you are in need of different configurations with regards to filenames, please take a look at the options listed on the [sample-manager page](https://www.npmjs.com/package/sample-manager). 
-
-
 > The `loadAllSounds` method was added for convenience, it is a direct alias for `sampleManager.loadAllSamples`
 
+For more info on what you can do with the list of sound files, please take a look at the [sample-manager page](https://www.npmjs.com/package/sample-manager).
+
+### Volume
+
+There are three places where volumes can be set:
+
+1. On a sound, passing it as an argument to the `play` method
+2. On a channel, using `setVolume(0.5, {channel: 'myChannel')` (or setting it as the channel's initial volume when creating it)
+3. On the main output: `setVolume(0.5)`
+
+These volumes stack up, so when a sound is played at volume `0.5`, on a channel with volume `0.5`, while the main volume has been set to `0.5`, then the resulting volume will be `0.5 * 0.5 * 0.5 = 0.125`. 
+
+> Volume values typically range from `0` to `1`, but since the value is just a multiplier you can use any value you want (including negative). Keep in mind that going beyond `1` or `-1` *might* result in clipping.
+
+### Mute
+
+Of the three places where volume can be set, two have the ability to mute the signal as well: 
+1. On a channel: `setMute(true, {channel: 'myChannel'})`
+2. On the main output: `setMute(true)`
+
+Note that these are *completely separate* from the volume values: a channel can be muted, but its volume can be 1.
