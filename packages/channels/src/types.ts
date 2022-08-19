@@ -9,7 +9,6 @@ type BaseSoundChannel = {
   name: string;
   volume: Volume;
   type: SoundChannelType;
-  initialVolume: number;
 };
 
 export type PolyphonicSoundChannel = BaseSoundChannel & {

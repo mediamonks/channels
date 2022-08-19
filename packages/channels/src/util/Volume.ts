@@ -1,8 +1,8 @@
 import { AudioContext } from './audioContext';
 
-type Options = {
+export type VolumeOptions = {
   initialVolume?: number;
-  // todo: add initialMute
+  initialMuted?: boolean;
 };
 
 export class Volume {
@@ -11,11 +11,15 @@ export class Volume {
   public readonly input: GainNode;
   public readonly output: GainNode;
 
-  constructor(audioContext: AudioContext, { initialVolume = 1 }: Options = {}) {
+  constructor(
+    audioContext: AudioContext,
+    { initialVolume = 1, initialMuted = false }: VolumeOptions = {}
+  ) {
     this.volumeGainNode = audioContext.createGain();
     this.muteGainNode = audioContext.createGain();
 
-    this.volumeGainNode.gain.setValueAtTime(initialVolume, 0);
+    this.volume = initialVolume;
+    this.isMuted = initialMuted;
 
     this.input = this.volumeGainNode;
     this.output = this.muteGainNode;

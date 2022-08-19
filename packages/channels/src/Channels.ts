@@ -8,12 +8,11 @@ import {
 import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
 import { playSound } from './util/playSound';
-import { Volume } from './util/Volume';
+import { Volume, VolumeOptions } from './util/Volume';
 
 type AddChannelOptions = {
-  initialVolume?: number;
   type?: SoundChannelType;
-};
+} & VolumeOptions;
 
 type ConstructorProps = {
   soundsPath: string;
@@ -70,11 +69,12 @@ export class Channels {
    * Creates a new channel.
    * @param name
    * @param initialVolume
+   * @param initialMuted
    * @param type
    */
   public createChannel(
     name: string,
-    { initialVolume = 1, type = 'polyphonic' }: AddChannelOptions = {}
+    { initialVolume, initialMuted, type = 'polyphonic' }: AddChannelOptions = {}
   ) {
     if (name === '') {
       throw new Error('Channel name cannot be blank');
@@ -83,11 +83,10 @@ export class Channels {
       throw new Error(`Channel '${name}' already exists`);
     }
 
-    const volume = new Volume(this.context, { initialVolume });
+    const volume = new Volume(this.context, { initialVolume, initialMuted });
     volume.output.connect(this.mainVolume.input);
 
     this.channelsByName[name] = {
-      initialVolume,
       type,
       name,
       volume,
