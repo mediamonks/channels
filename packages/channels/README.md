@@ -98,7 +98,7 @@ await channels.loadAllSounds();
 // you can optionally keep track of progress
 await channels.loadAllSounds((progress) => showProgress(progress));
 ```
-If you are in need of different configurations with regards to filenames, please take a look at the [sample-manager page](https://www.npmjs.com/package/sample-manager). 
+If you are in need of different configurations with regards to filenames, please take a look at the options listed on the [sample-manager page](https://www.npmjs.com/package/sample-manager). 
 
 
 > The `loadAllSounds` method was added for convenience, it is a direct alias for `sampleManager.loadAllSamples`
