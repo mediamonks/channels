@@ -22,11 +22,11 @@ type ConstructorProps = {
   sounds?: Array<CreateSound>;
 };
 
-type OptionalChannelOptions = {
+type OptionalChannel = {
   channel?: string;
 };
 
-type PlayOptions = OptionalChannelOptions & {
+type PlaySoundOptions = OptionalChannel & {
   volume?: number;
   fadeInTime?: number;
   loop?: boolean;
@@ -103,8 +103,9 @@ export class Channels {
    * Gets a list of all available channels.
    */
   public getChannels(): Array<SoundChannel> {
-    const channelNames = Object.keys(this.channelsByName);
-    return channelNames.map(channelName => this.channelsByName[channelName]);
+    return Object.keys(this.channelsByName).map(
+      channelName => this.channelsByName[channelName]
+    );
   }
 
   private removePlayingSound(sound: PlayingSound) {
@@ -119,7 +120,7 @@ export class Channels {
    * sounds that are playing on a channel.
    * @param channelName
    */
-  public stopAll({ channel: channelName }: OptionalChannelOptions = {}) {
+  public stopAll({ channel: channelName }: OptionalChannel = {}) {
     if (channelName && !this.channelsByName[channelName]) {
       throw new Error(`Channel '${channelName}' does not exist`);
     }
@@ -151,18 +152,18 @@ export class Channels {
    * @param channelName
    * @private
    */
-  private getVolumeControls(channelName?: string) {
-    return channelName
-      ? this.getChannel(channelName).volumeControls
+  private getVolumeControls({ channel }: OptionalChannel = {}) {
+    return channel
+      ? this.getChannel(channel).volumeControls
       : this.mainVolumeControls;
   }
 
-  public getVolume(channelName?: string) {
-    return this.getVolumeControls(channelName).volume.gain.value;
+  public getVolume({ channel }: OptionalChannel = {}) {
+    return this.getVolumeControls({ channel }).volume.gain.value;
   }
 
-  public getMute(channelName?: string) {
-    return !this.getVolumeControls(channelName).mute.gain.value;
+  public getMute({ channel }: OptionalChannel = {}) {
+    return !this.getVolumeControls({ channel }).mute.gain.value;
   }
 
   /**
@@ -170,7 +171,7 @@ export class Channels {
    * @param value
    * @param options
    */
-  public setVolume(value: number, options: OptionalChannelOptions = {}) {
+  public setVolume(value: number, options: OptionalChannel = {}) {
     this.setVolumeOrMuteGain(value, 'volume', options);
   }
 
@@ -179,7 +180,7 @@ export class Channels {
    * @param value
    * @param options
    */
-  public setMute(value: boolean, options: OptionalChannelOptions = {}) {
+  public setMute(value: boolean, options: OptionalChannel = {}) {
     this.setVolumeOrMuteGain(value ? 0 : 1, 'mute', options);
   }
 
@@ -193,9 +194,9 @@ export class Channels {
   private setVolumeOrMuteGain(
     value: number,
     type: 'volume' | 'mute',
-    { channel: channelName }: OptionalChannelOptions = {}
+    { channel }: OptionalChannel = {}
   ) {
-    const volumeControls = this.getVolumeControls(channelName);
+    const volumeControls = this.getVolumeControls({ channel });
     (type === 'volume'
       ? volumeControls.volume
       : volumeControls.mute
@@ -213,7 +214,12 @@ export class Channels {
    */
   public play(
     name: string,
-    { channel: channelName, volume = 1, fadeInTime, loop }: PlayOptions = {}
+    {
+      channel: channelName,
+      volume = 1,
+      fadeInTime,
+      loop,
+    }: PlaySoundOptions = {}
   ): PlayingSound {
     const sound = this.sampleManager.getSampleByName(name);
     if (!sound) {

@@ -9,7 +9,9 @@ type Props = {
 const SLIDER_MAX = 100;
 
 export const VolumeSlider = ({ channelName, channelsInstance }: Props) => {
-  const [value, setValue] = useState(channelsInstance.getVolume(channelName));
+  const [value, setValue] = useState(
+    channelsInstance.getVolume({ channel: channelName })
+  );
 
   useEffect(() => {
     channelsInstance.setVolume(value, { channel: channelName });

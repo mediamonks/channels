@@ -8,7 +8,7 @@ type Props = {
 
 export const MuteCheckbox = ({ channelName, channelsInstance }: Props) => {
   const [isChecked, setIsChecked] = useState(
-    channelsInstance.getMute(channelName)
+    channelsInstance.getMute({ channel: channelName })
   );
 
   useEffect(() => {
