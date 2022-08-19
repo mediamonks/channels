@@ -97,7 +97,7 @@ const soundFiles = [{name: 'sound1'}, {name: 'sound2'}];
 const channels = new Channels({
     soundsPath,
     soundsExtension,
-    sound: soundFiles,
+    sounds: soundFiles,
 })
 
 // or can be set at a later stage
