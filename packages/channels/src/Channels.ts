@@ -119,16 +119,15 @@ export class Channels {
    * sounds that are playing on a channel.
    * @param channelName
    */
-  public stopAll(channelName?: string) {
-    // todo: channel optional
-    const channel = channelName ? this.channelsByName[channelName] : undefined;
-
-    if (channelName && !channel) {
+  public stopAll({ channel: channelName }: OptionalChannelOptions = {}) {
+    if (channelName && !this.channelsByName[channelName]) {
       throw new Error(`Channel '${channelName}' does not exist`);
     }
 
     this.playingSounds
-      .filter(({ channel }) => (channel ? channel.name === channelName : true))
+      .filter(({ channel }) =>
+        channelName ? channel?.name === channelName : true
+      )
       .forEach(playingSound => playingSound.stop());
   }
 

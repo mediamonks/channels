@@ -21,7 +21,7 @@ export const ChannelsView = ({ channelsInstance }: Props) => {
             }}
           >
             <h3>Channel: {name}</h3>
-            <button onClick={() => channelsInstance.stopAll(name)}>
+            <button onClick={() => channelsInstance.stopAll({ channel: name })}>
               stop all sounds on this channel
             </button>
             <div>
