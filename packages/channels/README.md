@@ -1,5 +1,5 @@
 # Channels
-Channel based sound player.
+Channel based sound player, intended to provide a minimal and clear api for simple use cases.
 
 
 ## Installation
