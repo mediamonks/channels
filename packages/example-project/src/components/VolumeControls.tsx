@@ -4,25 +4,19 @@ import { MuteCheckbox } from './MuteCheckbox';
 
 type Props = {
   channelsInstance: Channels;
-  channelName?: string;
+  channel?: string;
 };
 
-export const VolumeControlsView = ({
-  channelsInstance,
-  channelName,
-}: Props) => {
+export const VolumeControls = ({ channelsInstance, channel }: Props) => {
   return (
     <div>
       <div>
-        <MuteCheckbox
-          channelsInstance={channelsInstance}
-          channelName={channelName}
-        />
+        <MuteCheckbox channelsInstance={channelsInstance} channel={channel} />
       </div>
       <div>
         <VolumeSlider
           channelsInstance={channelsInstance}
-          channelName={channelName}
+          channelName={channel}
         />
       </div>
     </div>

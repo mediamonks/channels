@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ChannelsView } from './components/ChannelsView';
 import { Sounds } from './components/Sounds';
 import { PlayingSounds } from './components/PlayingSounds';
-import { VolumeControlsView } from './components/VolumeControlsView';
+import { VolumeControls } from './components/VolumeControls';
 import { useChannels } from './hooks/useChannels';
 
 function App() {
@@ -10,8 +10,8 @@ function App() {
   const channels = useChannels();
 
   useEffect(() => {
-    channels.addChannel('main');
-    channels.addChannel('music', { type: 'monophonic' });
+    channels.createChannel('main');
+    channels.createChannel('music', { type: 'monophonic' });
 
     const loadSamples = async () => {
       await channels.loadAllSounds();
@@ -29,7 +29,7 @@ function App() {
         <>
           <ul className="blocks">
             <li style={{ backgroundColor: 'lightgreen' }}>
-              <VolumeControlsView channelsInstance={channels} />
+              <VolumeControls channelsInstance={channels} />
             </li>
           </ul>
 

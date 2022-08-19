@@ -1,4 +1,5 @@
 import { ICreateSample, ISample } from 'sample-manager';
+import { Volume } from './util/Volume';
 
 export type SoundChannelType = 'monophonic' | 'polyphonic';
 export type Sound = ISample;
@@ -6,7 +7,7 @@ export type CreateSound = ICreateSample;
 
 type BaseSoundChannel = {
   name: string;
-  volumeControls: VolumeControls;
+  volume: Volume;
   type: SoundChannelType;
   initialVolume: number;
 };
@@ -30,9 +31,6 @@ export type PlayingSound = {
   stop: () => void;
 };
 
-export type VolumeControls = {
-  input: GainNode;
-  output: GainNode;
-  volume: GainNode;
-  mute: GainNode;
+export type OptionalChannel = {
+  channel?: string;
 };

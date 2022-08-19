@@ -1,14 +1,14 @@
 import {
   CreateSound,
+  OptionalChannel,
   PlayingSound,
   SoundChannel,
   SoundChannelType,
-  VolumeControls,
 } from './types';
 import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
 import { playSound } from './util/playSound';
-import { createVolumeNodes } from './util/createVolumeNodes';
+import { Volume } from './util/Volume';
 
 type AddChannelOptions = {
   initialVolume?: number;
@@ -22,10 +22,6 @@ type ConstructorProps = {
   sounds?: Array<CreateSound>;
 };
 
-type OptionalChannel = {
-  channel?: string;
-};
-
 type PlaySoundOptions = OptionalChannel & {
   volume?: number;
   fadeInTime?: number;
@@ -37,7 +33,7 @@ export class Channels {
   public readonly channelsByName: Record<string, SoundChannel> = {};
   public readonly playingSounds: Array<PlayingSound> = [];
   public readonly sampleManager: SampleManager;
-  public readonly mainVolumeControls: VolumeControls;
+  public readonly mainVolume: Volume;
 
   constructor({
     audioContext,
@@ -62,8 +58,8 @@ export class Channels {
     }
 
     // everything connect to the main volume controls
-    this.mainVolumeControls = createVolumeNodes(this.context);
-    this.mainVolumeControls.output.connect(this.context.destination);
+    this.mainVolume = new Volume(this.context);
+    this.mainVolume.output.connect(this.context.destination);
   }
 
   public loadAllSounds(onProgress?: (value: number) => void) {
@@ -76,7 +72,7 @@ export class Channels {
    * @param initialVolume
    * @param type
    */
-  public addChannel(
+  public createChannel(
     name: string,
     { initialVolume = 1, type = 'polyphonic' }: AddChannelOptions = {}
   ) {
@@ -87,15 +83,14 @@ export class Channels {
       throw new Error(`Channel '${name}' already exists`);
     }
 
-    const volumeControls = createVolumeNodes(this.context);
-    volumeControls.volume.gain.setValueAtTime(initialVolume, 0);
-    volumeControls.output.connect(this.mainVolumeControls.input);
+    const volume = new Volume(this.context, { initialVolume });
+    volume.output.connect(this.mainVolume.input);
 
     this.channelsByName[name] = {
       initialVolume,
       type,
       name,
-      volumeControls,
+      volume,
     };
   }
 
@@ -108,6 +103,11 @@ export class Channels {
     );
   }
 
+  /**
+   * Removes a PlayingSound from the list.
+   * @param sound
+   * @private
+   */
   private removePlayingSound(sound: PlayingSound) {
     const index = this.playingSounds.indexOf(sound);
     if (index > -1) {
@@ -147,23 +147,21 @@ export class Channels {
   }
 
   /**
-   * Gets VolumeControls for a channel or, when no channelName is supplied,
-   * the main output's VolumeControls.
-   * @param channelName
+   * Gets the Volume instance for a channel or, when no channelName
+   * is supplied, the one for the main output.
+   * @param channel
    * @private
    */
-  private getVolumeControls({ channel }: OptionalChannel = {}) {
-    return channel
-      ? this.getChannel(channel).volumeControls
-      : this.mainVolumeControls;
+  private getVolumeInstance({ channel }: OptionalChannel = {}): Volume {
+    return channel ? this.getChannel(channel).volume : this.mainVolume;
   }
 
   public getVolume({ channel }: OptionalChannel = {}) {
-    return this.getVolumeControls({ channel }).volume.gain.value;
+    return this.getVolumeInstance({ channel }).volume;
   }
 
-  public getMute({ channel }: OptionalChannel = {}) {
-    return !this.getVolumeControls({ channel }).mute.gain.value;
+  public getIsMuted({ channel }: OptionalChannel = {}) {
+    return this.getVolumeInstance({ channel }).isMuted;
   }
 
   /**
@@ -171,8 +169,8 @@ export class Channels {
    * @param value
    * @param options
    */
-  public setVolume(value: number, options: OptionalChannel = {}) {
-    this.setVolumeOrMuteGain(value, 'volume', options);
+  public setVolume(value: number, { channel }: OptionalChannel = {}) {
+    this.getVolumeInstance({ channel }).volume = value;
   }
 
   /**
@@ -180,27 +178,8 @@ export class Channels {
    * @param value
    * @param options
    */
-  public setMute(value: boolean, options: OptionalChannel = {}) {
-    this.setVolumeOrMuteGain(value ? 0 : 1, 'mute', options);
-  }
-
-  /**
-   * Sets the value for either the volume of mute gain.
-   * @param value
-   * @param type
-   * @param channelName
-   * @private
-   */
-  private setVolumeOrMuteGain(
-    value: number,
-    type: 'volume' | 'mute',
-    { channel }: OptionalChannel = {}
-  ) {
-    const volumeControls = this.getVolumeControls({ channel });
-    (type === 'volume'
-      ? volumeControls.volume
-      : volumeControls.mute
-    ).gain.setValueAtTime(value, 0);
+  public setMute(value: boolean, { channel }: OptionalChannel = {}) {
+    this.getVolumeInstance({ channel }).isMuted = value;
   }
 
   /**
@@ -229,7 +208,7 @@ export class Channels {
 
     const playingSound = playSound(
       this.context,
-      (channel?.volumeControls || this.mainVolumeControls).input,
+      (channel?.volume || this.mainVolume).input,
       sound,
       {
         channel,

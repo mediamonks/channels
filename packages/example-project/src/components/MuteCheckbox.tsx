@@ -3,16 +3,16 @@ import { Channels } from '@mediamonks/channels';
 
 type Props = {
   channelsInstance: Channels;
-  channelName?: string;
+  channel?: string;
 };
 
-export const MuteCheckbox = ({ channelName, channelsInstance }: Props) => {
+export const MuteCheckbox = ({ channel, channelsInstance }: Props) => {
   const [isChecked, setIsChecked] = useState(
-    channelsInstance.getMute({ channel: channelName })
+    channelsInstance.getIsMuted({ channel })
   );
 
   useEffect(() => {
-    channelsInstance.setMute(isChecked);
+    channelsInstance.setMute(isChecked, { channel });
   }, [isChecked]);
 
   return (

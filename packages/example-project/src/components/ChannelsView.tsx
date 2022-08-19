@@ -1,5 +1,5 @@
 import React from 'react';
-import { VolumeControlsView } from './VolumeControlsView';
+import { VolumeControls } from './VolumeControls';
 import { useChannels } from '../hooks/useChannels';
 
 export const ChannelsView = () => {
@@ -25,9 +25,9 @@ export const ChannelsView = () => {
               stop all sounds on this channel
             </button>
             <div>
-              <VolumeControlsView
+              <VolumeControls
                 channelsInstance={channelsInstance}
-                channelName={name}
+                channel={name}
               />
             </div>
           </li>

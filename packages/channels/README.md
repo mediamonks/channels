@@ -31,7 +31,7 @@ await channels.loadAllSounds();
 channels.play('sound1');
 
 // or play it on a channel
-channels.addChannel('background-music');
+channels.createChannel('background-music');
 channels.play('sound2', {channel: 'background-music'});
 
 // stop a sound
