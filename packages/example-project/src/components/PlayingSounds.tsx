@@ -15,14 +15,17 @@ export const PlayingSounds = () => {
     <div>
       <h2>Playing sounds</h2>
 
-      {playingSounds.map((playingSound, index) => (
-        <div key={index} style={{ backgroundColor: 'lightblue' }}>
-          <p>
-            {playingSound.sound.name} {playingSound.channel?.name || ''}
-          </p>
-          <button onClick={playingSound.stop}>stop</button>
-        </div>
-      ))}
+      <ul className={'blocks'}>
+        {playingSounds.map((playingSound, index) => (
+          <li key={index} style={{ backgroundColor: 'lightblue' }}>
+            <p>
+              <strong>{playingSound.sound.name}</strong> (channel:{' '}
+              {playingSound.channel?.name || '---'})
+            </p>
+            <button onClick={playingSound.stop}>stop</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
