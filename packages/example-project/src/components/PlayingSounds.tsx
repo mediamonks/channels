@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { Channels, PlayingSound } from '@mediamonks/channels';
+import { PlayingSound } from '@mediamonks/channels';
 import { useInterval } from '../hooks/useInterval';
+import { useChannels } from '../hooks/useChannels';
 
-type Props = {
-  channelsInstance: Channels;
-};
-
-export const PlayingSounds = ({ channelsInstance }: Props) => {
+export const PlayingSounds = () => {
+  const channelsInstance = useChannels();
   const [playingSounds, setPlayingSounds] = useState<Array<PlayingSound>>([]);
 
   useInterval(() => {

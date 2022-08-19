@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-import { Channels } from '@mediamonks/channels';
+import { useChannels } from '../hooks/useChannels';
 
-type Props = {
-  channelsInstance: Channels;
-};
-
-export const Sounds = ({ channelsInstance }: Props) => {
+export const Sounds = () => {
+  const channelsInstance = useChannels();
   const [loopIsChecked, setLoopIsChecked] = useState(false);
 
   const playSound = (soundName: string, channelName?: string) => {
