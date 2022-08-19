@@ -40,7 +40,7 @@ sound1.stop();
 
 // stop all sounds, or only the one on a channel
 channels.stopAll();
-channels.stopAll('background-music');
+channels.stopAll({channel: 'background-music'});
 
 // set main volume, or for a channel
 channels.setVolume(0.5);
