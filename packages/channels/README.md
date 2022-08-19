@@ -2,12 +2,12 @@
 Channel based sound player.
 
 
-### Installation
+## Installation
 ```sh
 npm install @mediamonks/channels
 ```
 
-### Quick start
+## Quick start
 
 ```javascript
 import { Channels } from '@mediamonks/channels';
@@ -49,7 +49,57 @@ channels.setVolume(0.5, {channel: 'background-music'});
 // same for muting (note that this is separate from the volume)
 channels.setMute(true);
 channels.setMute(true, {channel: 'background-music'});
-
-
-
 ```
+
+## Overview
+
+
+### Creating a Channels instance
+
+When creating a `Channels` object, two parameters are required: the location of the sound files, and the extension to use:
+
+```javascript
+const channels = new Channels({
+    soundsPath: 'location/of/your/files',
+    soundsExtension: 'mp3',
+})
+```
+
+
+> Note that you should not have to create more than one instance.
+
+### Loading files
+`Channels` uses the [sample-manager](https://www.npmjs.com/package/sample-manager) for dealing with files, and creates an instance of it named `sampleManager`. 
+
+```javascript
+channelsInstance.sampleManager
+```
+
+The easiest way to load files is to supply a list of objects with a `name` property, matching the filenames *without extension*. (The file extension has to be set when creating the `Channels` object, allowing for an easy switch to different filetypes on certain clients).  
+
+```javascript
+// - sound1.mp3
+// - sound2.mp3
+const soundFiles = [{name: 'sound1'}, {name: 'sound2'}];
+
+// list can be used when instantiating Channels 
+const channels = new Channels({
+    soundsPath: '...',
+    soundsExtension: '...',
+    sound: soundFiles,
+})
+
+// or can be set at a later stage
+channels.sampleManager.addSamples(soundFiles);
+
+// either way, you can load them when you want
+await channels.loadAllSounds();
+
+// you can optionally keep track of progress
+await channels.loadAllSounds((progress) => showProgress(progress));
+```
+If you are in need of different configurations with regards to filenames, please take a look at the [sample-manager page](https://www.npmjs.com/package/sample-manager). 
+
+
+> The `loadAllSounds` method was added for convenience, it is a direct alias for `sampleManager.loadAllSamples`
+
