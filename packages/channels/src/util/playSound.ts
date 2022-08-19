@@ -35,28 +35,11 @@ export const playSound = (
     sound,
     bufferSourceNode,
     gainNode,
-    channel: channel || undefined,
+    channel,
     stop: () => {
       bufferSourceNode.stop(0);
     },
   };
-
-  // if (fadeInTime) {
-  //   gain.gain.setValueAtTime(0, 0);
-  //   // fadeGain(gain, 1, fadeInTime);
-  //   const volume = {
-  //     value: 0,
-  //   };
-  //   const tween = TweenLite.to(volume, fadeInTime, {
-  //     value: 1,
-  //     ease: Linear.easeNone,
-  //     onUpdate: () => {
-  //       gain.gain.setValueAtTime(volume.value, tween.time());
-  //     },
-  //   });
-  // } else {
-  //   gain.gain.setValueAtTime(volume, 0);
-  // }
 
   bufferSourceNode.start(0);
   return playingSound;

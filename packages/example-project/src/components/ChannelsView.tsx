@@ -1,6 +1,6 @@
 import { Channels } from '@mediamonks/channels';
 import React from 'react';
-import { VolumeSlider } from './VolumeSlider';
+import { VolumeControlsView } from './VolumeControlsView';
 
 type Props = {
   channelsInstance: Channels;
@@ -24,10 +24,12 @@ export const ChannelsView = ({ channelsInstance }: Props) => {
               backgroundColor: 'lightsteelblue',
             }}
           >
-            <strong>{name}</strong>
-            <button onClick={() => stopAllOnChannel(name)}>stop all</button>
+            <h3>Channel: {name}</h3>
+            <button onClick={() => stopAllOnChannel(name)}>
+              stop all sounds on this channel
+            </button>
             <div>
-              <VolumeSlider
+              <VolumeControlsView
                 channelsInstance={channelsInstance}
                 channelName={name}
               />

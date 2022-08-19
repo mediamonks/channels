@@ -3,10 +3,12 @@ import {
   PlayingSound,
   SoundChannel,
   SoundChannelType,
+  VolumeControls,
 } from './types';
 import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
 import { playSound } from './util/playSound';
+import { createVolumeNodes } from './util/createVolumeNodes';
 
 type AddChannelOptions = {
   initialVolume?: number;
@@ -20,27 +22,22 @@ type ConstructorProps = {
   sounds?: Array<CreateSound>;
 };
 
-type PlayOptions = {
+type OptionalChannelOptions = {
   channel?: string;
+};
+
+type PlayOptions = OptionalChannelOptions & {
   volume?: number;
   fadeInTime?: number;
   loop?: boolean;
-  // monoSound: boolean;
-  // position: Array<number> | null = null,
 };
-
-type SetVolumeOptions = {
-  channel?: string;
-};
-
-const DEFAULT_CHANNEL_NAME = '_DEFAULT_CHANNEL_';
 
 export class Channels {
   public readonly context: AudioContext;
   public readonly channelsByName: Record<string, SoundChannel> = {};
   public readonly playingSounds: Array<PlayingSound> = [];
   public readonly sampleManager: SampleManager;
-  public readonly mainGain: GainNode;
+  public readonly mainVolumeControls: VolumeControls;
 
   constructor({
     audioContext,
@@ -64,17 +61,21 @@ export class Channels {
       this.sampleManager.addSamples(sounds);
     }
 
-    // main gain is final node in audio graph
-    this.mainGain = this.context.createGain();
-    this.mainGain.connect(this.context.destination);
-
-    this.addChannel(DEFAULT_CHANNEL_NAME);
+    // everything connect to the main volume controls
+    this.mainVolumeControls = createVolumeNodes(this.context);
+    this.mainVolumeControls.output.connect(this.context.destination);
   }
 
   public loadAllSounds(onProgress?: (value: number) => void) {
     return this.sampleManager.loadAllSamples(onProgress);
   }
 
+  /**
+   * Creates a new channel.
+   * @param name
+   * @param initialVolume
+   * @param type
+   */
   public addChannel(
     name: string,
     { initialVolume = 1, type = 'polyphonic' }: AddChannelOptions = {}
@@ -86,18 +87,21 @@ export class Channels {
       throw new Error(`Channel '${name}' already exists`);
     }
 
-    const gain = this.context.createGain();
-    gain.gain.setValueAtTime(initialVolume, 0);
-    gain.connect(this.mainGain);
+    const volumeControls = createVolumeNodes(this.context);
+    volumeControls.volume.gain.setValueAtTime(initialVolume, 0);
+    volumeControls.output.connect(this.mainVolumeControls.input);
 
     this.channelsByName[name] = {
       initialVolume,
       type,
       name,
-      gain,
+      volumeControls,
     };
   }
 
+  /**
+   * Gets a list of all available channels.
+   */
   public getChannels(): Array<SoundChannel> {
     const channelNames = Object.keys(this.channelsByName);
     return channelNames.map(channelName => this.channelsByName[channelName]);
@@ -110,7 +114,12 @@ export class Channels {
     }
   }
 
+  /**
+   * Stop all sounds currently playing on a channel.
+   * @param channelName
+   */
   public stopAllOnChannel(channelName: string) {
+    // todo: channel optional
     const channel = this.channelsByName[channelName];
 
     if (!channel) {
@@ -122,8 +131,12 @@ export class Channels {
       .forEach(playingSound => playingSound.stop());
   }
 
-  public getChannel(channelName?: string) {
-    const channel = this.channelsByName[channelName || DEFAULT_CHANNEL_NAME];
+  /**
+   * Get a channel by its name.
+   * @param channelName
+   */
+  public getChannel(channelName: string) {
+    const channel = this.channelsByName[channelName];
 
     if (!channel) {
       throw new Error(`Channel '${channelName}' does not exist`);
@@ -132,19 +145,72 @@ export class Channels {
     return channel;
   }
 
+  /**
+   * Gets VolumeControls for a channel or, when no channelName is supplied,
+   * the main output's VolumeControls.
+   * @param channelName
+   * @private
+   */
+  private getVolumeControls(channelName?: string) {
+    return channelName
+      ? this.getChannel(channelName).volumeControls
+      : this.mainVolumeControls;
+  }
+
   public getVolume(channelName?: string) {
-    const channel = this.getChannel(channelName);
-    return channel.gain.gain.value;
+    return this.getVolumeControls(channelName).volume.gain.value;
   }
 
-  public setVolume(
+  public getMute(channelName?: string) {
+    return !this.getVolumeControls(channelName).mute.gain.value;
+  }
+
+  /**
+   * Sets the volume for either a channel or the main output.
+   * @param value
+   * @param options
+   */
+  public setVolume(value: number, options: OptionalChannelOptions = {}) {
+    this.setVolumeOrMuteGain(value, 'volume', options);
+  }
+
+  /**
+   * Sets the mute value for either a channel or the main output.
+   * @param value
+   * @param options
+   */
+  public setMute(value: boolean, options: OptionalChannelOptions = {}) {
+    this.setVolumeOrMuteGain(value ? 0 : 1, 'mute', options);
+  }
+
+  /**
+   * Sets the value for either the volume of mute gain.
+   * @param value
+   * @param type
+   * @param channelName
+   * @private
+   */
+  private setVolumeOrMuteGain(
     value: number,
-    { channel: channelName }: SetVolumeOptions = {}
+    type: 'volume' | 'mute',
+    { channel: channelName }: OptionalChannelOptions = {}
   ) {
-    const channel = this.getChannel(channelName);
-    channel.gain.gain.setValueAtTime(value, 0);
+    const volumeControls = this.getVolumeControls(channelName);
+    (type === 'volume'
+      ? volumeControls.volume
+      : volumeControls.mute
+    ).gain.setValueAtTime(value, 0);
   }
 
+  /**
+   * Play a sound. When no channel is supplied, it will be played directly
+   * on the main output.
+   * @param name
+   * @param channel
+   * @param volume
+   * @param fadeInTime
+   * @param loop
+   */
   public play(
     name: string,
     { channel: channelName, volume = 1, fadeInTime, loop }: PlayOptions = {}
@@ -153,25 +219,11 @@ export class Channels {
     if (!sound) {
       throw new Error(`Cannot find sample '${name}`);
     }
-    const channel = this.getChannel(channelName);
-
-    // if (channel && channel.playingSamples.length > 0) {
-    //   const alreadyPlaying = channel.playingSamples.find(
-    //     playing => playing.sample.name === name
-    //   );
-    //   if (
-    //     alreadyPlaying &&
-    //     ((channel.isMonophonic && alreadyPlaying.bufferSource.loop && loop) ||
-    //       monoSound)
-    //   ) {
-    //     // when on a monophonic channel, trying to play a looped sound that is already looping will result in no new sound being started (seemed handy)
-    //     return alreadyPlaying;
-    //   }
-    // }
+    const channel = channelName ? this.getChannel(channelName) : undefined;
 
     const playingSound = playSound(
       this.context,
-      channel?.gain || this.mainGain,
+      (channel?.volumeControls || this.mainVolumeControls).input,
       sound,
       {
         channel,
@@ -186,20 +238,6 @@ export class Channels {
     };
 
     this.playingSounds.push(playingSound);
-
-    // if (channel) {
-    //   if (channel.isMonophonic) {
-    //     channel.playingSamples.forEach((playingSample: PlayingSample) =>
-    //       stopPlayingSample(playingSample, channel.monophonicFadeOutTime)
-    //     );
-    //   }
-    //
-    //   channel.playingSamples.push(playingSample);
-    //
-    //   playingSample.bufferSource.onended = () => {
-    //     removePlayingSampleFromItsChannel(playingSample);
-    //   };
-    // }
 
     return playingSound;
   }

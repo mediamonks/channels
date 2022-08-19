@@ -1,10 +1,9 @@
 import { Channels } from '@mediamonks/channels';
 import React, { useEffect, useState } from 'react';
-
 import { ChannelsView } from './components/ChannelsView';
-import { VolumeSlider } from './components/VolumeSlider';
 import { Sounds } from './components/Sounds';
 import { PlayingSounds } from './components/PlayingSounds';
+import { VolumeControlsView } from './components/VolumeControlsView';
 
 const soundsToLoad = ['bd', 'pink-panther', 'starwars'].map(name => ({
   name,
@@ -38,10 +37,7 @@ function App() {
       {isLoadComplete && (
         <ul className="blocks">
           <li style={{ backgroundColor: 'lightgreen' }}>
-            <VolumeSlider
-              label="main volume"
-              channelsInstance={channelsInstance}
-            />
+            <VolumeControlsView channelsInstance={channelsInstance} />
           </li>
           <Sounds channelsInstance={channelsInstance} />
           <ChannelsView channelsInstance={channelsInstance} />
