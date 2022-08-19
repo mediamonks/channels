@@ -19,5 +19,6 @@
   },
   "dependencies": {
     "sample-manager": "^2.1.4"
-  }
+  },
+  "homepage": "https://github.com/petervdn/channels/"
 }
