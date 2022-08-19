@@ -9,10 +9,6 @@ type Props = {
 export const ChannelsView = ({ channelsInstance }: Props) => {
   const channels = channelsInstance.getChannels();
 
-  const stopAllOnChannel = (channelName: string) => {
-    channelsInstance.stopAllOnChannel(channelName);
-  };
-
   return (
     <div>
       <h2>Channels</h2>
@@ -25,7 +21,7 @@ export const ChannelsView = ({ channelsInstance }: Props) => {
             }}
           >
             <h3>Channel: {name}</h3>
-            <button onClick={() => stopAllOnChannel(name)}>
+            <button onClick={() => channelsInstance.stopAll(name)}>
               stop all sounds on this channel
             </button>
             <div>

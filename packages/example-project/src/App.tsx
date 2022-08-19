@@ -39,6 +39,9 @@ function App() {
           <li style={{ backgroundColor: 'lightgreen' }}>
             <VolumeControlsView channelsInstance={channelsInstance} />
           </li>
+          <button onClick={() => channelsInstance.stopAll()}>
+            stop all sounds
+          </button>
           <Sounds channelsInstance={channelsInstance} />
           <ChannelsView channelsInstance={channelsInstance} />
           <PlayingSounds channelsInstance={channelsInstance} />

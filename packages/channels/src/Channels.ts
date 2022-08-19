@@ -115,19 +115,20 @@ export class Channels {
   }
 
   /**
-   * Stop all sounds currently playing on a channel.
+   * Stop either all sounds or, when a channel name is supplied, all
+   * sounds that are playing on a channel.
    * @param channelName
    */
-  public stopAllOnChannel(channelName: string) {
+  public stopAll(channelName?: string) {
     // todo: channel optional
-    const channel = this.channelsByName[channelName];
+    const channel = channelName ? this.channelsByName[channelName] : undefined;
 
-    if (!channel) {
+    if (channelName && !channel) {
       throw new Error(`Channel '${channelName}' does not exist`);
     }
 
     this.playingSounds
-      .filter(({ channel }) => channel?.name === channelName)
+      .filter(({ channel }) => (channel ? channel.name === channelName : true))
       .forEach(playingSound => playingSound.stop());
   }
 
