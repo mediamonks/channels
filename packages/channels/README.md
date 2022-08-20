@@ -72,9 +72,9 @@ const channels = new Channels({
 })
 ```
 
-> Do not create more than one `Channels` instance. It will work, but it's a bad habit.
+> Do not create more than one `Channels` instance.
 
-When instantiating a `Channels` object, an `audioContext` will automatically be created. If you want, you can also pass an `audioContext` in the constructor options. 
+Optionally, an `audioContext` can be passed in the constructor options. If omitted, one will be created in the `Channels` constructor.
 
 ```javascript
 new Channels({
@@ -181,6 +181,20 @@ channelsInstance.play('sound1', {channel: 'channel-name', volume: 0.5});
 myChannel.play('sound1', {volume: 0.5})
 ```
 
+#### Monophonic vs polyphonic
+A `Channel` can be either **polyphonic** or **monophonic**, which defines how many sounds can be played simultaneously on a channel:
+
+- A `monophonic` channel can play one sound at a time. When playing a sound on such a channel, **all other sounds on that channel are stopped** 
+- A `polyphonic` channel has no restrictions.
+
+This `type` can be set during creation. When no `type` is given, the default `polyphonic` is used.
+```javascript
+channelsInstance.createChannel('monophonic-channel', {type: "monophonic"});
+channelsInstance.createChannel('polyphonic-channel');
+```
+Using a monophonic channel can be extremely helpful when creating a background music layer where the music loop needs to be changed now and then. 
+
+
 ### Volume
 
 There are three places where volume is applied:
@@ -215,7 +229,7 @@ myChannel.setVolume(0.5)
 
 > Volume values typically range from `0` to `1`, but since the value is just a multiplier (for every value in the waveform) you can use any value you want (including negative values, which will invert the waveform).
 >
-> Keep in mind that going beyond `1` or `-1` *might* result in [clipping](https://en.wikipedia.org/wiki/Clipping_(signal_processing)).
+> Keep in mind that going beyond `1` or `-1` *might* result in [digital clipping](https://en.wikipedia.org/wiki/Clipping_(audio)).
 
 
 
