@@ -133,6 +133,9 @@ await channels.loadAllSounds((progress) => {...});
 
 For more info on how to define sound files, please refer to the [sample-manager page](https://www.npmjs.com/package/sample-manager).
 
+### Channels
+Channels are a way of organizing the sounds that are played. Note that they are completely optional
+
 ### Changing volume
 
 There are three places where volume is applied:
