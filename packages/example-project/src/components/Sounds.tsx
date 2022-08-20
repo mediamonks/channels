@@ -28,24 +28,22 @@ export const Sounds = () => {
         </label>
       </div>
       <ul className="blocks">
-        {channelsInstance.sampleManager
-          .getAllSamples()
-          .map(({ name: soundName }) => (
-            <li key={soundName} style={{ backgroundColor: 'lightcoral' }}>
-              <strong>{soundName}</strong>
-              <div>
-                <button onClick={() => playSound(soundName)}>play</button>
-                {channels.map(({ name: channelName }) => (
-                  <button
-                    key={channelName}
-                    onClick={() => playSound(soundName, channelName)}
-                  >
-                    play on '{channelName}'
-                  </button>
-                ))}
-              </div>
-            </li>
-          ))}
+        {channelsInstance.getAllSounds().map(({ name: soundName }) => (
+          <li key={soundName} style={{ backgroundColor: 'lightcoral' }}>
+            <strong>{soundName}</strong>
+            <div>
+              <button onClick={() => playSound(soundName)}>play</button>
+              {channels.map(({ name: channelName }) => (
+                <button
+                  key={channelName}
+                  onClick={() => playSound(soundName, channelName)}
+                >
+                  play on '{channelName}'
+                </button>
+              ))}
+            </div>
+          </li>
+        ))}
       </ul>
     </div>
   );

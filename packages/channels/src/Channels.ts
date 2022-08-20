@@ -52,8 +52,19 @@ export class Channels {
     this.mainVolume.output.connect(this.audioContext.destination);
   }
 
+  /**
+   * Loads all samples. (alias for sampleManager.loadAllSamples)
+   * @param onProgress
+   */
   public loadAllSounds(onProgress?: (value: number) => void) {
     return this.sampleManager.loadAllSamples(onProgress);
+  }
+
+  /**
+   * Gets a list of all sounds. (alias for sampleManager.getAllSamples)
+   */
+  public getAllSounds() {
+    return this.sampleManager.getAllSamples();
   }
 
   /**
