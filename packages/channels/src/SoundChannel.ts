@@ -1,5 +1,5 @@
 import { Channels } from './Channels';
-import { Volume, VolumeOptions } from './util/Volume';
+import { Volume, VolumeOptions } from './Volume';
 
 export type SoundChannelType = 'monophonic' | 'polyphonic';
 

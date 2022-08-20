@@ -9,7 +9,6 @@ type PlaySoundOptions = {
 };
 
 export class PlayingSound {
-  public readonly volume: number;
   private bufferSourceNode: AudioBufferSourceNode;
 
   constructor(
@@ -22,8 +21,6 @@ export class PlayingSound {
     if (!sound.audioBuffer) {
       throw new Error(`Sound '${sound.name}' is not loaded`);
     }
-
-    this.volume = 1;
 
     // create buffer source
     this.bufferSourceNode = channelsInstance.audioContext.createBufferSource();

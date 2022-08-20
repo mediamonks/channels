@@ -1,5 +1,3 @@
-import { AudioContext } from './audioContext';
-
 export type VolumeOptions = {
   initialVolume?: number;
   initialMuted?: boolean;

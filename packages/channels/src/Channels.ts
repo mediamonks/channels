@@ -1,7 +1,7 @@
 import { CreateSound, OptionalChannel } from './types';
 import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
-import { Volume } from './util/Volume';
+import { Volume } from './Volume';
 import { CreateSoundChannelOptions, SoundChannel } from './SoundChannel';
 import { PlayingSound } from './PlayingSound';
 
