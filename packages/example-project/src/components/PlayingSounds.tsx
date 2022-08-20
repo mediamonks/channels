@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { PlayingSound } from '@mediamonks/channels';
 import { useInterval } from '../hooks/useInterval';
 import { useChannels } from '../hooks/useChannels';
+import { PlayingSound } from '@mediamonks/channels/dist/PlayingSound';
 
 export const PlayingSounds = () => {
   const channelsInstance = useChannels();
@@ -21,8 +21,8 @@ export const PlayingSounds = () => {
         {playingSounds.map((playingSound, index) => (
           <li key={index} style={{ backgroundColor: 'lightblue' }}>
             <p>
-              <strong>{playingSound.sound.name}</strong> (channel:{' '}
-              {playingSound.channel?.name || '---'})
+              <strong>{playingSound.sound.name}</strong>
+              <small>{playingSound.channel?.name}</small>
             </p>
             <button onClick={playingSound.stop}>stop</button>
           </li>

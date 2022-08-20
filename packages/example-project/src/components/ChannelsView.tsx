@@ -24,11 +24,7 @@ export const ChannelsView = () => {
                 <small>(monophonic)</small>
               ) : null}
             </h3>
-            <button
-              onClick={() =>
-                channelsInstance.stopAll({ channel: channel.name })
-              }
-            >
+            <button onClick={channel.stopAll}>
               stop all sounds on this channel
             </button>
             <div>
@@ -39,7 +35,10 @@ export const ChannelsView = () => {
             </div>
             <div>
               {sounds.map(sound => (
-                <button onClick={() => channel.play(sound.name)}>
+                <button
+                  key={sound.name}
+                  onClick={() => channel.play(sound.name)}
+                >
                   {sound.name}
                 </button>
               ))}

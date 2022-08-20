@@ -1,9 +1,9 @@
-import { CreateSound, OptionalChannel, PlayingSound } from './types';
+import { CreateSound, OptionalChannel } from './types';
 import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
-import { playSound } from './util/playSound';
 import { Volume } from './util/Volume';
 import { CreateSoundChannelOptions, SoundChannel } from './SoundChannel';
+import { PlayingSound } from './PlayingSound';
 
 type ConstructorProps = {
   soundsPath: string;
@@ -114,13 +114,17 @@ export class Channels {
 
   /**
    * Removes a PlayingSound from the list.
-   * @param sound
+   * @param playingSound
    * @private
    */
-  private removePlayingSound(sound: PlayingSound) {
-    const index = this.playingSounds.indexOf(sound);
+  public removePlayingSound(playingSound: PlayingSound) {
+    const index = this.playingSounds.indexOf(playingSound);
     if (index > -1) {
       this.playingSounds.splice(index, 1);
+    } else {
+      throw new Error(
+        `Trying to remove a playing sound that is not listed: ${playingSound.sound.name}`
+      );
     }
   }
 
@@ -196,18 +200,13 @@ export class Channels {
    * on the main output.
    * @param name
    * @param channel
-   * @param volume
-   * @param fadeInTime
-   * @param loop
    */
   public play(
     name: string,
     {
       channel: channelName,
-      volume = 1,
-      fadeInTime,
-      loop,
-    }: PlaySoundOptions = {}
+      ...playSoundOptions
+    }: PlaySoundOptions & OptionalChannel = {}
   ): PlayingSound {
     const sound = this.sampleManager.getSampleByName(name);
     if (!sound) {
@@ -215,24 +214,15 @@ export class Channels {
     }
     const channel = channelName ? this.getChannel(channelName) : undefined;
 
-    const playingSound = playSound(
-      this.audioContext,
-      (channel?.volume || this.mainVolume).input,
+    const playingSound = new PlayingSound(
+      this,
       sound,
-      {
-        channel,
-        volume,
-        fadeInTime,
-        loop,
-      }
+      (channel?.volume || this.mainVolume).input,
+      channel,
+      playSoundOptions
     );
 
-    playingSound.bufferSourceNode.onended = () => {
-      this.removePlayingSound(playingSound);
-    };
-
     this.playingSounds.push(playingSound);
-
     return playingSound;
   }
 }
