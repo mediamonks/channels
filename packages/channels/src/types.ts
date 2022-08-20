@@ -27,8 +27,9 @@ export type PlayingSound = {
   gainNode: GainNode;
   channel?: SoundChannel;
   stop: () => void;
+  // todo: add oncomplete callback
 };
 
 export type OptionalChannel = {
-  channel?: string;
+  channel?: string; // todo: add option to pass an instance
 };

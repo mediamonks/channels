@@ -86,7 +86,7 @@ new Channels({
 
 ### Suspended state
 
-An `AudioContext` created without user interaction (for example on a click) will be in the `suspended` state, in which no sound can be produced.
+An `AudioContext` created without user interaction (for example a click) will be in the `suspended` state, in which no sound can be produced.
 
 This can happen for example if a `Channels` instance is created on page landing without supplying a (non-suspended) `audioContext`, since one will be created then automatically.
 
@@ -134,28 +134,73 @@ await channels.loadAllSounds((progress) => {...});
 For more info on how to define sound files, please refer to the [sample-manager page](https://www.npmjs.com/package/sample-manager).
 
 ### Channels
-Channels are a way of organizing the sounds that are played. Note that they are completely optional
+Channels are a way of grouping sounds that are played. They are completely optional, and depending on the use case they might not be needed at all.
 
-### Changing volume
+The reason to create a channel is to easily be able to do changes on a group of sounds: 
+- change their volume
+- apply effects
+- stopping them
+
+#### Methods operating on a channel
+Various methods on the `Channels` instance that take an optional `channel` property (note: this is the channel *name*, not an instance) are duplicated on a `Channel` object, for which the `channel` no longer needs to be supplied. 
+```javascript
+// get a channel reference
+const myChannel = channelsInstance.createChannel('channel-name');
+// or like this, after it has been created obviously
+const myChannel = channelsInstance.getChannel('channel-name');
+
+// then use the approach you prefer
+channelsInstance.play('sound1', {channel: 'channel-name'});
+myChannel.play('sound1')
+
+channelsInstance.stopAll({channel: 'channel-name'});
+myChannel.stopAll();
+```
+
+Only the `channel` property for the options is removed, any remaining properties stay the same:
+```javascript
+channelsInstance.play('sound1', {channel: 'channel-name', volume: 0.5});
+myChannel.play('sound1', {volume: 0.5})
+```
+
+### Volume
 
 There are three places where volume is applied:
 
-1. On a **sound**, passing it as an argument to the `play` method
-2. On a **channel**, using `setVolume(0.5, {channel: 'myChannel')` (or setting it as the channel's initial volume when creating it)
-3. On the **main output**: `setVolume(0.5)`
+1. On a **sound**
+2. On a **channel**
+3. On the **main output**
 
 These are all separate modifiers to the signal, and they stack up: when a sound is played at volume `0.5`, on a channel with volume `0.5`, while the main volume has been set to `0.5`, then the resulting volume will be `0.5 * 0.5 * 0.5 = 0.125`. 
+
+#### Changing volume
+
+Of the three places where volume is applied, the **sound** is an exception. The volume of a sound can only be set once, and can not be changed afterwards.
+
+```javascript
+channelsInstance.play('sound', {volume: 0.5});
+```
+
+For the other two, **channels** and the **main output**, you can set the volume whenever you want:
+```javascript
+// set the main volume
+channelsInstance.setVolume(0.5);
+
+// set a channel's volume
+channelsInstance.setVolume(0.5, {channel: 'my-channel'});
+
+// or:
+const myChannel = channelsInstance.getChannel('my-channel');
+myChannel.setVolume(0.5)
+```
+
 
 > Volume values typically range from `0` to `1`, but since the value is just a multiplier (for every value in the waveform) you can use any value you want (including negative values, which will invert the waveform).
 >
 > Keep in mind that going beyond `1` or `-1` *might* result in clipping.
 
+
+
 #### Mute
-
-Of those three places where volume can be set, two have the ability to mute the signal as well: 
-1. On a **channel**
-2. On the **main output**
-
-> The volume for a sound can not be changed after it has been set using the `play` method. 
 
 Note that these are *completely separate* from the volume values: a channel can be muted, but its volume can be 1.
