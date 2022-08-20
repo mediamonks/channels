@@ -128,6 +128,12 @@ export class Channels {
     }
   }
 
+  /**
+   * Utility function to handle often used optional channel parameters,
+   * which can be either the channel's name or a channel instance
+   * @param channel
+   * @private
+   */
   private getOptionalChannelByNameOrInstance(
     channel: OptionalChannel['channel']
   ): SoundChannel | undefined {
