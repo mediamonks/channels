@@ -1,16 +1,11 @@
-import {
-  CreateSound,
-  OptionalChannel,
-  PlayingSound,
-  SoundChannel,
-  SoundChannelType,
-} from './types';
+import { CreateSound, OptionalChannel, PlayingSound } from './types';
 import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
 import { playSound } from './util/playSound';
 import { Volume, VolumeOptions } from './util/Volume';
+import { SoundChannel, SoundChannelType } from './SoundChannel';
 
-type AddChannelOptions = {
+type CreateChannelOptions = {
   type?: SoundChannelType;
 } & VolumeOptions;
 
@@ -28,7 +23,7 @@ type PlaySoundOptions = OptionalChannel & {
 };
 
 export class Channels {
-  public readonly context: AudioContext;
+  public readonly audioContext: AudioContext;
   public readonly channelsByName: Record<string, SoundChannel> = {};
   public readonly playingSounds: Array<PlayingSound> = [];
   public readonly sampleManager: SampleManager;
@@ -40,14 +35,14 @@ export class Channels {
     soundsPath,
     sounds,
   }: ConstructorProps) {
-    this.context = audioContext || new AudioContext();
+    this.audioContext = audioContext || new AudioContext();
 
-    if (!this.context) {
+    if (!this.audioContext) {
       throw new Error('Failed to create an AudioContext');
     }
 
     this.sampleManager = new SampleManager(
-      this.context,
+      this.audioContext,
       soundsPath,
       soundsExtension
     );
@@ -57,8 +52,8 @@ export class Channels {
     }
 
     // everything connect to the main volume controls
-    this.mainVolume = new Volume(this.context);
-    this.mainVolume.output.connect(this.context.destination);
+    this.mainVolume = new Volume(this.audioContext);
+    this.mainVolume.output.connect(this.audioContext.destination);
   }
 
   public loadAllSounds(onProgress?: (value: number) => void) {
@@ -68,13 +63,12 @@ export class Channels {
   /**
    * Creates a new channel.
    * @param name
-   * @param initialVolume
-   * @param initialMuted
    * @param type
+   * @param volumeOptions
    */
   public createChannel(
     name: string,
-    { initialVolume, initialMuted, type = 'polyphonic' }: AddChannelOptions = {}
+    { type = 'monophonic', ...volumeOptions }: CreateChannelOptions = {}
   ) {
     if (name === '') {
       throw new Error('Channel name cannot be blank');
@@ -83,14 +77,11 @@ export class Channels {
       throw new Error(`Channel '${name}' already exists`);
     }
 
-    const volume = new Volume(this.context, { initialVolume, initialMuted });
-    volume.output.connect(this.mainVolume.input);
+    const channel = new SoundChannel(name, this, type, volumeOptions);
 
-    this.channelsByName[name] = {
-      type,
-      name,
-      volume,
-    };
+    this.channelsByName[name] = channel;
+
+    return channel;
   }
 
   /**
@@ -206,7 +197,7 @@ export class Channels {
     const channel = channelName ? this.getChannel(channelName) : undefined;
 
     const playingSound = playSound(
-      this.context,
+      this.audioContext,
       (channel?.volume || this.mainVolume).input,
       sound,
       {

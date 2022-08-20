@@ -1,4 +1,5 @@
-import { PlayingSound, Sound, SoundChannel } from '../types';
+import { PlayingSound, Sound } from '../types';
+import { SoundChannel } from '../SoundChannel';
 
 type PlaySoundOptions = {
   channel?: SoundChannel;

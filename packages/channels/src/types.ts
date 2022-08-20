@@ -1,25 +1,24 @@
 import { ICreateSample, ISample } from 'sample-manager';
-import { Volume } from './util/Volume';
+import { SoundChannel } from './SoundChannel';
 
-export type SoundChannelType = 'monophonic' | 'polyphonic';
 export type Sound = ISample;
 export type CreateSound = ICreateSample;
+//
+// type BaseSoundChannel = {
+//   name: string;
+//   volume: Volume;
+//   type: SoundChannelType;
+// };
 
-type BaseSoundChannel = {
-  name: string;
-  volume: Volume;
-  type: SoundChannelType;
-};
+// export type PolyphonicSoundChannel = BaseSoundChannel & {
+//   type: 'polyphonic';
+// };
+//
+// export type MonophonicSoundChannel = BaseSoundChannel & {
+//   type: 'monophonic';
+// };
 
-export type PolyphonicSoundChannel = BaseSoundChannel & {
-  type: 'polyphonic';
-};
-
-export type MonophonicSoundChannel = BaseSoundChannel & {
-  type: 'monophonic';
-};
-
-export type SoundChannel = PolyphonicSoundChannel | MonophonicSoundChannel;
+// export type SoundChannel = PolyphonicSoundChannel | MonophonicSoundChannel;
 
 export type PlayingSound = {
   context: AudioContext;
