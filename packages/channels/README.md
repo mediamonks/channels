@@ -153,7 +153,7 @@ channelsInstance.play('debussy', {
 ```
 
 ### Channels
-Channels are a way of grouping sounds that are played. They are completely optional, and depending on the use case they might not be needed at all.
+Channels are a way of grouping sounds that are played. They are completely optional and, depending on the use case, they might not be needed at all.
 
 The reason to create a channel is to easily do things with a group of sounds: 
 - change their volume
@@ -163,12 +163,11 @@ The reason to create a channel is to easily do things with a group of sounds:
 #### Methods operating on a channel
 Various methods on the `Channels` instance that take an optional `channel` property (note: this is the channel *name*, not an instance) are duplicated on a `Channel` object, for which the `channel` no longer needs to be supplied. 
 ```javascript
-// get a channel reference
+// get a channel reference somehow
 const myChannel = channelsInstance.createChannel('channel-name');
-// or like this, after it has been created obviously
-const myChannel = channelsInstance.getChannel('channel-name');
+const myChannel = channelsInstance.getChannel('channel-name'); // obviously has to be created first
 
-// then use the approach you prefer
+// use the approach you prefer
 channelsInstance.play('sound1', {channel: 'channel-name'});
 myChannel.play('sound1')
 
@@ -216,7 +215,7 @@ myChannel.setVolume(0.5)
 
 > Volume values typically range from `0` to `1`, but since the value is just a multiplier (for every value in the waveform) you can use any value you want (including negative values, which will invert the waveform).
 >
-> Keep in mind that going beyond `1` or `-1` *might* result in clipping.
+> Keep in mind that going beyond `1` or `-1` *might* result in [clipping](https://en.wikipedia.org/wiki/Clipping_(signal_processing)).
 
 
 
