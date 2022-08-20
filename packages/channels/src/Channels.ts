@@ -53,6 +53,19 @@ export class Channels {
   }
 
   /**
+   * Resumes the audioContext if it's in the suspended state.
+   */
+  public resumeContext() {
+    return this.contextIsSuspended
+      ? this.audioContext.resume()
+      : Promise.resolve();
+  }
+
+  public get contextIsSuspended() {
+    return this.audioContext.state === 'suspended';
+  }
+
+  /**
    * Loads all samples. (alias for sampleManager.loadAllSamples)
    * @param onProgress
    */

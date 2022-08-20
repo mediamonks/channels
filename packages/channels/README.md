@@ -77,7 +77,20 @@ new Channels({
 })
 ```
 
-Note that an `AudioContext` created without user interaction will be in the `suspended` state, and has to be resumed (on a user interaction) before sounds can be played. This can happen for example if you create a `Channels` instance on page landing.
+### Suspended state
+
+An `AudioContext` created without user interaction (for example on a click) will be in the `suspended` state, in which no sound can be produced.
+
+This can happen for example if a `Channels` instance is created on page landing (without supplying a non-suspended `audioContext`), since one will be created then automatically.
+
+Creating a `Channels` instance this way is fine by itself, just make sure to resume the context once on a user interaction before playing any sounds.
+
+```javascript
+const onClick = async () => {
+    await channelsInstance.resumeContext();
+    console.log(channelsInstance.contextIsSuspended) // false;
+}
+```
 
 ### Loading files
 `Channels` uses the [sample-manager](https://www.npmjs.com/package/sample-manager) for dealing with files, and creates an instance of it named `sampleManager`. 
