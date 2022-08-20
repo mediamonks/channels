@@ -133,14 +133,17 @@ export class Channels {
    * sounds that are playing on a channel.
    * @param channelName
    */
-  public stopAll({ channel: channelName }: OptionalChannel = {}) {
-    if (channelName && !this.channelsByName[channelName]) {
-      throw new Error(`Channel '${channelName}' does not exist`);
+  public stopAll({ channel }: OptionalChannel = {}) {
+    if (typeof channel === 'string' && !this.channelsByName[channel]) {
+      throw new Error(`Channel '${channel}' does not exist`);
     }
+
+    const channelToStop =
+      typeof channel === 'string' ? this.channelsByName[channel] : channel;
 
     this.playingSounds
       .filter(({ channel }) =>
-        channelName ? channel?.name === channelName : true
+        channelToStop ? channel === channelToStop : true
       )
       .forEach(playingSound => playingSound.stop());
   }
@@ -166,7 +169,12 @@ export class Channels {
    * @private
    */
   private getVolumeInstance({ channel }: OptionalChannel = {}): Volume {
-    return channel ? this.getChannel(channel).volume : this.mainVolume;
+    if (!channel) {
+      return this.mainVolume;
+    }
+
+    return (typeof channel === 'string' ? this.getChannel(channel) : channel)
+      .volume;
   }
 
   public getVolume({ channel }: OptionalChannel = {}) {
@@ -200,25 +208,27 @@ export class Channels {
    * on the main output.
    * @param name
    * @param channel
+   * @param playSoundOptions
    */
   public play(
     name: string,
-    {
-      channel: channelName,
-      ...playSoundOptions
-    }: PlaySoundOptions & OptionalChannel = {}
+    { channel, ...playSoundOptions }: PlaySoundOptions & OptionalChannel = {}
   ): PlayingSound {
     const sound = this.sampleManager.getSampleByName(name);
     if (!sound) {
       throw new Error(`Cannot find sound: '${name}`);
     }
-    const channel = channelName ? this.getChannel(channelName) : undefined;
+    const channelForSound = channel
+      ? typeof channel === 'string'
+        ? this.getChannel(channel)
+        : channel
+      : undefined;
 
     const playingSound = new PlayingSound(
       this,
       sound,
-      (channel?.volume || this.mainVolume).input,
-      channel,
+      (channelForSound?.volume || this.mainVolume).input,
+      channelForSound,
       playSoundOptions
     );
 

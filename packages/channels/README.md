@@ -161,7 +161,7 @@ The reason to create a channel is to easily do things with a group of sounds:
 - stopping them
 
 #### Methods operating on a channel
-Various methods on the `Channels` instance that take an optional `channel` property (note: this is the channel *name*, not an instance) are duplicated on a `Channel` object, for which the `channel` no longer needs to be supplied. 
+Various methods on the `Channels` instance that take an optional `channel` property are duplicated on a `Channel` object, for which the `channel` no longer needs to be supplied. 
 ```javascript
 // get a channel reference somehow
 const myChannel = channelsInstance.createChannel('channel-name');
@@ -180,6 +180,16 @@ Only the `channel` property for the options is removed, any remaining properties
 channelsInstance.play('sound1', {channel: 'channel-name', volume: 0.5});
 myChannel.play('sound1', {volume: 0.5})
 ```
+
+Note that for functions that accept a `channel` property, both the channel's **name** or the **instance** are allowed.
+```javascript
+const myChannel = channelsInstance.getChannel('my-channel');
+
+// both are valid:
+channelsInstance.stopAll({ channel: 'my-channel'});
+channelsInstance.stopAll({ channel: myChannel});
+```
+
 
 #### Monophonic vs polyphonic
 A `Channel` can be either **polyphonic** or **monophonic**, which defines how many sounds can be played simultaneously on a channel:

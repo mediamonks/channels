@@ -24,7 +24,7 @@ export const ChannelsView = () => {
                 <small>(monophonic)</small>
               ) : null}
             </h3>
-            <button onClick={channel.stopAll}>
+            <button onClick={() => channelsInstance.stopAll({ channel })}>
               stop all sounds on this channel
             </button>
             <div>
