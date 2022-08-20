@@ -128,18 +128,22 @@ export class Channels {
     }
   }
 
+  private getOptionalChannelByNameOrInstance(
+    channel: OptionalChannel['channel']
+  ): SoundChannel | undefined {
+    if (typeof channel === 'string' && !this.channelsByName[channel]) {
+      throw new Error(`Channel '${channel}' does not exist`);
+    }
+    return typeof channel === 'string' ? this.channelsByName[channel] : channel;
+  }
+
   /**
    * Stop either all sounds or, when a channel name is supplied, all
    * sounds that are playing on a channel.
    * @param channelName
    */
   public stopAll({ channel }: OptionalChannel = {}) {
-    if (typeof channel === 'string' && !this.channelsByName[channel]) {
-      throw new Error(`Channel '${channel}' does not exist`);
-    }
-
-    const channelToStop =
-      typeof channel === 'string' ? this.channelsByName[channel] : channel;
+    const channelToStop = this.getOptionalChannelByNameOrInstance(channel);
 
     this.playingSounds
       .filter(({ channel }) =>
@@ -169,12 +173,9 @@ export class Channels {
    * @private
    */
   private getVolumeInstance({ channel }: OptionalChannel = {}): Volume {
-    if (!channel) {
-      return this.mainVolume;
-    }
+    const optionalChannel = this.getOptionalChannelByNameOrInstance(channel);
 
-    return (typeof channel === 'string' ? this.getChannel(channel) : channel)
-      .volume;
+    return optionalChannel?.volume || this.mainVolume;
   }
 
   public getVolume({ channel }: OptionalChannel = {}) {
@@ -218,11 +219,7 @@ export class Channels {
     if (!sound) {
       throw new Error(`Cannot find sound: '${name}`);
     }
-    const channelForSound = channel
-      ? typeof channel === 'string'
-        ? this.getChannel(channel)
-        : channel
-      : undefined;
+    const channelForSound = this.getOptionalChannelByNameOrInstance(channel);
 
     const playingSound = new PlayingSound(
       this,
