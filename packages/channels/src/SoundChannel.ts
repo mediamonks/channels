@@ -36,4 +36,8 @@ export class SoundChannel {
   ) {
     this.channelsInstance.play(name, { channel: this.name, ...options });
   }
+
+  public stopAll() {
+    this.channelsInstance.stopAll({ channel: this.name });
+  }
 }

@@ -30,17 +30,24 @@ await channels.loadAllSounds();
 // play a sound
 channels.play('sound1');
 
-// or play it on a channel
+// play it on a channel
 channels.createChannel('background-music');
 channels.play('sound2', {channel: 'background-music'});
+
+// another way to play it on a channel
+const myChannel = channels.createChannel('ui-sounds');
+myChannel.play('sound2');
 
 // stop a sound
 const sound1 = channels.play('sound1');
 sound1.stop();
 
-// stop all sounds, or only the ones on a channel
+// stop all sounds
 channels.stopAll();
+
+// stop all sounds on a channel (2 different ways)
 channels.stopAll({channel: 'background-music'});
+myChannel.stopAll();
 
 // set main volume, or for a channel
 channels.setVolume(0.5);
@@ -81,9 +88,9 @@ new Channels({
 
 An `AudioContext` created without user interaction (for example on a click) will be in the `suspended` state, in which no sound can be produced.
 
-This can happen for example if a `Channels` instance is created on page landing (without supplying a non-suspended `audioContext`), since one will be created then automatically.
+This can happen for example if a `Channels` instance is created on page landing without supplying a (non-suspended) `audioContext`, since one will be created then automatically.
 
-Creating a `Channels` instance this way is fine by itself, just make sure to resume the context once on a user interaction before playing any sounds.
+Creating a `Channels` instance this way is fine by itself, just make sure to resume the context once on user interaction before playing any sounds.
 
 ```javascript
 const onClick = async () => {
@@ -122,26 +129,30 @@ await channels.loadAllSounds();
 // you can optionally keep track of progress
 await channels.loadAllSounds((progress) => {...});
 ```
-> The `loadAllSounds` method was added for convenience, it is a direct alias for `sampleManager.loadAllSamples`
+> The `loadAllSounds` method is an alias for `sampleManager.loadAllSamples`
 
-For more info on what you can do with the list of sound files, please take a look at the [sample-manager page](https://www.npmjs.com/package/sample-manager).
+For more info on how to define sound files, please refer to the [sample-manager page](https://www.npmjs.com/package/sample-manager).
 
-### Volume
+### Changing volume
 
-There are three places where volumes can be set:
+There are three places where volume is applied:
 
-1. On a sound, passing it as an argument to the `play` method
-2. On a channel, using `setVolume(0.5, {channel: 'myChannel')` (or setting it as the channel's initial volume when creating it)
-3. On the main output: `setVolume(0.5)`
+1. On a **sound**, passing it as an argument to the `play` method
+2. On a **channel**, using `setVolume(0.5, {channel: 'myChannel')` (or setting it as the channel's initial volume when creating it)
+3. On the **main output**: `setVolume(0.5)`
 
-These volumes stack up, so when a sound is played at volume `0.5`, on a channel with volume `0.5`, while the main volume has been set to `0.5`, then the resulting volume will be `0.5 * 0.5 * 0.5 = 0.125`. 
+These are all separate modifiers to the signal, and they stack up: when a sound is played at volume `0.5`, on a channel with volume `0.5`, while the main volume has been set to `0.5`, then the resulting volume will be `0.5 * 0.5 * 0.5 = 0.125`. 
 
-> Volume values typically range from `0` to `1`, but since the value is just a multiplier you can use any value you want (including negative). Keep in mind that going beyond `1` or `-1` *might* result in clipping.
+> Volume values typically range from `0` to `1`, but since the value is just a multiplier (for every value in the waveform) you can use any value you want (including negative values, which will invert the waveform).
+>
+> Keep in mind that going beyond `1` or `-1` *might* result in clipping.
 
-### Mute
+#### Mute
 
-Of the three places where volume can be set, two have the ability to mute the signal as well: 
-1. On a channel: `setMute(true, {channel: 'myChannel'})`
-2. On the main output: `setMute(true)`
+Of those three places where volume can be set, two have the ability to mute the signal as well: 
+1. On a **channel**
+2. On the **main output**
+
+> The volume for a sound can not be changed after it has been set using the `play` method. 
 
 Note that these are *completely separate* from the volume values: a channel can be muted, but its volume can be 1.
