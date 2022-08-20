@@ -133,10 +133,29 @@ await channels.loadAllSounds((progress) => {...});
 
 For more info on how to define sound files, please refer to the [sample-manager page](https://www.npmjs.com/package/sample-manager).
 
+### Playing a sound
+
+When a sound has been loaded, it can be played by referring to its unique `name`:
+
+```javascript
+channelsInstance.play('bach');
+```
+
+You can pass a second argument with optional properties:
+
+```javascript
+channelsInstance.play('debussy', {
+    volume: 0.5,
+    channel: 'channel1',
+    loop: true,
+    fadeInTime: 2,
+});
+```
+
 ### Channels
 Channels are a way of grouping sounds that are played. They are completely optional, and depending on the use case they might not be needed at all.
 
-The reason to create a channel is to easily be able to do changes on a group of sounds: 
+The reason to create a channel is to easily do things with a group of sounds: 
 - change their volume
 - apply effects
 - stopping them
@@ -175,7 +194,7 @@ These are all separate modifiers to the signal, and they stack up: when a sound 
 
 #### Changing volume
 
-Of the three places where volume is applied, the **sound** is an exception. The volume of a sound can only be set once, and can not be changed afterwards.
+Of those three places where volume is applied, the **sound** is an exception: **the volume of a sound can only be set once, and can not be changed afterwards**.
 
 ```javascript
 channelsInstance.play('sound', {volume: 0.5});
