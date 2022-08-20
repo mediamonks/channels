@@ -5,24 +5,36 @@ export type VolumeOptions = {
 
 export class Volume {
   public readonly volumeGainNode: GainNode;
+  public readonly fadeGainNode: GainNode;
   public readonly muteGainNode: GainNode;
   public readonly input: GainNode;
   public readonly output: GainNode;
 
   constructor(
-    audioContext: AudioContext,
+    private readonly audioContext: AudioContext,
     { initialVolume = 1, initialMuted = false }: VolumeOptions = {}
   ) {
     this.volumeGainNode = audioContext.createGain();
     this.muteGainNode = audioContext.createGain();
+    this.fadeGainNode = audioContext.createGain();
 
     this.volume = initialVolume;
     this.isMuted = initialMuted;
 
+    // set up the graph: volume -> fade -> mute
+    this.volumeGainNode.connect(this.fadeGainNode);
+    this.fadeGainNode.connect(this.muteGainNode);
+
+    // define input and output
     this.input = this.volumeGainNode;
     this.output = this.muteGainNode;
+  }
 
-    this.input.connect(this.output);
+  public fadeOut(time: number) {
+    this.fadeGainNode.gain.linearRampToValueAtTime(
+      0,
+      this.audioContext.currentTime + time
+    );
   }
 
   public get volume(): number {
