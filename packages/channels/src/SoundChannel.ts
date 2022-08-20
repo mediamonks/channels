@@ -3,15 +3,24 @@ import { Volume, VolumeOptions } from './util/Volume';
 
 export type SoundChannelType = 'monophonic' | 'polyphonic';
 
+export type CreateSoundChannelOptions = {
+  type?: SoundChannelType;
+} & VolumeOptions;
+
 export class SoundChannel {
   public readonly volume: Volume;
+  public readonly type: SoundChannelType;
 
   constructor(
     public readonly name: string,
     public readonly channelsInstance: Channels,
-    public readonly type: SoundChannelType,
-    { initialVolume, initialMuted }: VolumeOptions = {}
+    {
+      initialVolume,
+      initialMuted,
+      type = 'monophonic',
+    }: CreateSoundChannelOptions = {}
   ) {
+    this.type = type;
     this.volume = new Volume(channelsInstance.audioContext, {
       initialVolume,
       initialMuted,

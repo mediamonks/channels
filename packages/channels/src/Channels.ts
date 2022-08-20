@@ -2,12 +2,8 @@ import { CreateSound, OptionalChannel, PlayingSound } from './types';
 import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
 import { playSound } from './util/playSound';
-import { Volume, VolumeOptions } from './util/Volume';
-import { SoundChannel, SoundChannelType } from './SoundChannel';
-
-type CreateChannelOptions = {
-  type?: SoundChannelType;
-} & VolumeOptions;
+import { Volume } from './util/Volume';
+import { CreateSoundChannelOptions, SoundChannel } from './SoundChannel';
 
 type ConstructorProps = {
   soundsPath: string;
@@ -63,21 +59,20 @@ export class Channels {
   /**
    * Creates a new channel.
    * @param name
-   * @param type
-   * @param volumeOptions
+   * @param createSoundChannelOptions
    */
   public createChannel(
     name: string,
-    { type = 'monophonic', ...volumeOptions }: CreateChannelOptions = {}
-  ) {
+    createSoundChannelOptions: CreateSoundChannelOptions = {}
+  ): SoundChannel {
     if (name === '') {
       throw new Error('Channel name cannot be blank');
     }
     if (this.channelsByName[name]) {
-      throw new Error(`Channel '${name}' already exists`);
+      throw new Error(`Channel with name '${name}' already exists`);
     }
 
-    const channel = new SoundChannel(name, this, type, volumeOptions);
+    const channel = new SoundChannel(name, this, createSoundChannelOptions);
 
     this.channelsByName[name] = channel;
 
@@ -192,7 +187,7 @@ export class Channels {
   ): PlayingSound {
     const sound = this.sampleManager.getSampleByName(name);
     if (!sound) {
-      throw new Error(`Cannot find sample '${name}`);
+      throw new Error(`Cannot find sound: '${name}`);
     }
     const channel = channelName ? this.getChannel(channelName) : undefined;
 
