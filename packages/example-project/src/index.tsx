@@ -9,9 +9,12 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-const soundsToLoad = ['bd', 'pink-panther', 'starwars'].map(name => ({
-  name,
-}));
+const soundsToLoad: Array<any> = ['bd', 'pink-panther', 'starwars'].map(
+  name => ({
+    name,
+  })
+);
+soundsToLoad.push({ name: 'drwho', extension: 'mp3' });
 
 root.render(
   <ChannelsProvider
