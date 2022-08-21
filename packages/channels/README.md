@@ -153,7 +153,7 @@ channelsInstance.play('debussy', {
 ```
 
 ### Channels
-Channels are a way of grouping sounds that are played. They are completely optional and, depending on the use case, they might not be needed at all.
+Channels are a way of grouping sounds that are played. They are completely optional and, depending on the use case, might not be needed at all.
 
 The reason to create a channel is to easily do things with a group of sounds: 
 - change their volume
@@ -188,6 +188,9 @@ const myChannel = channelsInstance.getChannel('my-channel');
 // both are valid:
 channelsInstance.stopAll({ channel: 'my-channel'});
 channelsInstance.stopAll({ channel: myChannel});
+
+// although the latter is easier like this:
+myChannel.stopAll();
 ```
 
 
