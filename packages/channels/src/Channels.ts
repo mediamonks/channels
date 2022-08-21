@@ -235,6 +235,10 @@ export class Channels {
       playSoundOptions
     );
 
+    if (channelForSound?.type === 'monophonic') {
+      this.stopAll({ channel });
+    }
+
     this.playingSounds.push(playingSound);
     return playingSound;
   }
