@@ -72,7 +72,7 @@ const channels = new Channels({
 })
 ```
 
-> Do not create more than one `Channels` instance.
+> You do not need more than one `Channels` instance.
 
 Optionally, an `audioContext` can be passed in the constructor options. If omitted, one will be created in the `Channels` constructor.
 
@@ -86,9 +86,7 @@ new Channels({
 
 ### Suspended state
 
-An `AudioContext` created without user interaction (for example a click) will be in the `suspended` state, in which no sound can be produced.
-
-This can happen for example if a `Channels` instance is created on page landing without supplying a (non-suspended) `audioContext`, since one will be created then automatically.
+An `AudioContext` created without user interaction (for example a click) will be in the `suspended` state, in which no sound can be produced. This can happen for example if a `Channels` instance is created on page landing without supplying a (non-suspended) `audioContext`, since one will be created then automatically.
 
 Creating a `Channels` instance this way is fine by itself, just make sure to resume the context once on user interaction before playing any sounds.
 
@@ -99,6 +97,8 @@ const onClick = async () => {
 ```
 TLDR: The `audioContext` that is used must have been created or resumed on user interaction.
 
+> To check whether the context is suspended: `channelsInstance.contextIsSuspended`
+
 ### Loading files
 `Channels` uses the [sample-manager](https://www.npmjs.com/package/sample-manager) for dealing with files, and creates an instance of it named `sampleManager`. 
 
@@ -106,7 +106,7 @@ TLDR: The `audioContext` that is used must have been created or resumed on user 
 channelsInstance.sampleManager
 ```
 
-The easiest way to load files is to supply a list of objects with a `name` property, matching the filenames *without extension*. (The file extension has to be set when creating the `Channels` object, allowing for an easy switch to different filetypes on certain clients).  
+The easiest way to load files is to supply a list of objects with a `name` property, matching the filenames *without extension*. The file extension has to be set when creating the `Channels` object (which allowing for an easy switch to different filetypes on certain clients).  
 
 ```javascript
 // - sound1.mp3
