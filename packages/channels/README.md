@@ -95,9 +95,9 @@ Creating a `Channels` instance this way is fine by itself, just make sure to res
 ```javascript
 const onClick = async () => {
     await channelsInstance.resumeContext();
-    console.log(channelsInstance.contextIsSuspended) // false;
 }
 ```
+TLDR: The `audioContext` that is used must have been created or resumed on user interaction.
 
 ### Loading files
 `Channels` uses the [sample-manager](https://www.npmjs.com/package/sample-manager) for dealing with files, and creates an instance of it named `sampleManager`. 
