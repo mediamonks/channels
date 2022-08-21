@@ -217,32 +217,28 @@ These are all separate modifiers to the signal, and they stack up: when a sound 
 
 #### Changing volume
 
-Of those three places where volume is applied, the **sound** is an exception: **the volume of a sound can only be set once, and can not be changed afterwards**.
-
-```javascript
-channelsInstance.play('sound', {volume: 0.5});
-```
-
-For the other two, **channels** and the **main output**, you can set the volume whenever you want:
+You can set the volume of those three like so:
 ```javascript
 // set the main volume
 channelsInstance.setVolume(0.5);
 
 // set a channel's volume
 channelsInstance.setVolume(0.5, {channel: 'my-channel'});
+myChannel.setVolume(0.5); 
 
-// or:
-const myChannel = channelsInstance.getChannel('my-channel');
-myChannel.setVolume(0.5)
+// set a sound volume
+channelsInstance.setVolume(0.5, {sound: mySound});
+mySound.setVolume(0.5);
+```
+Note that passing a sound name is possible, but will affect all playing sounds with that name.
+```javascript
+channelsInstance.setVolume(0.5, {sound: 'my-sound'});
+
+// when also passing a channel (string or reference), only
+// those sounds on that channel are affected
+channelsInstance.setVolume(0.5, {sound: 'my-sound', channel: 'channel'});
+
 ```
 
 
-> Volume values typically range from `0` to `1`, but since the value is just a multiplier (for every value in the waveform) you can use any value you want (including negative values, which will invert the waveform).
->
-> Keep in mind that going beyond `1` or `-1` *might* result in [digital clipping](https://en.wikipedia.org/wiki/Clipping_(audio)).
-
-
-
-#### Mute
-
-Note that these are *completely separate* from the volume values: a channel can be muted, but its volume can be 1.
+> Volume values should be `0` or higher. Keep in mind that going beyond `1` *might* result in [digital clipping](https://en.wikipedia.org/wiki/Clipping_(audio)).
