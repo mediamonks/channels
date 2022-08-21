@@ -1,22 +1,23 @@
 import { Sound } from './types';
 import { Channels } from './Channels';
 import { SoundChannel } from './SoundChannel';
+import { Volume, VolumeOptions } from './Volume';
 
 type PlaySoundOptions = {
-  volume?: number;
-  fadeInTime?: number;
+  //fadeInTime?: number;
   loop?: boolean;
-};
+} & VolumeOptions;
 
 export class PlayingSound {
   private bufferSourceNode: AudioBufferSourceNode;
+  public readonly volume: Volume;
 
   constructor(
     private readonly channelsInstance: Channels,
     public readonly sound: Sound,
     private readonly destination: AudioNode,
     public readonly channel?: SoundChannel,
-    { volume = 1, loop = false }: PlaySoundOptions = {}
+    { loop = false, ...volumeOptions }: PlaySoundOptions = {}
   ) {
     if (!sound.audioBuffer) {
       throw new Error(`Sound '${sound.name}' is not loaded`);
@@ -27,13 +28,10 @@ export class PlayingSound {
     this.bufferSourceNode.buffer = sound.audioBuffer;
     this.bufferSourceNode.loop = loop;
 
-    // create gain
-    const gainNode = channelsInstance.audioContext.createGain();
-    gainNode.gain.setValueAtTime(volume, 0);
-
-    // connect nodes
-    gainNode.connect(destination);
-    this.bufferSourceNode.connect(gainNode);
+    // create and connect volume nodes
+    this.volume = new Volume(channelsInstance.audioContext, volumeOptions);
+    this.volume.output.connect(destination);
+    this.bufferSourceNode.connect(this.volume.input);
 
     this.bufferSourceNode.onended = () => {
       this.removePlayingSound();
