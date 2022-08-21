@@ -106,7 +106,7 @@ TLDR: The `audioContext` that is used must have been created or resumed on user 
 channelsInstance.sampleManager
 ```
 
-The easiest way to load files is to supply a list of objects with a `name` property, matching the filenames *without extension*. The file extension has to be set when creating the `Channels` object (which allowing for an easy switch to different filetypes on certain clients).  
+The easiest way to load files is to supply a list of objects with a `name` property, matching the filenames *without extension*. The file extension has to be set when creating the `Channels` object (which allows for an easy switch to different filetypes on certain clients).  
 
 ```javascript
 // - sound1.mp3
