@@ -1,3 +1,5 @@
+import { tweenAudioParamToValue } from './util/fadeGain';
+
 export type VolumeOptions = {
   initialVolume?: number;
   initialMuted?: boolean;
@@ -30,11 +32,16 @@ export class Volume {
     this.output = this.muteGainNode;
   }
 
-  public fadeOut(time: number) {
-    this.fadeGainNode.gain.linearRampToValueAtTime(
-      0,
-      this.audioContext.currentTime + time
-    );
+  public fadeOut(duration: number) {
+    this.fadeTo(0, duration);
+  }
+
+  public fadeIn(duration: number) {
+    this.fadeTo(1, duration);
+  }
+
+  public fadeTo(value: number, duration: number) {
+    tweenAudioParamToValue(this.fadeGainNode.gain, value, duration);
   }
 
   public get volume(): number {

@@ -18,6 +18,7 @@
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
   },
   "dependencies": {
+    "gsap": "^3.11.0",
     "sample-manager": "^2.1.4"
   },
   "homepage": "https://github.com/petervdn/channels/"

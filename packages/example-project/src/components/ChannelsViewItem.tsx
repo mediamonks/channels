@@ -12,7 +12,10 @@ export const ChannelsViewItem = ({ channel }: Props) => {
   const sounds = channelsInstance.getAllSounds();
 
   const fadeOut = () => {
-    channel.volume.fadeOut(2);
+    channel.volume.fadeOut(4);
+  };
+  const fadeIn = () => {
+    channel.volume.fadeIn(4);
   };
   return (
     <li
@@ -29,6 +32,7 @@ export const ChannelsViewItem = ({ channel }: Props) => {
         stop all sounds on this channel
       </button>
       <button onClick={fadeOut}>fade out</button>
+      <button onClick={fadeIn}>fade in</button>
       <div>
         <VolumeControls
           channelsInstance={channelsInstance}
