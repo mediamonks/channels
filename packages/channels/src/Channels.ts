@@ -1,7 +1,7 @@
 import { CreateSound, OptionalChannel } from './types';
 import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
-import { Volume } from './Volume';
+import { VolumeNodes } from './VolumeNodes';
 import { CreateSoundChannelOptions, SoundChannel } from './SoundChannel';
 import { PlayingSound, PlaySoundOptions } from './PlayingSound';
 
@@ -17,7 +17,7 @@ export class Channels {
   public readonly channelsByName: Record<string, SoundChannel> = {};
   public readonly playingSounds: Array<PlayingSound> = [];
   public readonly sampleManager: SampleManager;
-  public readonly mainVolume: Volume;
+  public readonly mainVolumeNodes: VolumeNodes;
 
   constructor({
     audioContext,
@@ -42,8 +42,8 @@ export class Channels {
     }
 
     // everything connect to the main volume controls
-    this.mainVolume = new Volume(this.audioContext);
-    this.mainVolume.output.connect(this.audioContext.destination);
+    this.mainVolumeNodes = new VolumeNodes(this.audioContext);
+    this.mainVolumeNodes.output.connect(this.audioContext.destination);
   }
 
   /**
@@ -167,23 +167,23 @@ export class Channels {
   }
 
   /**
-   * Gets the Volume instance for a channel or, when no channelName
+   * Gets the VolumeNodes instance for a channel or, when no channelName
    * is supplied, the one for the main output.
    * @param channel
    * @private
    */
-  private getVolumeInstance({ channel }: OptionalChannel = {}): Volume {
+  private getVolumeNodes({ channel }: OptionalChannel = {}): VolumeNodes {
     const optionalChannel = this.getOptionalChannelByNameOrInstance(channel);
 
-    return optionalChannel?.volume || this.mainVolume;
+    return optionalChannel?.volumeNodes || this.mainVolumeNodes;
   }
 
   public getVolume({ channel }: OptionalChannel = {}) {
-    return this.getVolumeInstance({ channel }).volume;
+    return this.getVolumeNodes({ channel }).volume;
   }
 
   public getIsMuted({ channel }: OptionalChannel = {}) {
-    return this.getVolumeInstance({ channel }).isMuted;
+    return this.getVolumeNodes({ channel }).isMuted;
   }
 
   /**
@@ -192,7 +192,7 @@ export class Channels {
    * @param options
    */
   public setVolume(value: number, { channel }: OptionalChannel = {}) {
-    this.getVolumeInstance({ channel }).volume = value;
+    this.getVolumeNodes({ channel }).volume = value;
   }
 
   /**
@@ -201,7 +201,7 @@ export class Channels {
    * @param options
    */
   public setMute(value: boolean, { channel }: OptionalChannel = {}) {
-    this.getVolumeInstance({ channel }).isMuted = value;
+    this.getVolumeNodes({ channel }).isMuted = value;
   }
 
   /**
@@ -224,7 +224,7 @@ export class Channels {
     const playingSound = new PlayingSound(
       this,
       sound,
-      (channelForSound?.volume || this.mainVolume).input,
+      (channelForSound?.volumeNodes || this.mainVolumeNodes).input,
       channelForSound,
       playSoundOptions
     );

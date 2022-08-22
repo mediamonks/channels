@@ -5,7 +5,7 @@ export type VolumeOptions = {
   initialMuted?: boolean;
 };
 
-export class Volume {
+export class VolumeNodes {
   public readonly volumeGainNode: GainNode;
   public readonly fadeGainNode: GainNode;
   public readonly input: GainNode;

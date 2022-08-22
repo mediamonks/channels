@@ -1,7 +1,7 @@
 import { Sound } from './types';
 import { Channels } from './Channels';
 import { SoundChannel } from './SoundChannel';
-import { Volume, VolumeOptions } from './Volume';
+import { VolumeNodes, VolumeOptions } from './VolumeNodes';
 
 export type PlaySoundOptions = {
   fadeOutTime?: number;
@@ -10,7 +10,7 @@ export type PlaySoundOptions = {
 
 export class PlayingSound {
   private readonly bufferSourceNode: AudioBufferSourceNode;
-  public readonly volume: Volume;
+  public readonly volumeNodes: VolumeNodes;
   public readonly fadeOutTime: number | undefined;
 
   constructor(
@@ -37,9 +37,12 @@ export class PlayingSound {
     this.bufferSourceNode.loop = loop;
 
     // create and connect volume nodes
-    this.volume = new Volume(channelsInstance.audioContext, volumeOptions);
-    this.volume.output.connect(destination);
-    this.bufferSourceNode.connect(this.volume.input);
+    this.volumeNodes = new VolumeNodes(
+      channelsInstance.audioContext,
+      volumeOptions
+    );
+    this.volumeNodes.output.connect(destination);
+    this.bufferSourceNode.connect(this.volumeNodes.input);
 
     this.bufferSourceNode.onended = () => {
       this.removePlayingSound();
@@ -56,7 +59,7 @@ export class PlayingSound {
   public stop = () => {
     if (this.fadeOutTime !== undefined && this.fadeOutTime !== 0) {
       // todo: add isStopping param that prevents further actions?
-      this.volume.fadeOut(this.fadeOutTime, () =>
+      this.volumeNodes.fadeOut(this.fadeOutTime, () =>
         this.bufferSourceNode.stop(0)
       );
     } else {
