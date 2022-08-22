@@ -31,16 +31,16 @@ export class Volume {
     this.output = this.fadeGainNode;
   }
 
-  public fadeOut(duration: number) {
-    this.fadeTo(0, duration);
+  public fadeOut(duration: number, onComplete?: () => void) {
+    this.fadeTo(0, duration, onComplete);
   }
 
-  public fadeIn(duration: number) {
-    this.fadeTo(1, duration);
+  public fadeIn(duration: number, onComplete?: () => void) {
+    this.fadeTo(1, duration, onComplete);
   }
 
-  public fadeTo(value: number, duration: number) {
-    tweenAudioParamToValue(this.fadeGainNode.gain, value, duration);
+  public fadeTo(value: number, duration: number, onComplete?: () => void) {
+    tweenAudioParamToValue(this.fadeGainNode.gain, value, duration, onComplete);
   }
 
   public get volume(): number {

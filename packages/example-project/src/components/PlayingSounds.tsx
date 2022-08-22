@@ -22,7 +22,14 @@ export const PlayingSounds = () => {
           <li key={index} style={{ backgroundColor: 'lightblue' }}>
             <p>
               <strong>{playingSound.sound.name}</strong>
-              <small>{playingSound.channel?.name}</small>
+              &nbsp;
+              <small>
+                (channel {playingSound.channel?.name || '---'}, fadeOut:
+                {playingSound.fadeOutTime !== undefined
+                  ? playingSound.fadeOutTime
+                  : '---'}
+                )
+              </small>
             </p>
             <button onClick={playingSound.stop}>stop</button>
           </li>

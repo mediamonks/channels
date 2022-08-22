@@ -3,19 +3,13 @@ import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
 import { Volume } from './Volume';
 import { CreateSoundChannelOptions, SoundChannel } from './SoundChannel';
-import { PlayingSound } from './PlayingSound';
+import { PlayingSound, PlaySoundOptions } from './PlayingSound';
 
 type ConstructorProps = {
   soundsPath: string;
   soundsExtension: string;
   audioContext?: AudioContext;
   sounds?: Array<CreateSound>;
-};
-
-type PlaySoundOptions = OptionalChannel & {
-  volume?: number;
-  fadeInTime?: number;
-  loop?: boolean;
 };
 
 export class Channels {
