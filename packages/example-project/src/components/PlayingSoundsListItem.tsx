@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useInterval } from '../hooks/useInterval';
 import { ProgressBar } from './ProgressBar';
 import { PlayingSound } from '@mediamonks/channels';
+import { VolumeControls } from './VolumeControls';
 
 type Props = {
   playingSound: PlayingSound;
@@ -20,8 +21,9 @@ export const PlayingSoundsListItem = ({ playingSound }: Props) => {
           <strong>{playingSound.sound.name}</strong>
           &nbsp;
           <small>(channel {playingSound.channel?.name || '---'})</small>
+          <button onClick={() => playingSound.stop()}>stop</button>
         </p>
-        <button onClick={() => playingSound.stop()}>stop</button>
+        <VolumeControls volumeNodes={playingSound.volumeNodes} />
       </div>
       <ProgressBar progress={progress} foregroundColor={'red'} height={5} />
     </div>
