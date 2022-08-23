@@ -1,17 +1,19 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-import { VolumeNodes } from '@mediamonks/channels';
+import { useInterval } from '../hooks/useInterval';
 
 type Props = {
-  volumeNodes: VolumeNodes;
+  gainNode: GainNode;
+  label?: string;
+  enabled?: boolean;
 };
 
 const SLIDER_MAX = 100;
 
-export const VolumeSlider = ({ volumeNodes }: Props) => {
-  const [value, setValue] = useState(volumeNodes.volume);
+export const VolumeSlider = ({ gainNode, enabled = true }: Props) => {
+  const [value, setValue] = useState(gainNode.gain.value);
 
   useEffect(() => {
-    volumeNodes.volume = value;
+    gainNode.gain.value = value;
   }, [value]);
 
   const onSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -20,15 +22,18 @@ export const VolumeSlider = ({ volumeNodes }: Props) => {
       setValue(parsedValue);
     }
   };
+
+  useInterval(() => {
+    setValue(gainNode.gain.value);
+  }, 50);
+
   return (
-    <label>
-      <strong>volume</strong>
-      <input
-        type="range"
-        onChange={onSliderChange}
-        value={value * SLIDER_MAX}
-        max={SLIDER_MAX}
-      />
-    </label>
+    <input
+      type="range"
+      onChange={onSliderChange}
+      value={value * SLIDER_MAX}
+      max={SLIDER_MAX}
+      disabled={!enabled}
+    />
   );
 };

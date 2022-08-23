@@ -1,20 +1,30 @@
 import { VolumeSlider } from './VolumeSlider';
 import { VolumeNodes } from '@mediamonks/channels';
-import { MuteCheckbox } from './MuteCheckbox';
+import { MuteButtons } from './MuteButtons';
 
 type Props = {
   volumeNodes: VolumeNodes;
+  showFade?: boolean;
 };
 
-export const VolumeControls = ({ volumeNodes }: Props) => {
+export const VolumeControls = ({ volumeNodes, showFade = true }: Props) => {
   return (
-    <div>
+    <div style={{ padding: 10 }}>
       <div>
-        <MuteCheckbox volumeNodes={volumeNodes} />
+        <MuteButtons volumeNodes={volumeNodes} />
       </div>
       <div>
-        <VolumeSlider volumeNodes={volumeNodes} />
+        <VolumeSlider gainNode={volumeNodes.volumeGainNode} />
       </div>
+      {showFade && (
+        <div>
+          <VolumeSlider
+            gainNode={volumeNodes.fadeGainNode}
+            label="Fade"
+            enabled={false}
+          />
+        </div>
+      )}
     </div>
   );
 };

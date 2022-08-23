@@ -14,6 +14,7 @@ export const PlayingSoundsListItem = ({ playingSound }: Props) => {
   useInterval(() => {
     setProgress(playingSound.getProgress());
   }, 10);
+
   return (
     <div style={{ backgroundColor: 'lightblue' }}>
       <div className="block-padding">

@@ -68,19 +68,19 @@ export class VolumeNodes {
   public set isMuted(value: boolean) {
     if (value) {
       // mute
-      if (this.volumeValueBeforeMute !== undefined || this.volume === 0) {
+      if (this.isMuted) {
         // already muted
       } else {
         // muting when volume > 0
-        this.volumeValueBeforeMute = this.volume;
-        this.volume = 0;
+        this.volumeValueBeforeMute = this.volumeGainNode.gain.value;
+        this.volumeGainNode.gain.value = 0;
       }
     } else {
       // unmute
-      if (this.volumeValueBeforeMute === undefined || this.volume > 0) {
+      if (!this.isMuted) {
         // already unmuted
       } else {
-        this.volume = this.volumeValueBeforeMute;
+        this.volumeGainNode.gain.value = this.volumeValueBeforeMute ?? 1;
         this.volumeValueBeforeMute = undefined;
       }
     }
