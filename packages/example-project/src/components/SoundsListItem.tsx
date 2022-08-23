@@ -7,7 +7,7 @@ type Props = {
   playSound: (soundName: string, channelName?: string) => void;
 };
 
-export const SoundsItem = ({ sound: { name }, playSound }: Props) => {
+export const SoundsListItem = ({ sound: { name }, playSound }: Props) => {
   const channels = useChannels();
 
   return (

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { ChannelsView } from './components/ChannelsView';
-import { Sounds } from './components/Sounds';
-import { PlayingSounds } from './components/PlayingSounds';
+import { ChannelsList } from './components/ChannelsList';
+import { SoundsList } from './components/SoundsList';
+import { PlayingSoundsList } from './components/PlayingSoundsList';
 import { VolumeControls } from './components/VolumeControls';
 import { useChannels } from './hooks/useChannels';
 
@@ -35,11 +35,11 @@ function App() {
 
           <div style={{ display: 'flex' }}>
             <div style={{ width: '50%', padding: 5 }}>
-              <Sounds />
-              <ChannelsView />
+              <SoundsList />
+              <ChannelsList />
             </div>
             <div style={{ width: '50%', padding: 5 }}>
-              <PlayingSounds />
+              <PlayingSoundsList />
             </div>
           </div>
         </>

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useChannels } from '../hooks/useChannels';
-import { SoundsItem } from './SoundsItem';
+import { SoundsListItem } from './SoundsListItem';
 
-export const Sounds = () => {
+export const SoundsList = () => {
   const channelsInstance = useChannels();
   const [loopIsChecked, setLoopIsChecked] = useState(false);
   const [fadeOutIsChecked, setFadeOutIsChecked] = useState(false);
@@ -37,7 +37,11 @@ export const Sounds = () => {
       </div>
       <ul className="blocks">
         {channelsInstance.getAllSounds().map(sound => (
-          <SoundsItem key={sound.name} sound={sound} playSound={playSound} />
+          <SoundsListItem
+            key={sound.name}
+            sound={sound}
+            playSound={playSound}
+          />
         ))}
       </ul>
     </div>

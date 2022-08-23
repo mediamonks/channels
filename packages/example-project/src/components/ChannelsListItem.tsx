@@ -7,7 +7,7 @@ type Props = {
   channel: SoundChannel;
 };
 
-export const ChannelsViewItem = ({ channel }: Props) => {
+export const ChannelsListItem = ({ channel }: Props) => {
   const channelsInstance = useChannels();
   const sounds = channelsInstance.getAllSounds();
 

@@ -7,7 +7,7 @@ type Props = {
   playingSound: PlayingSound;
 };
 
-export const PlayingSoundsItem = ({ playingSound }: Props) => {
+export const PlayingSoundsListItem = ({ playingSound }: Props) => {
   const [progress, setProgress] = useState(0);
 
   useInterval(() => {

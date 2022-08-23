@@ -1,8 +1,8 @@
 import React from 'react';
 import { useChannels } from '../hooks/useChannels';
-import { ChannelsViewItem } from './ChannelsViewItem';
+import { ChannelsListItem } from './ChannelsListItem';
 
-export const ChannelsView = () => {
+export const ChannelsList = () => {
   const channelsInstance = useChannels();
   const channels = channelsInstance.getChannels();
 
@@ -11,7 +11,7 @@ export const ChannelsView = () => {
       <h2>Channels</h2>
       <ul className="blocks">
         {channels.map(channel => (
-          <ChannelsViewItem key={channel.name} channel={channel} />
+          <ChannelsListItem key={channel.name} channel={channel} />
         ))}
       </ul>
     </div>
