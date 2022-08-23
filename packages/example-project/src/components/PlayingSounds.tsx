@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useInterval } from '../hooks/useInterval';
 import { useChannels } from '../hooks/useChannels';
 import { PlayingSound } from '@mediamonks/channels/dist/PlayingSound';
+import { PlayingSoundsItem } from './PlayingSoundsItem';
 
 export const PlayingSounds = () => {
   const channelsInstance = useChannels();
@@ -9,7 +10,7 @@ export const PlayingSounds = () => {
 
   useInterval(() => {
     setPlayingSounds([...channelsInstance.playingSounds]);
-  }, 10);
+  }, 100);
 
   const stopAll = () => channelsInstance.stopAll();
 
@@ -19,13 +20,8 @@ export const PlayingSounds = () => {
       <button onClick={stopAll}>stop all sounds</button>
       <ul className={'blocks'}>
         {playingSounds.map((playingSound, index) => (
-          <li key={index} style={{ backgroundColor: 'lightblue' }}>
-            <p>
-              <strong>{playingSound.sound.name}</strong>
-              &nbsp;
-              <small>(channel {playingSound.channel?.name || '---'})</small>
-            </p>
-            <button onClick={() => playingSound.stop()}>stop</button>
+          <li key={index}>
+            <PlayingSoundsItem playingSound={playingSound} />
           </li>
         ))}
       </ul>

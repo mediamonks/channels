@@ -14,6 +14,7 @@ export type StopSoundOptions = {
 
 export class PlayingSound {
   private readonly bufferSourceNode: AudioBufferSourceNode;
+  private readonly startedAt: number;
   public readonly volumeNodes: VolumeNodes;
 
   constructor(
@@ -24,6 +25,7 @@ export class PlayingSound {
     { loop = false, ...volumeOptions }: PlaySoundOptions = {}
   ) {
     if (!sound.audioBuffer) {
+      // todo: check how/if this works, audioBuffer seems to always exist on Sound/ISample
       throw new Error(`Sound '${sound.name}' is not loaded`);
     }
 
@@ -44,6 +46,7 @@ export class PlayingSound {
       this.removePlayingSound();
     };
 
+    this.startedAt = this.channelsInstance.audioContext.currentTime;
     this.bufferSourceNode.start(0);
   }
 
@@ -64,4 +67,15 @@ export class PlayingSound {
       onStopped?.();
     }
   };
+
+  /**
+   * Gets the current progress of the playing sound (between 0 and 1)
+   */
+  public getProgress() {
+    return (
+      ((this.channelsInstance.audioContext.currentTime - this.startedAt) /
+        this.sound.audioBuffer.duration) %
+      1
+    );
+  }
 }
