@@ -1,7 +1,7 @@
-import { SoundChannel } from '@mediamonks/channels/dist/SoundChannel';
 import { VolumeControls } from './VolumeControls';
 import React from 'react';
 import { useChannels } from '../hooks/useChannels';
+import { SoundChannel } from '@mediamonks/channels';
 
 type Props = {
   channel: SoundChannel;

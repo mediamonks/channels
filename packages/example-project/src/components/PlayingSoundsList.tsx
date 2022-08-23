@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useInterval } from '../hooks/useInterval';
 import { useChannels } from '../hooks/useChannels';
-import { PlayingSound } from '@mediamonks/channels/dist/PlayingSound';
+import { PlayingSound } from '@mediamonks/channels';
 import { PlayingSoundsListItem } from './PlayingSoundsListItem';
 
 export const PlayingSoundsList = () => {

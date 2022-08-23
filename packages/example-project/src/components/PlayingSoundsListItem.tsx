@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useInterval } from '../hooks/useInterval';
-import { PlayingSound } from '@mediamonks/channels/dist/PlayingSound';
 import { ProgressBar } from './ProgressBar';
+import { PlayingSound } from '@mediamonks/channels';
 
 type Props = {
   playingSound: PlayingSound;
