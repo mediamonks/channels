@@ -1,10 +1,10 @@
 import { VolumeControls } from './VolumeControls';
 import React from 'react';
 import { useChannels } from '../hooks/useChannels';
-import { SoundChannel } from '@mediamonks/channels';
+import { Channel } from '@mediamonks/channels';
 
 type Props = {
-  channel: SoundChannel;
+  channel: Channel;
 };
 
 export const ChannelsListItem = ({ channel }: Props) => {

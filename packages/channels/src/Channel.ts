@@ -1,17 +1,17 @@
 import { Channels } from './Channels';
 import { VolumeNodes, VolumeOptions } from './VolumeNodes';
 
-export type SoundChannelType = 'monophonic' | 'polyphonic';
+export type ChannelType = 'monophonic' | 'polyphonic';
 
-export type CreateSoundChannelOptions = {
-  type?: SoundChannelType;
+export type CreateChannelOptions = {
+  type?: ChannelType;
 } & VolumeOptions;
 
 type PlayParameters = Parameters<InstanceType<typeof Channels>['play']>;
 
-export class SoundChannel {
+export class Channel {
   public readonly volumeNodes: VolumeNodes;
-  public readonly type: SoundChannelType;
+  public readonly type: ChannelType;
 
   constructor(
     public readonly name: string,
@@ -20,7 +20,7 @@ export class SoundChannel {
       initialVolume,
       initialMuted,
       type = 'polyphonic',
-    }: CreateSoundChannelOptions = {}
+    }: CreateChannelOptions = {}
   ) {
     this.type = type;
     this.volumeNodes = new VolumeNodes(channelsInstance.audioContext, {

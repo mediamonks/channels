@@ -1,6 +1,6 @@
 import { Sound } from './types';
 import { Channels } from './Channels';
-import { SoundChannel } from './SoundChannel';
+import { Channel } from './Channel';
 import { VolumeNodes, VolumeOptions } from './VolumeNodes';
 
 export type PlaySoundOptions = {
@@ -21,7 +21,7 @@ export class PlayingSound {
     private readonly channelsInstance: Channels,
     public readonly sound: Sound,
     private readonly destination: AudioNode,
-    public readonly channel?: SoundChannel,
+    public readonly channel?: Channel,
     { loop = false, ...volumeOptions }: PlaySoundOptions = {}
   ) {
     if (!sound.audioBuffer) {

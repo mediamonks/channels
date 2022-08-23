@@ -2,7 +2,7 @@ import { CreateSound, OptionalChannel } from './types';
 import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
 import { VolumeNodes } from './VolumeNodes';
-import { CreateSoundChannelOptions, SoundChannel } from './SoundChannel';
+import { CreateChannelOptions, Channel } from './Channel';
 import { PlayingSound, PlaySoundOptions } from './PlayingSound';
 
 type ConstructorProps = {
@@ -14,7 +14,7 @@ type ConstructorProps = {
 
 export class Channels {
   public readonly audioContext: AudioContext;
-  public readonly channelsByName: Record<string, SoundChannel> = {};
+  public readonly channelsByName: Record<string, Channel> = {};
   public readonly playingSounds: Array<PlayingSound> = [];
   public readonly sampleManager: SampleManager;
   public readonly mainVolumeNodes: VolumeNodes;
@@ -77,12 +77,12 @@ export class Channels {
   /**
    * Creates a new channel.
    * @param name
-   * @param createSoundChannelOptions
+   * @param createChannelOptions
    */
   public createChannel(
     name: string,
-    createSoundChannelOptions: CreateSoundChannelOptions = {}
-  ): SoundChannel {
+    createChannelOptions: CreateChannelOptions = {}
+  ): Channel {
     if (name === '') {
       throw new Error('Channel name cannot be blank');
     }
@@ -90,7 +90,7 @@ export class Channels {
       throw new Error(`Channel with name '${name}' already exists`);
     }
 
-    const channel = new SoundChannel(name, this, createSoundChannelOptions);
+    const channel = new Channel(name, this, createChannelOptions);
 
     this.channelsByName[name] = channel;
 
@@ -100,7 +100,7 @@ export class Channels {
   /**
    * Gets a list of all available channels.
    */
-  public getChannels(): Array<SoundChannel> {
+  public getChannels(): Array<Channel> {
     return Object.keys(this.channelsByName).map(
       channelName => this.channelsByName[channelName]
     );
@@ -130,7 +130,7 @@ export class Channels {
    */
   private getOptionalChannelByNameOrInstance(
     channel: OptionalChannel['channel']
-  ): SoundChannel | undefined {
+  ): Channel | undefined {
     if (typeof channel === 'string' && !this.channelsByName[channel]) {
       throw new Error(`Channel '${channel}' does not exist`);
     }
