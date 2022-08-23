@@ -18,8 +18,7 @@ export const ChannelsListItem = ({ channel }: Props) => {
     channel.volumeNodes.fadeIn(4);
   };
   return (
-    <li
-      key={channel.name}
+    <div
       style={{
         backgroundColor: 'lightsteelblue',
       }}
@@ -46,6 +45,6 @@ export const ChannelsListItem = ({ channel }: Props) => {
           </button>
         ))}
       </div>
-    </li>
+    </div>
   );
 };

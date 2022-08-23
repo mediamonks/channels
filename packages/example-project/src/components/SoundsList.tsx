@@ -37,11 +37,9 @@ export const SoundsList = () => {
       </div>
       <ul className="blocks">
         {channelsInstance.getAllSounds().map(sound => (
-          <SoundsListItem
-            key={sound.name}
-            sound={sound}
-            playSound={playSound}
-          />
+          <li key={sound.name}>
+            <SoundsListItem sound={sound} playSound={playSound} />
+          </li>
         ))}
       </ul>
     </div>

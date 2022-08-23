@@ -11,7 +11,9 @@ export const ChannelsList = () => {
       <h2>Channels</h2>
       <ul className="blocks">
         {channels.map(channel => (
-          <ChannelsListItem key={channel.name} channel={channel} />
+          <li key={channel.name}>
+            <ChannelsListItem channel={channel} />
+          </li>
         ))}
       </ul>
     </div>

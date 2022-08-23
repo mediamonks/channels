@@ -15,3 +15,7 @@ ul.blocks {
 ul.blocks li {
   margin: 10px 0;
 }
+
+.block-padding {
+  padding: 10px;
+}

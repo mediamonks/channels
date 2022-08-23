@@ -11,7 +11,7 @@ export const SoundsListItem = ({ sound: { name }, playSound }: Props) => {
   const channels = useChannels();
 
   return (
-    <li style={{ backgroundColor: 'lightcoral' }}>
+    <div style={{ backgroundColor: 'lightcoral' }} className="block-padding">
       <strong>{name}</strong>
       <div>
         <button onClick={() => playSound(name)}>play</button>
@@ -24,6 +24,6 @@ export const SoundsListItem = ({ sound: { name }, playSound }: Props) => {
           </button>
         ))}
       </div>
-    </li>
+    </div>
   );
 };
