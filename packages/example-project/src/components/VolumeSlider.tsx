@@ -1,20 +1,17 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-import { Channels } from '@mediamonks/channels';
+import { VolumeNodes } from '@mediamonks/channels';
 
 type Props = {
-  channelsInstance: Channels;
-  channelName?: string;
+  volumeNodes: VolumeNodes;
 };
 
 const SLIDER_MAX = 100;
 
-export const VolumeSlider = ({ channelName, channelsInstance }: Props) => {
-  const [value, setValue] = useState(
-    channelsInstance.getVolume({ channel: channelName })
-  );
+export const VolumeSlider = ({ volumeNodes }: Props) => {
+  const [value, setValue] = useState(volumeNodes.volume);
 
   useEffect(() => {
-    channelsInstance.setVolume(value, { channel: channelName });
+    volumeNodes.volume = value;
   }, [value]);
 
   const onSliderChange = (event: ChangeEvent<HTMLInputElement>) => {

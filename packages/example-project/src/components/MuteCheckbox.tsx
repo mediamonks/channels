@@ -1,18 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Channels } from '@mediamonks/channels';
+import { VolumeNodes } from '@mediamonks/channels';
 
 type Props = {
-  channelsInstance: Channels;
-  channel?: string;
+  volumeNodes: VolumeNodes;
 };
 
-export const MuteCheckbox = ({ channel, channelsInstance }: Props) => {
-  const [isChecked, setIsChecked] = useState(
-    channelsInstance.getIsMuted({ channel })
-  );
+export const MuteCheckbox = ({ volumeNodes }: Props) => {
+  const [isChecked, setIsChecked] = useState(volumeNodes.isMuted);
 
   useEffect(() => {
-    channelsInstance.setMute(isChecked, { channel });
+    volumeNodes.isMuted = isChecked;
   }, [isChecked]);
 
   return (

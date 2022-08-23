@@ -7,14 +7,14 @@ import { useChannels } from './hooks/useChannels';
 
 function App() {
   const [isLoadComplete, setIsLoadComplete] = useState(false);
-  const channels = useChannels();
+  const channelsInstance = useChannels();
 
   useEffect(() => {
-    channels.createChannel('main', { initialVolume: 0.5 });
-    channels.createChannel('music', { type: 'monophonic' });
+    channelsInstance.createChannel('main', { initialVolume: 0.5 });
+    channelsInstance.createChannel('music', { type: 'monophonic' });
 
     const loadSamples = async () => {
-      await channels.loadAllSounds();
+      await channelsInstance.loadAllSounds();
       setIsLoadComplete(true);
     };
 
@@ -29,7 +29,7 @@ function App() {
         <>
           <ul className="blocks">
             <li style={{ backgroundColor: 'lightgreen' }}>
-              <VolumeControls channelsInstance={channels} />
+              <VolumeControls volumeNodes={channelsInstance.mainVolumeNodes} />
             </li>
           </ul>
 

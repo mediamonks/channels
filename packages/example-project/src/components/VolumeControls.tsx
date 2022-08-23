@@ -1,23 +1,19 @@
 import { VolumeSlider } from './VolumeSlider';
-import { Channels } from '@mediamonks/channels';
+import { VolumeNodes } from '@mediamonks/channels';
 import { MuteCheckbox } from './MuteCheckbox';
 
 type Props = {
-  channelsInstance: Channels;
-  channel?: string;
+  volumeNodes: VolumeNodes;
 };
 
-export const VolumeControls = ({ channelsInstance, channel }: Props) => {
+export const VolumeControls = ({ volumeNodes }: Props) => {
   return (
     <div>
       <div>
-        <MuteCheckbox channelsInstance={channelsInstance} channel={channel} />
+        <MuteCheckbox volumeNodes={volumeNodes} />
       </div>
       <div>
-        <VolumeSlider
-          channelsInstance={channelsInstance}
-          channelName={channel}
-        />
+        <VolumeSlider volumeNodes={volumeNodes} />
       </div>
     </div>
   );
