@@ -4,31 +4,27 @@ import { SoundChannel } from './SoundChannel';
 import { VolumeNodes, VolumeOptions } from './VolumeNodes';
 
 export type PlaySoundOptions = {
-  fadeOutTime?: number;
   loop?: boolean;
 } & VolumeOptions;
+
+export type StopSoundOptions = {
+  fadeOutTime?: number;
+  onStopped?: () => void;
+};
 
 export class PlayingSound {
   private readonly bufferSourceNode: AudioBufferSourceNode;
   public readonly volumeNodes: VolumeNodes;
-  public readonly fadeOutTime: number | undefined;
 
   constructor(
     private readonly channelsInstance: Channels,
     public readonly sound: Sound,
     private readonly destination: AudioNode,
     public readonly channel?: SoundChannel,
-    { loop = false, fadeOutTime, ...volumeOptions }: PlaySoundOptions = {}
+    { loop = false, ...volumeOptions }: PlaySoundOptions = {}
   ) {
     if (!sound.audioBuffer) {
       throw new Error(`Sound '${sound.name}' is not loaded`);
-    }
-
-    if (typeof fadeOutTime === 'number') {
-      if (fadeOutTime < 0) {
-        throw new Error('fadeOutTime should be 0 or larger');
-      }
-      this.fadeOutTime = fadeOutTime;
     }
 
     // create buffer source
@@ -56,14 +52,16 @@ export class PlayingSound {
   }
 
   // arrow notation to bind 'this', in case sound.stop is passed as a handler todo: fix this better?
-  public stop = () => {
-    if (this.fadeOutTime !== undefined && this.fadeOutTime !== 0) {
+  public stop = ({ fadeOutTime, onStopped }: StopSoundOptions = {}) => {
+    if (fadeOutTime !== undefined && fadeOutTime > 0) {
       // todo: add isStopping param that prevents further actions?
-      this.volumeNodes.fadeOut(this.fadeOutTime, () =>
-        this.bufferSourceNode.stop(0)
-      );
+      this.volumeNodes.fadeOut(fadeOutTime, () => {
+        this.bufferSourceNode.stop(0);
+        onStopped?.();
+      });
     } else {
       this.bufferSourceNode.stop(0);
+      onStopped?.();
     }
   };
 }

@@ -23,15 +23,9 @@ export const PlayingSounds = () => {
             <p>
               <strong>{playingSound.sound.name}</strong>
               &nbsp;
-              <small>
-                (channel {playingSound.channel?.name || '---'}, fadeOut:
-                {playingSound.fadeOutTime !== undefined
-                  ? playingSound.fadeOutTime
-                  : '---'}
-                )
-              </small>
+              <small>(channel {playingSound.channel?.name || '---'})</small>
             </p>
-            <button onClick={playingSound.stop}>stop</button>
+            <button onClick={() => playingSound.stop()}>stop</button>
           </li>
         ))}
       </ul>

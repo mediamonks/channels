@@ -11,7 +11,6 @@ export const Sounds = () => {
     channelsInstance.play(soundName, {
       channel: channelName,
       loop: loopIsChecked,
-      fadeOutTime: fadeOutIsChecked ? 2 : undefined,
     });
   };
 
