@@ -19,6 +19,7 @@ export const ChannelsListItem = ({ channel }: Props) => {
   };
   return (
     <div
+      className="block-padding"
       style={{
         backgroundColor: 'lightsteelblue',
       }}
