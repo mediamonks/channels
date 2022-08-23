@@ -19,7 +19,7 @@ export class SoundChannel {
     {
       initialVolume,
       initialMuted,
-      type = 'monophonic',
+      type = 'polyphonic',
     }: CreateSoundChannelOptions = {}
   ) {
     this.type = type;
