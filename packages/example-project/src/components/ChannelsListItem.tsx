@@ -12,10 +12,10 @@ export const ChannelsListItem = ({ channel }: Props) => {
   const sounds = channelsInstance.getAllSounds();
 
   const fadeOut = () => {
-    channel.volumeNodes.fadeOut(2);
+    channel.fadeOut(2);
   };
   const fadeIn = () => {
-    channel.volumeNodes.fadeIn(2);
+    channel.fadeIn(2);
   };
   return (
     <div

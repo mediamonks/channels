@@ -4,6 +4,7 @@ import SampleManager from 'sample-manager';
 import { VolumeNodes } from './VolumeNodes';
 import { CreateChannelOptions, Channel } from './Channel';
 import { PlayingSound, PlaySoundOptions } from './PlayingSound';
+import { HasVolumeNodes } from './HasVolumeNodes';
 
 type ConstructorProps = {
   soundsPath: string;
@@ -12,12 +13,11 @@ type ConstructorProps = {
   sounds?: Array<CreateSound>;
 };
 
-export class Channels {
+export class Channels extends HasVolumeNodes {
   public readonly audioContext: AudioContext;
   public readonly channelsByName: Record<string, Channel> = {};
   public readonly playingSounds: Array<PlayingSound> = [];
   public readonly sampleManager: SampleManager;
-  public readonly mainVolumeNodes: VolumeNodes;
 
   constructor({
     audioContext,
@@ -25,6 +25,7 @@ export class Channels {
     soundsPath,
     sounds,
   }: ConstructorProps) {
+    super();
     this.audioContext = audioContext || new AudioContext();
 
     if (!this.audioContext) {
@@ -42,8 +43,8 @@ export class Channels {
     }
 
     // everything connect to the main volume controls
-    this.mainVolumeNodes = new VolumeNodes(this.audioContext);
-    this.mainVolumeNodes.output.connect(this.audioContext.destination);
+    this.setVolumeNodes(new VolumeNodes(this.audioContext));
+    this.volumeNodes.output.connect(this.audioContext.destination);
   }
 
   /**
@@ -175,7 +176,7 @@ export class Channels {
   private getVolumeNodes({ channel }: OptionalChannel = {}): VolumeNodes {
     const optionalChannel = this.getOptionalChannelByNameOrInstance(channel);
 
-    return optionalChannel?.volumeNodes || this.mainVolumeNodes;
+    return optionalChannel?.volumeNodes || this.volumeNodes;
   }
 
   public getVolume({ channel }: OptionalChannel = {}) {
@@ -196,19 +197,10 @@ export class Channels {
    * @param value
    * @param options
    */
-  public mute(value: boolean, { channel }: OptionalChannel = {}) {
+  public setMute(value: boolean, { channel }: OptionalChannel = {}) {
     if (value) {
       this.getVolumeNodes({ channel }).mute();
-    }
-  }
-
-  /**
-   * Unmutes either a channel or the main output.
-   * @param value
-   * @param options
-   */
-  public unmute(value: boolean, { channel }: OptionalChannel = {}) {
-    if (!value) {
+    } else {
       this.getVolumeNodes({ channel }).unmute();
     }
   }
@@ -233,7 +225,7 @@ export class Channels {
     const playingSound = new PlayingSound(
       this,
       sound,
-      (channelForSound?.volumeNodes || this.mainVolumeNodes).input,
+      (channelForSound?.volumeNodes || this.volumeNodes).input,
       channelForSound,
       playSoundOptions
     );

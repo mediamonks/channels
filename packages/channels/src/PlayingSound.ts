@@ -2,6 +2,7 @@ import { Sound } from './types';
 import { Channels } from './Channels';
 import { Channel } from './Channel';
 import { VolumeNodes, VolumeOptions } from './VolumeNodes';
+import { HasVolumeNodes } from './HasVolumeNodes';
 
 export type PlaySoundOptions = {
   loop?: boolean;
@@ -12,10 +13,9 @@ export type StopSoundOptions = {
   onStopped?: () => void;
 };
 
-export class PlayingSound {
+export class PlayingSound extends HasVolumeNodes {
   private readonly bufferSourceNode: AudioBufferSourceNode;
   private readonly startedAt: number;
-  public readonly volumeNodes: VolumeNodes;
 
   constructor(
     private readonly channelsInstance: Channels,
@@ -24,6 +24,7 @@ export class PlayingSound {
     public readonly channel?: Channel,
     { loop = false, ...volumeOptions }: PlaySoundOptions = {}
   ) {
+    super();
     if (!sound.audioBuffer) {
       // todo: check how/if this works, audioBuffer seems to always exist on Sound/ISample
       throw new Error(`Sound '${sound.name}' is not loaded`);
@@ -35,9 +36,8 @@ export class PlayingSound {
     this.bufferSourceNode.loop = loop;
 
     // create and connect volume nodes
-    this.volumeNodes = new VolumeNodes(
-      channelsInstance.audioContext,
-      volumeOptions
+    this.setVolumeNodes(
+      new VolumeNodes(channelsInstance.audioContext, volumeOptions)
     );
     this.volumeNodes.output.connect(destination);
     this.bufferSourceNode.connect(this.volumeNodes.input);
@@ -58,7 +58,7 @@ export class PlayingSound {
   public stop = ({ fadeOutTime, onStopped }: StopSoundOptions = {}) => {
     if (fadeOutTime !== undefined && fadeOutTime > 0) {
       // todo: add isStopping param that prevents further actions?
-      this.volumeNodes.fadeOut(fadeOutTime, () => {
+      this.fadeOut(fadeOutTime, () => {
         this.bufferSourceNode.stop(0);
         onStopped?.();
       });

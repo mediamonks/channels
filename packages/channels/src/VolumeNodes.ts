@@ -34,14 +34,6 @@ export class VolumeNodes {
     this.output = this.fadeGainNode;
   }
 
-  public fadeOut(duration: number, onComplete?: () => void) {
-    this.fadeTo(0, duration, onComplete);
-  }
-
-  public fadeIn(duration: number, onComplete?: () => void) {
-    this.fadeTo(1, duration, onComplete);
-  }
-
   public fadeTo(value: number, duration: number, onComplete?: () => void) {
     tweenAudioParamToValue(this.fadeGainNode.gain, value, duration, onComplete);
   }
@@ -71,16 +63,16 @@ export class VolumeNodes {
     this.volumeGainNode.gain.value = value;
   }
 
-  mute = () => {
+  public mute() {
     if (this.volume > 0) {
       this.volumeValueBeforeMute = this.volume;
       this.volumeGainNode.gain.value = 0;
     }
-  };
+  }
 
-  unmute = () => {
+  public unmute() {
     if (this.volume === 0) {
       this.volumeGainNode.gain.value = this.volumeValueBeforeMute ?? 1;
     }
-  };
+  }
 }

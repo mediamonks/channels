@@ -30,7 +30,7 @@ function App() {
           <ul className="blocks">
             <li style={{ backgroundColor: 'lightgreen' }}>
               <VolumeControls
-                volumeNodes={channelsInstance.mainVolumeNodes}
+                volumeNodes={channelsInstance.volumeNodes}
                 showFade={false}
               />
             </li>
