@@ -138,19 +138,27 @@ For more info on how to define sound files, please refer to the [sample-manager 
 When a sound has been loaded, it can be played by referring to its unique `name`:
 
 ```javascript
-channelsInstance.play('bach');
+channelsInstance.play('sound');
 ```
 
 You can pass a second argument with optional properties:
 
 ```javascript
-channelsInstance.play('debussy', {
+channelsInstance.play('sound', {
     volume: 0.5,
     channel: 'channel1',
     loop: true,
     fadeInTime: 2,
 });
 ```
+
+The play function returns a reference to the playing sound, containing various methods to interact with the sound.
+```javascript
+const sound = channelsInstance.play('sound');
+sound.stop();
+```
+
+> Don't keep references to sounds that have stopped playing, it will prevent them from being garbage collected.
 
 ### Channels
 Channels are a way of grouping sounds that are played. They are completely optional and, depending on the use case, might not be needed at all.
@@ -192,7 +200,6 @@ channelsInstance.stopAll({ channel: myChannel});
 // although the latter is easier like this:
 myChannel.stopAll();
 ```
-
 
 #### Monophonic vs polyphonic
 A `Channel` can be either **polyphonic** or **monophonic**, which defines how many sounds can be played simultaneously on a channel:
