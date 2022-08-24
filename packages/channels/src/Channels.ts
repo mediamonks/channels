@@ -4,6 +4,8 @@ import SampleManager from 'sample-manager';
 import { VolumeNodes } from './VolumeNodes';
 import { CreateChannelOptions, Channel } from './Channel';
 import { PlayingSound, PlaySoundOptions } from './PlayingSound';
+import EventDispatcher from 'seng-event';
+import { ChannelsEvent } from './event/ChannelsEvent';
 
 type ConstructorProps = {
   soundsPath: string;
@@ -12,7 +14,7 @@ type ConstructorProps = {
   sounds?: Array<CreateSound>;
 };
 
-export class Channels {
+export class Channels extends EventDispatcher {
   public readonly audioContext: AudioContext;
   public readonly channelsByName: Record<string, Channel> = {};
   public readonly playingSounds: Array<PlayingSound> = [];
@@ -25,6 +27,7 @@ export class Channels {
     soundsPath,
     sounds,
   }: ConstructorProps) {
+    super();
     this.audioContext = audioContext || new AudioContext();
 
     if (!this.audioContext) {
@@ -115,6 +118,9 @@ export class Channels {
     const index = this.playingSounds.indexOf(playingSound);
     if (index > -1) {
       this.playingSounds.splice(index, 1);
+      this.dispatchEvent(
+        new ChannelsEvent(ChannelsEvent.types.PLAYING_SOUNDS_UPDATED)
+      );
     } else {
       throw new Error(
         `Trying to remove a playing sound that is not listed: ${playingSound.sound.name}`
@@ -234,6 +240,11 @@ export class Channels {
     }
 
     this.playingSounds.push(playingSound);
+
+    this.dispatchEvent(
+      new ChannelsEvent(ChannelsEvent.types.PLAYING_SOUNDS_UPDATED)
+    );
+
     return playingSound;
   }
 }
