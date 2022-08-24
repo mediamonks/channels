@@ -1,6 +1,7 @@
 import { VolumeSlider } from './VolumeSlider';
 import { VolumeNodes } from '@mediamonks/channels';
 import { MuteButtons } from './MuteButtons';
+import { FadeDisplay } from './FadeDisplay';
 
 type Props = {
   volumeNodes: VolumeNodes;
@@ -13,16 +14,13 @@ export const VolumeControls = ({ volumeNodes, showFade = true }: Props) => {
       <div>
         <MuteButtons volumeNodes={volumeNodes} />
       </div>
+
       <div>
-        <VolumeSlider gainNode={volumeNodes.volumeGainNode} />
+        <VolumeSlider volumeNodes={volumeNodes} />
       </div>
       {showFade && (
         <div>
-          <VolumeSlider
-            gainNode={volumeNodes.fadeGainNode}
-            label="Fade"
-            enabled={false}
-          />
+          <FadeDisplay volumeNodes={volumeNodes} />
         </div>
       )}
     </div>

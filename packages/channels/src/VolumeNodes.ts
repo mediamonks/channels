@@ -6,9 +6,9 @@ export type VolumeOptions = {
 };
 
 export class VolumeNodes {
-  public readonly volumeGainNode: GainNode;
-  public readonly fadeGainNode: GainNode;
-  public readonly input: GainNode;
+  private readonly volumeGainNode: GainNode;
+  private readonly fadeGainNode: GainNode;
+  public readonly input: GainNode; // todo should be private?
   public readonly output: GainNode;
 
   private volumeValueBeforeMute: number | undefined;
@@ -21,7 +21,10 @@ export class VolumeNodes {
     this.fadeGainNode = audioContext.createGain();
 
     this.volume = initialVolume;
-    this.isMuted = initialMuted;
+
+    if (initialMuted) {
+      this.mute();
+    }
 
     // set up the graph: volume -> fade -> mute
     this.volumeGainNode.connect(this.fadeGainNode);
@@ -43,6 +46,10 @@ export class VolumeNodes {
     tweenAudioParamToValue(this.fadeGainNode.gain, value, duration, onComplete);
   }
 
+  public get fadeVolume(): number {
+    return this.fadeGainNode.gain.value;
+  }
+
   public get volume(): number {
     return this.volumeGainNode.gain.value;
   }
@@ -50,6 +57,9 @@ export class VolumeNodes {
   public set volume(value: number) {
     if (value < 0) {
       throw new Error('Cannot set negative volume');
+    }
+    if (value === this.volumeGainNode.gain.value) {
+      return;
     }
     if (value === 0) {
       // setting volume to 0 means muting it. setting volumeValueBeforeMute to
@@ -61,28 +71,16 @@ export class VolumeNodes {
     this.volumeGainNode.gain.value = value;
   }
 
-  public get isMuted(): boolean {
-    return this.volume === 0;
-  }
-
-  public set isMuted(value: boolean) {
-    if (value) {
-      // mute
-      if (this.isMuted) {
-        // already muted
-      } else {
-        // muting when volume > 0
-        this.volumeValueBeforeMute = this.volumeGainNode.gain.value;
-        this.volumeGainNode.gain.value = 0;
-      }
-    } else {
-      // unmute
-      if (!this.isMuted) {
-        // already unmuted
-      } else {
-        this.volumeGainNode.gain.value = this.volumeValueBeforeMute ?? 1;
-        this.volumeValueBeforeMute = undefined;
-      }
+  mute = () => {
+    if (this.volume > 0) {
+      this.volumeValueBeforeMute = this.volume;
+      this.volumeGainNode.gain.value = 0;
     }
-  }
+  };
+
+  unmute = () => {
+    if (this.volume === 0) {
+      this.volumeGainNode.gain.value = this.volumeValueBeforeMute ?? 1;
+    }
+  };
 }

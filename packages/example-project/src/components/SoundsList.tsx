@@ -5,7 +5,6 @@ import { SoundsListItem } from './SoundsListItem';
 export const SoundsList = () => {
   const channelsInstance = useChannels();
   const [loopIsChecked, setLoopIsChecked] = useState(false);
-  const [fadeOutIsChecked, setFadeOutIsChecked] = useState(false);
 
   const playSound = (soundName: string, channelName?: string) => {
     channelsInstance.play(soundName, {
@@ -24,14 +23,6 @@ export const SoundsList = () => {
             type={'checkbox'}
             checked={loopIsChecked}
             onChange={() => setLoopIsChecked(value => !value)}
-          />
-        </label>
-        <label>
-          play with fadeout
-          <input
-            type={'checkbox'}
-            checked={fadeOutIsChecked}
-            onChange={() => setFadeOutIsChecked(value => !value)}
           />
         </label>
       </div>

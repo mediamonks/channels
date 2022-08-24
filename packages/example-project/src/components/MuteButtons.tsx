@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { VolumeNodes } from '@mediamonks/channels';
 
 type Props = {
@@ -6,30 +5,10 @@ type Props = {
 };
 
 export const MuteButtons = ({ volumeNodes }: Props) => {
-  const [isMuted, setIsMuted] = useState(volumeNodes.isMuted);
-
-  setInterval(() => {
-    setIsMuted(volumeNodes.isMuted);
-  }, 50);
-
   return (
     <div>
-      <button
-        onClick={() => {
-          volumeNodes.isMuted = true;
-        }}
-        disabled={isMuted}
-      >
-        mute
-      </button>
-      <button
-        onClick={() => {
-          volumeNodes.isMuted = false;
-        }}
-        disabled={!isMuted}
-      >
-        unmute
-      </button>
+      <button onClick={volumeNodes.mute}>mute</button>
+      <button onClick={volumeNodes.unmute}>unmute</button>
     </div>
   );
 };

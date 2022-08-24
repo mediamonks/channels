@@ -182,10 +182,6 @@ export class Channels {
     return this.getVolumeNodes({ channel }).volume;
   }
 
-  public getIsMuted({ channel }: OptionalChannel = {}) {
-    return this.getVolumeNodes({ channel }).isMuted;
-  }
-
   /**
    * Sets the volume for either a channel or the main output.
    * @param value
@@ -196,12 +192,25 @@ export class Channels {
   }
 
   /**
-   * Sets the mute value for either a channel or the main output.
+   * Mutes either a channel or the main output.
    * @param value
    * @param options
    */
-  public setMute(value: boolean, { channel }: OptionalChannel = {}) {
-    this.getVolumeNodes({ channel }).isMuted = value;
+  public mute(value: boolean, { channel }: OptionalChannel = {}) {
+    if (value) {
+      this.getVolumeNodes({ channel }).mute();
+    }
+  }
+
+  /**
+   * Unmutes either a channel or the main output.
+   * @param value
+   * @param options
+   */
+  public unmute(value: boolean, { channel }: OptionalChannel = {}) {
+    if (!value) {
+      this.getVolumeNodes({ channel }).unmute();
+    }
   }
 
   /**
