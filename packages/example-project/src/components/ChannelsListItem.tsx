@@ -9,7 +9,7 @@ type Props = {
 
 export const ChannelsListItem = ({ channel }: Props) => {
   const channelsInstance = useChannels();
-  const sounds = channelsInstance.getAllSounds();
+  const sounds = channelsInstance.getSounds();
 
   const fadeOut = () => {
     channel.volumeNodes.fadeOut(2);
