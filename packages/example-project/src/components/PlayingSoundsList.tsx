@@ -12,8 +12,7 @@ export const PlayingSoundsList = () => {
 
   useEffect(() => {
     const onPlayingSoundsUpdate = () => {
-      console.log(channelsInstance.playingSounds);
-      setPlayingSounds([...channelsInstance.playingSounds]);
+      setPlayingSounds(channelsInstance.getPlayingSounds());
     };
 
     channelsInstance.addEventListener(

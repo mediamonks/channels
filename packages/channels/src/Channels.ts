@@ -16,8 +16,8 @@ type ConstructorProps = {
 
 export class Channels extends EventDispatcher {
   public readonly audioContext: AudioContext;
-  public readonly channelsByName: Record<string, Channel> = {};
-  public readonly playingSounds: Array<PlayingSound> = [];
+  private readonly channelsByName: Record<string, Channel> = {};
+  private readonly playingSounds: Array<PlayingSound> = [];
   public readonly sampleManager: SampleManager;
   public readonly volumeNodes: VolumeNodes;
 
@@ -75,6 +75,10 @@ export class Channels extends EventDispatcher {
    */
   public getAllSounds = () => {
     return this.sampleManager.getAllSamples(); // todo create new array
+  };
+
+  public getPlayingSounds = () => {
+    return [...this.playingSounds];
   };
 
   /**
