@@ -19,7 +19,8 @@
   },
   "dependencies": {
     "gsap": "^3.11.0",
-    "sample-manager": "^2.1.4"
+    "sample-manager": "^2.1.4",
+    "seng-event": "^2.0.2"
   },
   "homepage": "https://github.com/petervdn/channels/"
 }

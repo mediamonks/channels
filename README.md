@@ -6,6 +6,9 @@ This repos contains two npm workspaces:
 
 To run the example project:
 ```
+npm install  
+
 cd packages/example project
+
 npm run start
 ```
