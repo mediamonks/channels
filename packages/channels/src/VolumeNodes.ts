@@ -15,7 +15,8 @@ export class VolumeNodes {
 
   constructor(
     private readonly audioContext: AudioContext,
-    { initialVolume = 1, initialMuted = false }: VolumeOptions = {}
+    { initialVolume = 1, initialMuted = false }: VolumeOptions = {},
+    initialFadeVolume = 1
   ) {
     this.volumeGainNode = audioContext.createGain();
     this.fadeGainNode = audioContext.createGain();
@@ -25,6 +26,8 @@ export class VolumeNodes {
     if (initialMuted) {
       this.mute();
     }
+
+    this.fadeGainNode.gain.value = initialFadeVolume;
 
     // set up the graph: volume -> fade -> mute
     this.volumeGainNode.connect(this.fadeGainNode);

@@ -6,6 +6,7 @@ import { HasVolumeNodes } from './HasVolumeNodes';
 
 export type PlaySoundOptions = {
   loop?: boolean;
+  fadeInTime?: number;
 } & VolumeOptions;
 
 export type StopSoundOptions = {
@@ -22,12 +23,16 @@ export class PlayingSound extends HasVolumeNodes {
     public readonly sound: Sound,
     private readonly destination: AudioNode,
     public readonly channel?: Channel,
-    { loop = false, ...volumeOptions }: PlaySoundOptions = {}
+    { loop = false, fadeInTime = 0, ...volumeOptions }: PlaySoundOptions = {}
   ) {
     super();
     if (!sound.audioBuffer) {
       // todo: check how/if this works, audioBuffer seems to always exist on Sound/ISample
       throw new Error(`Sound '${sound.name}' is not loaded`);
+    }
+
+    if (fadeInTime < 0) {
+      throw new Error('fadeInTime can not be negative');
     }
 
     // create buffer source
@@ -37,8 +42,17 @@ export class PlayingSound extends HasVolumeNodes {
 
     // create and connect volume nodes
     this.setVolumeNodes(
-      new VolumeNodes(channelsInstance.audioContext, volumeOptions)
+      new VolumeNodes(
+        channelsInstance.audioContext,
+        volumeOptions,
+        fadeInTime > 0 ? 0 : 1 // when fading in, initial fade volume is 0
+      )
     );
+
+    if (fadeInTime) {
+      this.fadeIn(fadeInTime);
+    }
+
     this.volumeNodes.output.connect(destination);
     this.bufferSourceNode.connect(this.volumeNodes.input);
 
