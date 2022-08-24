@@ -32,14 +32,13 @@ export class Channel {
     this.volumeNodes.output.connect(this.channelsInstance.volumeNodes.input);
   }
 
-  public play(
+  public play = (
     name: PlayParameters[0],
     options: Omit<PlayParameters[1], 'channel'> = {}
-  ) {
+  ) => {
     this.channelsInstance.play(name, { channel: this.name, ...options });
-  }
+  };
 
-  // arrow notation to bind 'this', in case sound.stop is passed as a handler
   public stopAll = () => {
     this.channelsInstance.stopAll({ channel: this.name });
   };

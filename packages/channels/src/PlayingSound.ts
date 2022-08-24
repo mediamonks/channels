@@ -61,11 +61,10 @@ export class PlayingSound {
     this.bufferSourceNode.start(0);
   }
 
-  private removePlayingSound() {
+  private removePlayingSound = () => {
     this.channelsInstance.removePlayingSound(this);
-  }
+  };
 
-  // arrow notation to bind 'this', in case sound.stop is passed as a handler todo: fix this better?
   public stop = ({ fadeOutTime, onStopped }: StopSoundOptions = {}) => {
     if (fadeOutTime !== undefined && fadeOutTime > 0) {
       // todo: add isStopping param that prevents further actions?
@@ -82,11 +81,11 @@ export class PlayingSound {
   /**
    * Gets the current progress of the playing sound (between 0 and 1)
    */
-  public getProgress() {
+  public getProgress = () => {
     return (
       ((this.channelsInstance.audioContext.currentTime - this.startedAt) /
         this.sound.audioBuffer.duration) %
       1
     );
-  }
+  };
 }

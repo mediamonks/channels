@@ -41,9 +41,13 @@ export class VolumeNodes extends EventDispatcher {
     this.output = this.fadeGainNode;
   }
 
-  public fadeTo(value: number, duration: number, onComplete?: () => void) {
+  public fadeTo = (
+    value: number,
+    duration: number,
+    onComplete?: () => void
+  ) => {
     tweenAudioParamToValue(this.fadeGainNode.gain, value, duration, onComplete);
-  }
+  };
 
   public get fadeVolume(): number {
     return this.fadeGainNode.gain.value;
@@ -73,24 +77,24 @@ export class VolumeNodes extends EventDispatcher {
     this.volumeGainNode.gain.value = value;
   }
 
-  public mute() {
+  public mute = () => {
     if (this.volume > 0) {
       this.volumeValueBeforeMute = this.volume;
       this.volumeGainNode.gain.value = 0;
     }
-  }
+  };
 
-  public unmute() {
+  public unmute = () => {
     if (this.volume === 0) {
       this.volumeGainNode.gain.value = this.volumeValueBeforeMute ?? 1;
     }
-  }
+  };
 
-  public fadeOut(duration: number, onComplete?: () => void) {
+  public fadeOut = (duration: number, onComplete?: () => void) => {
     this.fadeTo(0, duration, onComplete);
-  }
+  };
 
-  public fadeIn(duration: number, onComplete?: () => void) {
+  public fadeIn = (duration: number, onComplete?: () => void) => {
     this.fadeTo(1, duration, onComplete);
-  }
+  };
 }
