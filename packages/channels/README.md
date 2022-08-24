@@ -210,7 +210,7 @@ channelsInstance.createChannel('polyphonic-channel');
 Using a monophonic channel can be extremely helpful when creating a background music layer where the music loop needs to be changed now and then. 
 
 
-### Volume
+## Volume
 
 There are three places where volume is applied:
 
@@ -220,7 +220,7 @@ There are three places where volume is applied:
 
 These are all separate modifiers to the signal, and they stack up: when a sound is played at volume `0.5`, on a channel with volume `0.5`, while the main volume has been set to `0.5`, then the resulting volume will be `0.5 * 0.5 * 0.5 = 0.125`. 
 
-#### Changing volume
+### Changing volume
 
 There are various ways to change the volume. Most importantly, the three cases listed above all have a set of related methods implemented:
 
@@ -257,3 +257,5 @@ channelsInstance.setVolume(0.5, {channel: myChannel});
 
 
 > Volume values should be `0` or higher. Keep in mind that going beyond `1` *might* result in [digital clipping](https://en.wikipedia.org/wiki/Clipping_(audio)).
+
+> Muting is setting the `volume` to `0`, with the additional effect that the previous volume value will be stored and used when calling `unmute` 
