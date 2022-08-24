@@ -6,6 +6,7 @@ import { CreateChannelOptions, Channel } from './Channel';
 import { PlayingSound, PlaySoundOptions } from './PlayingSound';
 import EventDispatcher from 'seng-event';
 import { ChannelsEvent } from './event/ChannelsEvent';
+import { getOptionalChannelByNameOrInstance } from './event/getOptionalChannelOrInstance';
 
 type ConstructorProps = {
   soundsPath: string;
@@ -58,6 +59,9 @@ export class Channels extends EventDispatcher {
       : Promise.resolve();
   };
 
+  /**
+   * Check if the context is in the suspended state.
+   */
   public get contextIsSuspended() {
     return this.audioContext.state === 'suspended';
   }
@@ -77,6 +81,9 @@ export class Channels extends EventDispatcher {
     return [...this.sampleManager.getAllSamples()];
   };
 
+  /**
+   * Get a list of the currently playing sounds.
+   */
   public getPlayingSounds = () => {
     return [...this.playingSounds];
   };
@@ -135,27 +142,15 @@ export class Channels extends EventDispatcher {
   };
 
   /**
-   * Utility function to handle often used optional channel parameters,
-   * which can be either the channel's name or a channel instance
-   * @param channel
-   * @private
-   */
-  private getOptionalChannelByNameOrInstance = (
-    channel: OptionalChannel['channel']
-  ): Channel | undefined => {
-    if (typeof channel === 'string' && !this.channelsByName[channel]) {
-      throw new Error(`Channel '${channel}' does not exist`);
-    }
-    return typeof channel === 'string' ? this.channelsByName[channel] : channel;
-  };
-
-  /**
    * Stop either all sounds or, when a channel name is supplied, all
    * sounds that are playing on a channel.
    * @param channelName
    */
   public stopAll = ({ channel }: OptionalChannel = {}) => {
-    const channelToStop = this.getOptionalChannelByNameOrInstance(channel);
+    const channelToStop = getOptionalChannelByNameOrInstance(
+      channel,
+      this.channelsByName
+    );
 
     this.playingSounds
       .filter(({ channel }) =>
@@ -185,11 +180,18 @@ export class Channels extends EventDispatcher {
    * @private
    */
   private getVolumeNodes = ({ channel }: OptionalChannel = {}): VolumeNodes => {
-    const optionalChannel = this.getOptionalChannelByNameOrInstance(channel);
+    const optionalChannel = getOptionalChannelByNameOrInstance(
+      channel,
+      this.channelsByName
+    );
 
     return optionalChannel?.volumeNodes || this.volumeNodes;
   };
 
+  /**
+   * Gets the volume for either a channel or the main output.
+   * @param channel
+   */
   public getVolume = ({ channel }: OptionalChannel = {}) => {
     return this.getVolumeNodes({ channel }).volume;
   };
@@ -204,7 +206,7 @@ export class Channels extends EventDispatcher {
   };
 
   /**
-   * Mutes either a channel or the main output.
+   * Mutes a channel or the main output.
    * @param value
    * @param options
    */
@@ -231,7 +233,10 @@ export class Channels extends EventDispatcher {
     if (!sound) {
       throw new Error(`Cannot find sound: '${name}`);
     }
-    const channelForSound = this.getOptionalChannelByNameOrInstance(channel);
+    const channelForSound = getOptionalChannelByNameOrInstance(
+      channel,
+      this.channelsByName
+    );
 
     const playingSound = new PlayingSound(
       this,
