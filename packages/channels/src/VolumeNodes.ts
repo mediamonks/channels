@@ -1,11 +1,13 @@
 import { tweenAudioParamToValue } from './util/fadeGain';
+import EventDispatcher from 'seng-event';
+import { VolumeNodesEvent } from './event/VolumeNodesEvent';
 
 export type VolumeOptions = {
   initialVolume?: number;
   initialMuted?: boolean;
 };
 
-export class VolumeNodes {
+export class VolumeNodes extends EventDispatcher {
   private readonly volumeGainNode: GainNode;
   private readonly fadeGainNode: GainNode;
   public readonly input: GainNode; // todo should be private?
@@ -18,6 +20,8 @@ export class VolumeNodes {
     { initialVolume = 1, initialMuted = false }: VolumeOptions = {},
     initialFadeVolume = 1
   ) {
+    super();
+
     this.volumeGainNode = audioContext.createGain();
     this.fadeGainNode = audioContext.createGain();
 
@@ -63,6 +67,9 @@ export class VolumeNodes {
     } else {
       this.volumeValueBeforeMute = undefined;
     }
+    this.dispatchEvent(
+      new VolumeNodesEvent(VolumeNodesEvent.types.VOLUME_CHANGED)
+    );
     this.volumeGainNode.gain.value = value;
   }
 

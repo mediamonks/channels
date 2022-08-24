@@ -97,7 +97,7 @@ export class Channels extends EventDispatcher {
 
     this.channelsByName[name] = channel;
 
-    this.dispatchEvent(ChannelsEvent.types.CHANNELS_UPDATED);
+    this.dispatchEvent(new ChannelsEvent(ChannelsEvent.types.CHANNELS_UPDATED));
 
     return channel;
   }
