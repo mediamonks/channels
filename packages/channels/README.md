@@ -69,7 +69,7 @@ new Channels({
 })
 ```
 
-> You do not need more than one `Channels` instance.
+> Don't create more than one `Channels` instance.
 
 Optionally, an `audioContext` can be passed in the constructor options. If omitted, one will be created in the `Channels` constructor.
 
@@ -123,7 +123,7 @@ channelsInstance.sampleManager.addSamples(soundFiles);
 // either way, loading can be done like so:
 await channelsInstance.loadAllSounds();
 
-// you can optionally keep track of progress
+// optionally, keep track of progress
 await channelsInstance.loadAllSounds((progress) => {...});
 ```
 > The `loadAllSounds` method is an alias for `sampleManager.loadAllSamples`
@@ -138,7 +138,7 @@ When a sound has been loaded, it can be played by referring to its unique `name`
 channelsInstance.play('sound');
 ```
 
-You can pass a second argument with optional properties:
+A second argument can be passed with optional properties:
 
 ```javascript
 channelsInstance.play('sound', {
@@ -155,8 +155,6 @@ const sound = channelsInstance.play('sound');
 sound.stop();
 ```
 
-> Don't keep references to sounds that have stopped playing, it will prevent them from being garbage collected.
-
 ## Channels
 Channels are a way of grouping sounds that are played. They are completely optional and, depending on the use case, might not be needed at all.
 
@@ -172,7 +170,7 @@ Various methods on the `Channels` instance that take an optional `channel` prope
 const myChannel = channelsInstance.createChannel('channel-name');
 const myChannel = channelsInstance.getChannel('channel-name'); // obviously has to be created first
 
-// use the approach you prefer
+// use the prefered approach
 channelsInstance.play('sound1', {channel: 'channel-name'});
 myChannel.play('sound1')
 
