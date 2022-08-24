@@ -1,7 +1,6 @@
 import { Slider } from './Slider';
-import { useState } from 'react';
-import { VolumeNodes } from '@mediamonks/channels';
-import { useInterval } from '../hooks/useInterval';
+import { useEffect, useState } from 'react';
+import { VolumeNodes, VolumeNodesEvent } from '@mediamonks/channels';
 
 type Props = {
   volumeNodes: VolumeNodes;
@@ -13,25 +12,21 @@ export const VolumeSlider = ({ volumeNodes }: Props) => {
     volumeNodes.volume
   );
 
-  useInterval(() => {
-    setVolumeSliderValue(volumeNodes.volume);
-  }, 10);
+  useEffect(() => {
+    const onVolumeChange = () => {
+      setVolumeSliderValue(volumeNodes.volume);
+    };
 
-  // useEffect(() => {
-  //   const onVolumeChange = () => {
-  //     setVolumeSliderValue(volumeNodes.volume);
-  //   };
-  //
-  //   volumeNodes.addEventListener(
-  //     VolumeNodesEvent.types.VOLUME_CHANGED,
-  //     onVolumeChange
-  //   );
-  //   return () =>
-  //     volumeNodes.removeEventListener(
-  //       VolumeNodesEvent.types.VOLUME_CHANGED,
-  //       onVolumeChange
-  //     );
-  // }, [volumeNodes]);
+    volumeNodes.addEventListener(
+      VolumeNodesEvent.types.VOLUME_CHANGED,
+      onVolumeChange
+    );
+    return () =>
+      volumeNodes.removeEventListener(
+        VolumeNodesEvent.types.VOLUME_CHANGED,
+        onVolumeChange
+      );
+  }, [volumeNodes]);
 
   return (
     <Slider

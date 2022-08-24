@@ -1,6 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
-
-const SLIDER_RESOLUTION = 100;
+import { ChangeEvent } from 'react';
 
 type Props = {
   enabled?: boolean;
@@ -8,16 +6,25 @@ type Props = {
   max: number;
   onChange?: (value: number) => void;
   value: number;
+  sliderMax?: number; // defines the resolution of the slider
 };
 
 const wrapValue = (value: number, min: number, max: number) =>
   Math.max(Math.min(value, max), min);
 
-const valueToSliderValue = (value: number, min: number, max: number) =>
-  (wrapValue(value, min, max) - min) / (max - min);
+const valueToSliderValue = (
+  value: number,
+  min: number,
+  max: number,
+  sliderMax: number
+) => ((wrapValue(value, min, max) - min) / (max - min)) * sliderMax;
 
-const sliderValueToValue = (sliderValue: number, min: number, max: number) =>
-  min + (max - min) * sliderValue;
+const sliderValueToValue = (
+  sliderValue: number,
+  min: number,
+  max: number,
+  sliderMax: number
+) => min + ((max - min) * sliderValue) / sliderMax;
 
 export const Slider = ({
   enabled = true,
@@ -25,32 +32,21 @@ export const Slider = ({
   min,
   max,
   value,
+  sliderMax = 100,
 }: Props) => {
-  const [sliderValue, setSliderValue] = useState(
-    valueToSliderValue(value, min, max)
-  );
-
   const onSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const parsedSliderValue = parseInt(event.target.value) / SLIDER_RESOLUTION;
+    const parsedSliderValue = parseInt(event.target.value);
     if (!isNaN(parsedSliderValue)) {
-      onChange?.(sliderValueToValue(parsedSliderValue, min, max));
+      onChange?.(sliderValueToValue(parsedSliderValue, min, max, sliderMax));
     }
   };
-
-  useEffect(() => {
-    setSliderValue(valueToSliderValue(value, min, max));
-  }, [value, min, max]);
-
-  useEffect(() => {
-    onChange?.(sliderValueToValue(sliderValue, min, max));
-  }, [sliderValue]);
 
   return (
     <input
       type="range"
       onChange={onSliderChange}
-      value={sliderValue * SLIDER_RESOLUTION}
-      max={SLIDER_RESOLUTION}
+      value={valueToSliderValue(value, min, max, sliderMax)}
+      max={sliderMax}
       disabled={!enabled}
     />
   );
