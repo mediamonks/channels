@@ -73,8 +73,8 @@ export class Channels extends EventDispatcher {
   /**
    * Gets a list of all sounds. (alias for sampleManager.getAllSamples)
    */
-  public getAllSounds = () => {
-    return this.sampleManager.getAllSamples(); // todo create new array
+  public getSounds = () => {
+    return [...this.sampleManager.getAllSamples()];
   };
 
   public getPlayingSounds = () => {

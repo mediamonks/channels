@@ -40,7 +40,7 @@ export const SoundsList = () => {
         </label>
       </div>
       <ul className="blocks">
-        {channelsInstance.getAllSounds().map(sound => (
+        {channelsInstance.getSounds().map(sound => (
           <li key={sound.name}>
             <SoundsListItem sound={sound} playSound={playSound} />
           </li>
