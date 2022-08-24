@@ -156,7 +156,7 @@ sound.stop();
 ```
 
 ## Channels
-Channels are a way of grouping sounds that are played. They are completely optional and, depending on the use case, might not be needed at all.
+Channels are a way of grouping sounds that are played. Despite being in the actual name of this package, they might not be needed at all.
 
 The reason to create a channel is to easily do things with a group of sounds: 
 - change their volume
