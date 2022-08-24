@@ -58,15 +58,12 @@ channelsInstance.mute();
 myChannel.mute();
 ```
 
-## Overview
-
-
-### Creating a Channels instance
+## Creating a Channels instance
 
 When creating a `Channels` object, two parameters are required: the location of the sound files, and the extension to use:
 
 ```javascript
-const channels = new Channels({
+new Channels({
     soundsPath: 'location/of/your/files',
     soundsExtension: 'mp3',
 })
@@ -84,7 +81,7 @@ new Channels({
 })
 ```
 
-### Suspended state
+## Suspended state
 
 An `AudioContext` created without user interaction (for example a click) will be in the `suspended` state, in which no sound can be produced. This can happen for example if a `Channels` instance is created on page landing without supplying a (non-suspended) `audioContext`, since one will be created then automatically.
 
@@ -99,7 +96,7 @@ TLDR: The `audioContext` that is used must have been created or resumed on user 
 
 > To check whether the context is suspended: `channelsInstance.contextIsSuspended`
 
-### Loading files
+## Loading files
 `Channels` uses the [sample-manager](https://www.npmjs.com/package/sample-manager) for dealing with files, and creates an instance of it named `sampleManager`. 
 
 ```javascript
@@ -114,26 +111,26 @@ The easiest way to load files is to supply a list of objects with a `name` prope
 const soundFiles = [{name: 'sound1'}, {name: 'sound2'}];
 
 // list can be used when instantiating Channels 
-const channels = new Channels({
+const channelsInstance = new Channels({
     soundsPath,
     soundsExtension,
     sounds: soundFiles,
 })
 
 // or can be set at a later stage
-channels.sampleManager.addSamples(soundFiles);
+channelsInstance.sampleManager.addSamples(soundFiles);
 
 // either way, loading can be done like so:
-await channels.loadAllSounds();
+await channelsInstance.loadAllSounds();
 
 // you can optionally keep track of progress
-await channels.loadAllSounds((progress) => {...});
+await channelsInstance.loadAllSounds((progress) => {...});
 ```
 > The `loadAllSounds` method is an alias for `sampleManager.loadAllSamples`
 
 For more info on how to define sound files, please refer to the [sample-manager page](https://www.npmjs.com/package/sample-manager).
 
-### Playing a sound
+## Playing a sound
 
 When a sound has been loaded, it can be played by referring to its unique `name`:
 
@@ -160,7 +157,7 @@ sound.stop();
 
 > Don't keep references to sounds that have stopped playing, it will prevent them from being garbage collected.
 
-### Channels
+## Channels
 Channels are a way of grouping sounds that are played. They are completely optional and, depending on the use case, might not be needed at all.
 
 The reason to create a channel is to easily do things with a group of sounds: 
@@ -168,7 +165,7 @@ The reason to create a channel is to easily do things with a group of sounds:
 - apply effects
 - stopping them
 
-#### Methods operating on a channel
+### Methods operating on a channel
 Various methods on the `Channels` instance that take an optional `channel` property are duplicated on a `Channel` object, for which the `channel` no longer needs to be supplied. 
 ```javascript
 // get a channel reference somehow
@@ -201,7 +198,7 @@ channelsInstance.stopAll({ channel: myChannel});
 myChannel.stopAll();
 ```
 
-#### Monophonic vs polyphonic
+### Monophonic vs polyphonic
 A `Channel` can be either **polyphonic** or **monophonic**, which defines how many sounds can be played simultaneously on a channel:
 
 - A `monophonic` channel can play one sound at a time. When playing a sound on such a channel, **all other sounds on that channel are stopped** 
