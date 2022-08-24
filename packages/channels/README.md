@@ -18,44 +18,44 @@ const soundFiles = ['sound1', 'sound2'].map(name => ({
 }));
 
 // create a Channels instance, extension and path are required
-const channels = new Channels({
+const channelsInstance = new Channels({
     soundsExtension: 'mp3',
     soundsPath: 'static/audio/',
     sounds: soundFiles, // not required, can be set later
 });
 
 // load files
-await channels.loadAllSounds();
+await channelsInstance.loadAllSounds();
 
 // play a sound
-channels.play('sound1');
+channelsInstance.play('sound1');
 
 // play it on a channel
-channels.createChannel('background-music');
-channels.play('sound2', {channel: 'background-music'});
+channelsInstance.createChannel('background-music');
+channelsInstance.play('sound2', {channel: 'background-music'});
 
 // another way to play it on a channel
-const myChannel = channels.createChannel('ui-sounds');
+const myChannel = channelsInstance.createChannel('ui-sounds');
 myChannel.play('sound2');
 
 // stop a sound
-const sound1 = channels.play('sound1');
+const sound1 = channelsInstance.play('sound1');
 sound1.stop();
 
 // stop all sounds
-channels.stopAll();
+channelsInstance.stopAll();
 
 // stop all sounds on a channel (2 different ways)
-channels.stopAll({channel: 'background-music'});
+channelsInstance.stopAll({channel: 'background-music'});
 myChannel.stopAll();
 
 // set main volume, or for a channel
-channels.setVolume(0.5);
-channels.setVolume(0.5, {channel: 'background-music'});
+channelsInstance.volume = 0.5;
+myChannel.volume = 0.5;
 
-// same for muting (note that this is separate from the volume)
-channels.setMute(true);
-channels.setMute(true, {channel: 'background-music'});
+// same for muting
+channelsInstance.mute();
+myChannel.mute();
 ```
 
 ## Overview
