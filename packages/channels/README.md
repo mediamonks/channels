@@ -81,7 +81,7 @@ new Channels({
 })
 ```
 
-## Suspended state
+### Suspended state
 
 An `AudioContext` created without user interaction (for example a click) will be in the `suspended` state, in which no sound can be produced. This can happen for example if a `Channels` instance is created on page landing without supplying a (non-suspended) `audioContext`, since one will be created then automatically.
 
