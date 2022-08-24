@@ -24,7 +24,7 @@ export const PlayingSoundsListItem = ({ playingSound }: Props) => {
           <small>(channel {playingSound.channel?.name || '---'})</small>
           <button onClick={() => playingSound.stop()}>stop</button>
         </p>
-        <VolumeControls volumeNodes={playingSound.volumeNodes} />
+        <VolumeControls entity={playingSound} />
       </div>
       <ProgressBar progress={progress} foregroundColor={'red'} height={5} />
     </div>

@@ -1,18 +1,18 @@
 import { Slider } from './Slider';
 import { useState } from 'react';
-import { VolumeNodes } from '@mediamonks/channels';
+import { HasVolumeNodes } from '@mediamonks/channels';
 import { useInterval } from '../hooks/useInterval';
 
 type Props = {
-  volumeNodes: VolumeNodes;
+  entity: HasVolumeNodes;
   enabled?: boolean;
 };
 
-export const VolumeSlider = ({ volumeNodes }: Props) => {
-  const [volumeValue, setVolumeValue] = useState(volumeNodes.volume);
+export const VolumeSlider = ({ entity }: Props) => {
+  const [volumeValue, setVolumeValue] = useState(entity.volume);
 
   useInterval(() => {
-    setVolumeValue(volumeNodes.volume);
+    setVolumeValue(entity.volume);
   }, 10);
 
   return (
@@ -21,7 +21,7 @@ export const VolumeSlider = ({ volumeNodes }: Props) => {
       max={1}
       value={volumeValue}
       onChange={value => {
-        volumeNodes.volume = value;
+        entity.volume = value;
       }}
     />
   );

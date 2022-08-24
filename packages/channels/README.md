@@ -220,27 +220,37 @@ These are all separate modifiers to the signal, and they stack up: when a sound 
 
 #### Changing volume
 
-You can set the volume of those three like so:
+There are various ways to change the volume. Most importantly, the three cases listed above all have a set of related methods implemented:
+
+```javascript
+const channelsInstance = new Channels({...});
+const myChannel = channelsInstance.getChannel('my-channel');
+
+myChannel.volume = 0.5; // setter
+myChannel.volume; // getter
+myChannel.mute();
+myChannel.unmute();
+myChannel.fadeOut(1);
+myChannel.fadeIn(1);
+
+// all these also exist on a playing sound
+const playingSound = channelsInstance.play('my-sound');
+playingSound.mute();
+
+// and on the library instance (to target the main output)
+channelsInstance.mute();
+```
+
+An alternative way to set the main volume or that of a channel is through `setVolume` or `setMute`, which both accept an optional `channel` property (either a name or an instance).
 ```javascript
 // set the main volume
 channelsInstance.setVolume(0.5);
 
 // set a channel's volume
 channelsInstance.setVolume(0.5, {channel: 'my-channel'});
-myChannel.setVolume(0.5); 
 
-// set a sound volume
-channelsInstance.setVolume(0.5, {sound: mySound});
-mySound.setVolume(0.5);
-```
-Note that passing a sound name is possible, but will affect all playing sounds with that name.
-```javascript
-channelsInstance.setVolume(0.5, {sound: 'my-sound'});
-
-// when also passing a channel (string or reference), only
-// those sounds on that channel are affected
-channelsInstance.setVolume(0.5, {sound: 'my-sound', channel: 'channel'});
-
+// mute a channel
+channelsInstance.setVolume(0.5, {channel: myChannel});
 ```
 
 

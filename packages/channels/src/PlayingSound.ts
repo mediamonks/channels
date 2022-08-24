@@ -10,7 +10,7 @@ export type PlaySoundOptions = {
 
 export type StopSoundOptions = {
   fadeOutTime?: number;
-  onStopped?: () => void;
+  onStopped?: () => void; // todo: rename onComplete?
 };
 
 export class PlayingSound extends HasVolumeNodes {

@@ -1,14 +1,13 @@
-import { VolumeNodes } from '@mediamonks/channels';
-
 type Props = {
-  volumeNodes: VolumeNodes;
+  mute: () => void;
+  unmute: () => void;
 };
 
-export const MuteButtons = ({ volumeNodes }: Props) => {
+export const MuteButtons = ({ mute, unmute }: Props) => {
   return (
     <div>
-      <button onClick={volumeNodes.mute}>mute</button>
-      <button onClick={volumeNodes.unmute}>unmute</button>
+      <button onClick={mute}>mute</button>
+      <button onClick={unmute}>unmute</button>
     </div>
   );
 };

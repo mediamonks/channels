@@ -1,5 +1,6 @@
 import { VolumeNodes } from './VolumeNodes';
 
+// todo: better name? this is exposed to outside as well, when dealing ith volume
 export abstract class HasVolumeNodes {
   private _volumeNodes: VolumeNodes | undefined;
 
