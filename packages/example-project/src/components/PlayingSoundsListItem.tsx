@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
+import { PlayingSound } from '@mediamonks/channels';
 import { useInterval } from '../hooks/useInterval';
 import { ProgressBar } from './ProgressBar';
-import { PlayingSound } from '@mediamonks/channels';
 import { VolumeControls } from './VolumeControls';
 
 type Props = {
@@ -24,7 +24,7 @@ export const PlayingSoundsListItem = ({ playingSound }: Props) => {
           <small>(channel {playingSound.channel?.name || '---'})</small>
           <button onClick={() => playingSound.stop()}>stop</button>
         </p>
-        <VolumeControls entity={playingSound} />
+        <VolumeControls volumeNodes={playingSound.volumeNodes} />
       </div>
       <ProgressBar progress={progress} foregroundColor={'red'} height={5} />
     </div>

@@ -29,7 +29,10 @@ function App() {
         <>
           <ul className="blocks">
             <li style={{ backgroundColor: 'lightgreen' }}>
-              <VolumeControls entity={channelsInstance} showFade={false} />
+              <VolumeControls
+                volumeNodes={channelsInstance.volumeNodes}
+                showFade={false}
+              />
             </li>
           </ul>
 

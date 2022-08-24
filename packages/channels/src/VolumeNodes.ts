@@ -78,4 +78,12 @@ export class VolumeNodes {
       this.volumeGainNode.gain.value = this.volumeValueBeforeMute ?? 1;
     }
   }
+
+  public fadeOut(duration: number, onComplete?: () => void) {
+    this.fadeTo(0, duration, onComplete);
+  }
+
+  public fadeIn(duration: number, onComplete?: () => void) {
+    this.fadeTo(1, duration, onComplete);
+  }
 }

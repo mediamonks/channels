@@ -199,8 +199,8 @@ myChannel.stopAll();
 ### Monophonic vs polyphonic
 A `Channel` can be either **polyphonic** or **monophonic**, which defines how many sounds can be played simultaneously on a channel:
 
-- A `monophonic` channel can play one sound at a time. When playing a sound on such a channel, **all other sounds on that channel are stopped** 
-- A `polyphonic` channel has no restrictions.
+- A `monophonic` channel can play one sound at a time. When playing a sound on such a channel, **all other sounds on that channel will be stopped** 
+- A `polyphonic` channel has no restrictions
 
 This `type` can be set during creation. When no `type` is given, the default `polyphonic` is used.
 ```javascript

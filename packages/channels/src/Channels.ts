@@ -4,7 +4,6 @@ import SampleManager from 'sample-manager';
 import { VolumeNodes } from './VolumeNodes';
 import { CreateChannelOptions, Channel } from './Channel';
 import { PlayingSound, PlaySoundOptions } from './PlayingSound';
-import { HasVolumeNodes } from './HasVolumeNodes';
 
 type ConstructorProps = {
   soundsPath: string;
@@ -13,11 +12,12 @@ type ConstructorProps = {
   sounds?: Array<CreateSound>;
 };
 
-export class Channels extends HasVolumeNodes {
+export class Channels {
   public readonly audioContext: AudioContext;
   public readonly channelsByName: Record<string, Channel> = {};
   public readonly playingSounds: Array<PlayingSound> = [];
   public readonly sampleManager: SampleManager;
+  public readonly volumeNodes: VolumeNodes;
 
   constructor({
     audioContext,
@@ -25,7 +25,6 @@ export class Channels extends HasVolumeNodes {
     soundsPath,
     sounds,
   }: ConstructorProps) {
-    super();
     this.audioContext = audioContext || new AudioContext();
 
     if (!this.audioContext) {
@@ -43,7 +42,7 @@ export class Channels extends HasVolumeNodes {
     }
 
     // everything connect to the main volume controls
-    this.setVolumeNodes(new VolumeNodes(this.audioContext));
+    this.volumeNodes = new VolumeNodes(this.audioContext);
     this.volumeNodes.output.connect(this.audioContext.destination);
   }
 

@@ -2,7 +2,6 @@ import { Sound } from './types';
 import { Channels } from './Channels';
 import { Channel } from './Channel';
 import { VolumeNodes, VolumeOptions } from './VolumeNodes';
-import { HasVolumeNodes } from './HasVolumeNodes';
 
 export type PlaySoundOptions = {
   loop?: boolean;
@@ -14,9 +13,10 @@ export type StopSoundOptions = {
   onStopped?: () => void; // todo: rename onComplete?
 };
 
-export class PlayingSound extends HasVolumeNodes {
+export class PlayingSound {
   private readonly bufferSourceNode: AudioBufferSourceNode;
   private readonly startedAt: number;
+  public readonly volumeNodes: VolumeNodes;
 
   constructor(
     private readonly channelsInstance: Channels,
@@ -25,7 +25,6 @@ export class PlayingSound extends HasVolumeNodes {
     public readonly channel?: Channel,
     { loop = false, fadeInTime = 0, ...volumeOptions }: PlaySoundOptions = {}
   ) {
-    super();
     if (!sound.audioBuffer) {
       // todo: check how/if this works, audioBuffer seems to always exist on Sound/ISample
       throw new Error(`Sound '${sound.name}' is not loaded`);
@@ -41,16 +40,14 @@ export class PlayingSound extends HasVolumeNodes {
     this.bufferSourceNode.loop = loop;
 
     // create and connect volume nodes
-    this.setVolumeNodes(
-      new VolumeNodes(
-        channelsInstance.audioContext,
-        volumeOptions,
-        fadeInTime > 0 ? 0 : 1 // when fading in, initial fade volume is 0
-      )
+    this.volumeNodes = new VolumeNodes(
+      channelsInstance.audioContext,
+      volumeOptions,
+      fadeInTime > 0 ? 0 : 1 // when fading in, initial fade volume is 0
     );
 
     if (fadeInTime) {
-      this.fadeIn(fadeInTime);
+      this.volumeNodes.fadeIn(fadeInTime);
     }
 
     this.volumeNodes.output.connect(destination);
@@ -72,7 +69,7 @@ export class PlayingSound extends HasVolumeNodes {
   public stop = ({ fadeOutTime, onStopped }: StopSoundOptions = {}) => {
     if (fadeOutTime !== undefined && fadeOutTime > 0) {
       // todo: add isStopping param that prevents further actions?
-      this.fadeOut(fadeOutTime, () => {
+      this.volumeNodes.fadeOut(fadeOutTime, () => {
         this.bufferSourceNode.stop(0);
         onStopped?.();
       });

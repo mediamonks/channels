@@ -1,17 +1,17 @@
 import { Slider } from './Slider';
-import { HasVolumeNodes } from '@mediamonks/channels';
 import { useState } from 'react';
 import { useInterval } from '../hooks/useInterval';
+import { VolumeNodes } from '@mediamonks/channels';
 
 type Props = {
-  entity: HasVolumeNodes;
+  volumeNodes: VolumeNodes;
 };
 
-export const FadeDisplay = ({ entity }: Props) => {
-  const [fadeValue, setFadeValue] = useState(entity.fadeVolume);
+export const FadeDisplay = ({ volumeNodes }: Props) => {
+  const [fadeValue, setFadeValue] = useState(volumeNodes.fadeVolume);
 
   useInterval(() => {
-    setFadeValue(entity.fadeVolume);
+    setFadeValue(volumeNodes.fadeVolume);
   }, 10);
 
   return <Slider min={0} max={1} value={fadeValue} enabled={false} />;

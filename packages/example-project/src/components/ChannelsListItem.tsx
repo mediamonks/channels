@@ -1,7 +1,7 @@
-import { VolumeControls } from './VolumeControls';
-import React from 'react';
-import { useChannels } from '../hooks/useChannels';
 import { Channel } from '@mediamonks/channels';
+import React from 'react';
+import { VolumeControls } from './VolumeControls';
+import { useChannels } from '../hooks/useChannels';
 
 type Props = {
   channel: Channel;
@@ -12,10 +12,10 @@ export const ChannelsListItem = ({ channel }: Props) => {
   const sounds = channelsInstance.getAllSounds();
 
   const fadeOut = () => {
-    channel.fadeOut(2);
+    channel.volumeNodes.fadeOut(2);
   };
   const fadeIn = () => {
-    channel.fadeIn(2);
+    channel.volumeNodes.fadeIn(2);
   };
   return (
     <div
@@ -34,7 +34,7 @@ export const ChannelsListItem = ({ channel }: Props) => {
       <button onClick={fadeOut}>fade out</button>
       <button onClick={fadeIn}>fade in</button>
       <div>
-        <VolumeControls entity={channel} />
+        <VolumeControls volumeNodes={channel.volumeNodes} />
       </div>
       <div>
         {sounds.map(sound => (

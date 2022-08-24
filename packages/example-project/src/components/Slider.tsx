@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 const SLIDER_RESOLUTION = 100;
 
@@ -30,8 +30,6 @@ export const Slider = ({
     valueToSliderValue(value, min, max)
   );
 
-  const mouseDownRef = useRef(false);
-
   const onSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
     const parsedSliderValue = parseInt(event.target.value) / SLIDER_RESOLUTION;
     if (!isNaN(parsedSliderValue)) {
@@ -49,8 +47,6 @@ export const Slider = ({
 
   return (
     <input
-      onMouseDown={() => (mouseDownRef.current = true)}
-      onMouseLeave={() => (mouseDownRef.current = false)}
       type="range"
       onChange={onSliderChange}
       value={sliderValue * SLIDER_RESOLUTION}
