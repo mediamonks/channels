@@ -258,4 +258,4 @@ channelsInstance.setVolume(0.5, {channel: myChannel});
 
 > Volume values should be `0` or higher. Keep in mind that going beyond `1` *might* result in [digital clipping](https://en.wikipedia.org/wiki/Clipping_(audio)).
 
-> Muting is setting the `volume` to `0`, with the additional effect that the previous volume value will be stored and used when calling `unmute` 
+> When calling `mute()` the `volume` will be set to `0`, with the additional effect that the previous volume value will be stored and used when calling `unmute()` 
