@@ -29,7 +29,9 @@ export class Channels extends EventDispatcher implements HasVolume {
     sounds,
   }: ConstructorProps) {
     super();
-    this.audioContext = audioContext || new AudioContext();
+    this.audioContext =
+      audioContext ||
+      new (window.AudioContext || (window as any).webkitAudioContext)();
 
     if (!this.audioContext) {
       throw new Error('Failed to create an AudioContext');
