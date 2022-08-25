@@ -6,7 +6,7 @@ import { CreateChannelOptions, Channel } from './Channel';
 import { PlayingSound, PlaySoundOptions } from './PlayingSound';
 import EventDispatcher from 'seng-event';
 import { ChannelsEvent } from './event/ChannelsEvent';
-import { getOptionalChannelByNameOrInstance } from './event/getOptionalChannelOrInstance';
+import { getOptionalChannelByNameOrInstance } from './util/getOptionalChannelOrInstance';
 
 type ConstructorProps = {
   soundsPath: string;
