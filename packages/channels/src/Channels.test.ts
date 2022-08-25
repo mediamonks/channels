@@ -2,6 +2,7 @@ import { Channels } from './Channels';
 import 'web-audio-test-api';
 import { Channel } from './Channel';
 import { VolumeNodes } from './VolumeNodes';
+import SampleManager from 'sample-manager';
 
 it('initializes', () => {
   const channels = new Channels({
@@ -19,7 +20,7 @@ const getAudioGraph = (channels: Channels) =>
 //   console.log(JSON.stringify(json, null, 2));
 // };
 
-describe('Channels', () => {
+describe('Channels instance', () => {
   let channelsInstance: Channels;
 
   beforeEach(() => {
@@ -29,6 +30,22 @@ describe('Channels', () => {
     });
   });
 
+  it('creates a sample manager', () => {
+    expect(channelsInstance.sampleManager).toBeInstanceOf(SampleManager);
+  });
+  it('sets sound list passed in the constructor', () => {
+    const channelsInstanceWithSounds = new Channels({
+      soundsPath: 'path',
+      soundsExtension: 'mp3',
+      sounds: [{ name: 'sound1' }],
+    });
+    expect(
+      channelsInstanceWithSounds.sampleManager.getAllSamples().length
+    ).toBe(1);
+    expect(
+      channelsInstanceWithSounds.sampleManager.getAllSamples()[0].name
+    ).toBe('sound1');
+  });
   it('creates main volume nodes', () => {
     const destinationNode = getAudioGraph(channelsInstance);
     const fadeNode = destinationNode.inputs[0];
@@ -73,9 +90,11 @@ describe('Channels', () => {
   });
   describe('Channel creation', () => {
     it('creates a channel', () => {
-      const channel = channelsInstance?.createChannel('name');
+      const channel = channelsInstance.createChannel('channel');
       expect(channel).toBeInstanceOf(Channel);
       expect(channel.volumeNodes).toBeInstanceOf(VolumeNodes);
+      expect(channelsInstance.getChannels().length).toBe(1);
+      expect(channelsInstance.getChannel('channel').name).toBe('channel');
     });
 
     it('creates and connects volume nodes for channel', () => {
@@ -100,6 +119,17 @@ describe('Channels', () => {
       expect(mainGainNode.inputs.length).toBe(1);
       expect(channelFadeNode.inputs.length).toBe(1);
       expect(channelGainNode.inputs.length).toBe(0);
+    });
+
+    it('connects two channels to the main output', () => {
+      channelsInstance?.createChannel('ch1');
+      channelsInstance?.createChannel('ch2');
+      const destinationNode = getAudioGraph(channelsInstance);
+      const mainFadeNode = destinationNode.inputs[0];
+      const mainGainNode = mainFadeNode.inputs[0];
+
+      expect(mainFadeNode.inputs.length).toBe(1);
+      expect(mainGainNode.inputs.length).toBe(2);
     });
   });
 });
