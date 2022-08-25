@@ -108,7 +108,7 @@ export class Channels extends EventDispatcher implements HasVolume {
 
     this.channelsByName[name] = channel;
 
-    this.dispatchEvent(new ChannelsEvent(ChannelsEvent.types.CHANNELS_UPDATED));
+    this.dispatchEvent(new ChannelsEvent(ChannelsEvent.types.CHANNELS_CHANGE));
 
     return channel;
   };
@@ -132,7 +132,7 @@ export class Channels extends EventDispatcher implements HasVolume {
     if (index > -1) {
       this.playingSounds.splice(index, 1);
       this.dispatchEvent(
-        new ChannelsEvent(ChannelsEvent.types.PLAYING_SOUNDS_UPDATED)
+        new ChannelsEvent(ChannelsEvent.types.PLAYING_SOUNDS_CHANGE)
       );
     } else {
       throw new Error(
@@ -190,19 +190,19 @@ export class Channels extends EventDispatcher implements HasVolume {
 
   /**
    * Gets the volume for a channel.
-   * @param channel
+   * @param channelName
    */
-  public getChannelVolume = (channel: string | Channel) => {
-    return this.getVolumeNodes({ channel }).getVolume();
+  public getChannelVolume = (channelName: string) => {
+    return this.getChannel(channelName).getVolume();
   };
 
   /**
    * Sets the volume for a channel.
+   * @param channelName
    * @param value
-   * @param channel
    */
-  public setChannelVolume = (channel: string | Channel, value: number) => {
-    this.getVolumeNodes({ channel }).setVolume(value);
+  public setChannelVolume = (channelName: string, value: number) => {
+    this.getChannel(channelName).setVolume(value);
   };
 
   /**
@@ -253,7 +253,7 @@ export class Channels extends EventDispatcher implements HasVolume {
     this.playingSounds.push(playingSound);
 
     this.dispatchEvent(
-      new ChannelsEvent(ChannelsEvent.types.PLAYING_SOUNDS_UPDATED)
+      new ChannelsEvent(ChannelsEvent.types.PLAYING_SOUNDS_CHANGE)
     );
 
     return playingSound;

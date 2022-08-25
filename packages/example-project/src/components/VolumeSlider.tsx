@@ -18,12 +18,12 @@ export const VolumeSlider = ({ volumeNodes }: Props) => {
     };
 
     volumeNodes.addEventListener(
-      VolumeNodesEvent.types.VOLUME_CHANGED,
+      VolumeNodesEvent.types.VOLUME_CHANGE,
       onVolumeChange
     );
     return () =>
       volumeNodes.removeEventListener(
-        VolumeNodesEvent.types.VOLUME_CHANGED,
+        VolumeNodesEvent.types.VOLUME_CHANGE,
         onVolumeChange
       );
   }, [volumeNodes]);

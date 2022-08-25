@@ -58,6 +58,12 @@ export class VolumeNodes extends EventDispatcher implements HasVolume {
     return this.volumeGainNode.gain.value;
   }
 
+  private dispatchVolumeChange() {
+    this.dispatchEvent(
+      new VolumeNodesEvent(VolumeNodesEvent.types.VOLUME_CHANGE)
+    );
+  }
+
   public setVolume(value: number) {
     if (value < 0) {
       throw new Error('Cannot set negative volume');
@@ -72,9 +78,8 @@ export class VolumeNodes extends EventDispatcher implements HasVolume {
     } else {
       this.volumeValueBeforeMute = undefined;
     }
-    this.dispatchEvent(
-      new VolumeNodesEvent(VolumeNodesEvent.types.VOLUME_CHANGED)
-    );
+    this.dispatchVolumeChange();
+
     this.volumeGainNode.gain.value = value;
   }
 
@@ -83,12 +88,16 @@ export class VolumeNodes extends EventDispatcher implements HasVolume {
     if (volume > 0) {
       this.volumeValueBeforeMute = volume;
       this.volumeGainNode.gain.value = 0;
+
+      this.dispatchVolumeChange();
     }
   };
 
   public unmute = () => {
     if (this.getVolume() === 0) {
       this.volumeGainNode.gain.value = this.volumeValueBeforeMute ?? 1;
+
+      this.dispatchVolumeChange();
     }
   };
 
