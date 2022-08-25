@@ -50,8 +50,8 @@ channelsInstance.stopAll({channel: 'background-music'});
 myChannel.stopAll();
 
 // set main volume, or for a channel
-channelsInstance.volume = 0.5;
-myChannel.volume = 0.5;
+channelsInstance.setVolume(0.5);
+myChannel.setVolume(0.5);
 
 // same for muting
 channelsInstance.mute();
@@ -222,14 +222,14 @@ These are all separate modifiers to the signal, and they stack up: when a sound 
 
 ### Changing volume
 
-There are various ways to change the volume. Most importantly, the three cases listed above all have a set of related methods implemented:
+To change the volume, the three cases listed above all have a set of related methods implemented:
 
 ```javascript
 const channelsInstance = new Channels({...});
 const myChannel = channelsInstance.getChannel('my-channel');
 
-myChannel.volume = 0.5; // setter
-myChannel.volume; // getter
+myChannel.setVolume(0.5);
+myChannel.getVolume();
 myChannel.mute();
 myChannel.unmute();
 myChannel.fadeOut(1);
@@ -237,22 +237,20 @@ myChannel.fadeIn(1);
 
 // all these also exist on a playing sound
 const playingSound = channelsInstance.play('my-sound');
-playingSound.mute();
+playingSound.setVolume(0.5);
 
 // and on the library instance (to target the main output)
-channelsInstance.mute();
+channelsInstance.setVolume(0.5);
 ```
 
-An alternative way to set the main volume or that of a channel is through `setVolume` or `setMute`, which both accept an optional `channel` property (either a name or an instance).
+Additionally, the `channelsInstance` also has a method to set/get the volume for a channel:
 ```javascript
-// set the main volume
-channelsInstance.setVolume(0.5);
+// accepts both a name or the instance
+channelsInstance.setChannelVolume('my-channel', 0.5);
+channelsInstance.getChannelVolume(myChannel);
 
-// set a channel's volume
-channelsInstance.setVolume(0.5, {channel: 'my-channel'});
-
-// mute a channel
-channelsInstance.setVolume(0.5, {channel: myChannel});
+// although, if you already have a reference, it's easier to do
+myChannel.getVolume();
 ```
 
 

@@ -201,7 +201,7 @@ export class Channels extends EventDispatcher implements HasVolume {
    * @param value
    * @param channel
    */
-  public setChannelVolume = (value: number, channel: string | Channel) => {
+  public setChannelVolume = (channel: string | Channel, value: number) => {
     this.getVolumeNodes({ channel }).setVolume(value);
   };
 
