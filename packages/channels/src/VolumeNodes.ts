@@ -25,7 +25,7 @@ export class VolumeNodes extends EventDispatcher {
     this.volumeGainNode = audioContext.createGain();
     this.fadeGainNode = audioContext.createGain();
 
-    this.volume = initialVolume;
+    this.setVolume(initialVolume);
 
     if (initialMuted) {
       this.mute();
@@ -53,11 +53,11 @@ export class VolumeNodes extends EventDispatcher {
     return this.fadeGainNode.gain.value;
   }
 
-  public get volume(): number {
+  public getVolume(): number {
     return this.volumeGainNode.gain.value;
   }
 
-  public set volume(value: number) {
+  public setVolume(value: number) {
     if (value < 0) {
       throw new Error('Cannot set negative volume');
     }
@@ -78,14 +78,15 @@ export class VolumeNodes extends EventDispatcher {
   }
 
   public mute = () => {
-    if (this.volume > 0) {
-      this.volumeValueBeforeMute = this.volume;
+    const volume = this.getVolume();
+    if (volume > 0) {
+      this.volumeValueBeforeMute = volume;
       this.volumeGainNode.gain.value = 0;
     }
   };
 
   public unmute = () => {
-    if (this.volume === 0) {
+    if (this.getVolume() === 0) {
       this.volumeGainNode.gain.value = this.volumeValueBeforeMute ?? 1;
     }
   };

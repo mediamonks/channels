@@ -9,12 +9,12 @@ type Props = {
 
 export const VolumeSlider = ({ volumeNodes }: Props) => {
   const [volumeSliderValue, setVolumeSliderValue] = useState(
-    volumeNodes.volume
+    volumeNodes.getVolume()
   );
 
   useEffect(() => {
     const onVolumeChange = () => {
-      setVolumeSliderValue(volumeNodes.volume);
+      setVolumeSliderValue(volumeNodes.getVolume());
     };
 
     volumeNodes.addEventListener(
@@ -34,7 +34,7 @@ export const VolumeSlider = ({ volumeNodes }: Props) => {
       max={1}
       value={volumeSliderValue}
       onChange={value => {
-        volumeNodes.volume = value;
+        volumeNodes.setVolume(value);
       }}
     />
   );

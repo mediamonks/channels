@@ -193,7 +193,7 @@ export class Channels extends EventDispatcher {
    * @param channel
    */
   public getVolume = ({ channel }: OptionalChannel = {}) => {
-    return this.getVolumeNodes({ channel }).volume;
+    return this.getVolumeNodes({ channel }).getVolume();
   };
 
   /**
@@ -202,7 +202,7 @@ export class Channels extends EventDispatcher {
    * @param options
    */
   public setVolume = (value: number, { channel }: OptionalChannel = {}) => {
-    this.getVolumeNodes({ channel }).volume = value;
+    this.getVolumeNodes({ channel }).setVolume(value);
   };
 
   /**
