@@ -4,9 +4,11 @@ This repos contains two npm workspaces:
 * `packages/channels`: The `Channels` library
 * `packages/example-project`: A [CRA](https://create-react-app.dev/) based example project, using `Channels`
 
-To run the example project:
+First, install dependencies for both workspaces by running `npm install` in the root folder.
+
+Then, to run the example project:
 ```
-npm install  
+npm run build -w packages/channels
 
 cd packages/example project
 
