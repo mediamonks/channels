@@ -1,4 +1,4 @@
-import { Sound } from './types';
+import { HasVolume, Sound } from './types';
 import { Channels } from './Channels';
 import { Channel } from './Channel';
 import { VolumeNodes, VolumeOptions } from './VolumeNodes';
@@ -13,7 +13,7 @@ export type StopSoundOptions = {
   onStopped?: () => void; // todo: rename onComplete?
 };
 
-export class PlayingSound {
+export class PlayingSound implements HasVolume {
   private readonly bufferSourceNode: AudioBufferSourceNode;
   private readonly startedAt: number;
   public readonly volumeNodes: VolumeNodes;
@@ -88,4 +88,17 @@ export class PlayingSound {
       1
     );
   };
+
+  /*
+  HasVolume implementations
+   */
+  public fadeIn = (duration: number, onComplete?: () => void): void =>
+    this.volumeNodes.fadeIn(duration, onComplete);
+  public fadeOut = (duration: number, onComplete?: () => void): void =>
+    this.volumeNodes.fadeOut(duration, onComplete);
+  public mute = () => this.volumeNodes.mute();
+  public unmute = () => this.volumeNodes.unmute();
+  public getFadeVolume = () => this.volumeNodes.getFadeVolume();
+  public getVolume = () => this.volumeNodes.getVolume();
+  public setVolume = (value: number) => this.volumeNodes.setVolume(value);
 }

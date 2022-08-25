@@ -14,7 +14,7 @@ function App() {
     channelsInstance.createChannel('music', { type: 'monophonic' });
 
     const loadSamples = async () => {
-      await channelsInstance.loadAllSounds();
+      await channelsInstance.loadSounds();
       setIsLoadComplete(true);
     };
 

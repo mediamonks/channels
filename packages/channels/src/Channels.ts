@@ -1,4 +1,4 @@
-import { CreateSound, OptionalChannel } from './types';
+import { CreateSound, HasVolume, OptionalChannel } from './types';
 import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
 import { VolumeNodes } from './VolumeNodes';
@@ -15,7 +15,7 @@ type ConstructorProps = {
   sounds?: Array<CreateSound>;
 };
 
-export class Channels extends EventDispatcher {
+export class Channels extends EventDispatcher implements HasVolume {
   public readonly audioContext: AudioContext;
   private readonly channelsByName: Record<string, Channel> = {};
   private readonly playingSounds: Array<PlayingSound> = [];
@@ -70,7 +70,7 @@ export class Channels extends EventDispatcher {
    * Loads all samples. (alias for sampleManager.loadAllSamples)
    * @param onProgress
    */
-  public loadAllSounds = (onProgress?: (value: number) => void) => {
+  public loadSounds = (onProgress?: (value: number) => void) => {
     return this.sampleManager.loadAllSamples(onProgress);
   };
 
@@ -189,19 +189,19 @@ export class Channels extends EventDispatcher {
   };
 
   /**
-   * Gets the volume for either a channel or the main output.
+   * Gets the volume for a channel.
    * @param channel
    */
-  public getVolume = ({ channel }: OptionalChannel = {}) => {
+  public getChannelVolume = (channel: string | Channel) => {
     return this.getVolumeNodes({ channel }).getVolume();
   };
 
   /**
-   * Sets the volume for either a channel or the main output.
+   * Sets the volume for a channel.
    * @param value
-   * @param options
+   * @param channel
    */
-  public setVolume = (value: number, { channel }: OptionalChannel = {}) => {
+  public setChannelVolume = (value: number, channel: string | Channel) => {
     this.getVolumeNodes({ channel }).setVolume(value);
   };
 
@@ -258,4 +258,17 @@ export class Channels extends EventDispatcher {
 
     return playingSound;
   };
+
+  /*
+  HasVolume implementations
+   */
+  public fadeIn = (duration: number, onComplete?: () => void): void =>
+    this.volumeNodes.fadeIn(duration, onComplete);
+  public fadeOut = (duration: number, onComplete?: () => void): void =>
+    this.volumeNodes.fadeOut(duration, onComplete);
+  public mute = () => this.volumeNodes.mute();
+  public unmute = () => this.volumeNodes.unmute();
+  public getFadeVolume = () => this.volumeNodes.getFadeVolume();
+  public getVolume = () => this.volumeNodes.getVolume();
+  public setVolume = (value: number) => this.volumeNodes.setVolume(value);
 }

@@ -8,10 +8,10 @@ type Props = {
 };
 
 export const FadeDisplay = ({ volumeNodes }: Props) => {
-  const [fadeValue, setFadeValue] = useState(volumeNodes.fadeVolume);
+  const [fadeValue, setFadeValue] = useState(volumeNodes.getFadeVolume());
 
   useInterval(() => {
-    setFadeValue(volumeNodes.fadeVolume);
+    setFadeValue(volumeNodes.getFadeVolume());
   }, 10);
 
   return <Slider min={0} max={1} value={fadeValue} enabled={false} />;
