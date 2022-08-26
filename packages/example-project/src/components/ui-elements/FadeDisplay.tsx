@@ -1,6 +1,6 @@
 import { Slider } from './Slider';
 import { useState } from 'react';
-import { useInterval } from '../hooks/useInterval';
+import { useInterval } from '../../hooks/useInterval';
 import { VolumeNodes } from '@mediamonks/channels';
 
 type Props = {

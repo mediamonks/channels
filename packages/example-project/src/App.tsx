@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { ChannelsList } from './components/ChannelsList';
-import { SoundsList } from './components/SoundsList';
-import { PlayingSoundsList } from './components/PlayingSoundsList';
-import { VolumeControls } from './components/VolumeControls';
+import { ChannelsList } from './components/channels/ChannelsList';
+import { SoundsList } from './components/sounds/SoundsList';
+import { PlayingSoundsList } from './components/playingsounds/PlayingSoundsList';
+import { VolumeControls } from './components/ui-elements/VolumeControls';
 import { useChannels } from './hooks/useChannels';
 
 function App() {

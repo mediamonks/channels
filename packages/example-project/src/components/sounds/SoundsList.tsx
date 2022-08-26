@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useChannels } from '../hooks/useChannels';
+import { useChannels } from '../../hooks/useChannels';
 import { SoundsListItem } from './SoundsListItem';
 
 export const SoundsList = () => {

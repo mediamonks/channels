@@ -1,5 +1,5 @@
 import React from 'react';
-import { useChannels } from '../hooks/useChannels';
+import { useChannels } from '../../hooks/useChannels';
 import { ChannelsListItem } from './ChannelsListItem';
 
 export const ChannelsList = () => {
