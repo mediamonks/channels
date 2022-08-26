@@ -1,8 +1,6 @@
 import { tweenAudioParamToValue } from './util/fadeGain';
-import { VolumeEvent } from './event/VolumeEvent';
+import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 import { HasVolume } from './types';
-import { Channel } from './Channel';
-import { PlayingSound } from './PlayingSound';
 import { Channels } from './Channels';
 
 export type VolumeOptions = {
@@ -14,8 +12,6 @@ export type VolumeOptions = {
 VolumeTarget refers to the instance that contains the VolumeNodes
 instance. This entity is sent along when dispatching VOLUME_CHANGE events
  */
-// todo: better name
-export type VolumeTarget = Channel | PlayingSound | undefined;
 
 export class VolumeNodes implements HasVolume {
   private readonly volumeGainNode: GainNode;
@@ -26,8 +22,8 @@ export class VolumeNodes implements HasVolume {
   private volumeValueBeforeMute: number | undefined;
 
   constructor(
-    private readonly channelsInstance: Channels,
-    private readonly volumeTarget: VolumeTarget,
+    private readonly channelsInstance: Channels, //
+    private readonly volumeTarget: HasVolume,
     { initialVolume = 1, initialMuted = false }: VolumeOptions = {},
     initialFadeVolume = 1
   ) {
@@ -68,7 +64,7 @@ export class VolumeNodes implements HasVolume {
 
   private dispatchVolumeChange() {
     this.channelsInstance.dispatchEvent(
-      new VolumeEvent(VolumeEvent.types.VOLUME_CHANGE, {
+      new VolumeChangeEvent(VolumeChangeEvent.types.VOLUME_CHANGE, {
         target: this.volumeTarget,
       })
     );
