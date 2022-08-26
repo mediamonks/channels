@@ -25,7 +25,7 @@ export class Channel implements HasVolume {
   ) {
     this.type = type;
 
-    this.volumeNodes = new VolumeNodes(channelsInstance.audioContext, {
+    this.volumeNodes = new VolumeNodes(channelsInstance, this, {
       initialVolume,
       initialMuted,
     });

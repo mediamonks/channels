@@ -41,7 +41,8 @@ export class PlayingSound implements HasVolume {
 
     // create and connect volume nodes
     this.volumeNodes = new VolumeNodes(
-      channelsInstance.audioContext,
+      channelsInstance,
+      this,
       volumeOptions,
       fadeInTime > 0 ? 0 : 1 // when fading in, initial fade volume is 0
     );

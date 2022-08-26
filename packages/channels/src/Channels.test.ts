@@ -3,6 +3,7 @@ import 'web-audio-test-api';
 import { Channel } from './Channel';
 import { VolumeNodes } from './VolumeNodes';
 import SampleManager from 'sample-manager';
+import { ChannelsEvent } from './event/ChannelsEvent';
 
 it('initializes', () => {
   const channels = new Channels({
@@ -68,6 +69,15 @@ describe('Channels instance', () => {
     expect(gainNode.gain.value).toBe(0.5);
     expect(fadeNode.gain.value).toBe(1);
   });
+  // it('dispatches an event when setting main volume', () => {
+  //   const listener = jest.fn();
+  //   channelsInstance.addEventListener(
+  //     VolumeNodesEvent.types.VOLUME_CHANGE,
+  //     listener
+  //   );
+  //   channelsInstance.setVolume(0.5);
+  //   expect(listener).toHaveBeenCalled();
+  // });
   it('mutes main volume', () => {
     channelsInstance.mute();
     const destinationNode = getAudioGraph(channelsInstance);
@@ -95,6 +105,15 @@ describe('Channels instance', () => {
       expect(channel.volumeNodes).toBeInstanceOf(VolumeNodes);
       expect(channelsInstance.getChannels().length).toBe(1);
       expect(channelsInstance.getChannel('channel').name).toBe('channel');
+    });
+    it('dispatches an event when creating a channel', () => {
+      const listener = jest.fn();
+      channelsInstance.addEventListener(
+        ChannelsEvent.types.CHANNELS_CHANGE,
+        listener
+      );
+      channelsInstance.createChannel('channel');
+      expect(listener).toHaveBeenCalled();
     });
 
     it('creates and connects volume nodes for channel', () => {

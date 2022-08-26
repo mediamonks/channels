@@ -1,14 +1,23 @@
 import { tweenAudioParamToValue } from './util/fadeGain';
-import EventDispatcher from 'seng-event';
-import { VolumeNodesEvent } from './event/VolumeNodesEvent';
+import { VolumeEvent } from './event/VolumeEvent';
 import { HasVolume } from './types';
+import { Channel } from './Channel';
+import { PlayingSound } from './PlayingSound';
+import { Channels } from './Channels';
 
 export type VolumeOptions = {
   initialVolume?: number;
   initialMuted?: boolean;
 };
 
-export class VolumeNodes extends EventDispatcher implements HasVolume {
+/*
+VolumeTarget refers to the instance that contains the VolumeNodes
+instance. This entity is sent along when dispatching VOLUME_CHANGE events
+ */
+// todo: better name
+export type VolumeTarget = Channel | PlayingSound | undefined;
+
+export class VolumeNodes implements HasVolume {
   private readonly volumeGainNode: GainNode;
   private readonly fadeGainNode: GainNode;
   public readonly input: GainNode; // todo should be private?
@@ -17,14 +26,13 @@ export class VolumeNodes extends EventDispatcher implements HasVolume {
   private volumeValueBeforeMute: number | undefined;
 
   constructor(
-    private readonly audioContext: AudioContext,
+    private readonly channelsInstance: Channels,
+    private readonly volumeTarget: VolumeTarget,
     { initialVolume = 1, initialMuted = false }: VolumeOptions = {},
     initialFadeVolume = 1
   ) {
-    super();
-
-    this.volumeGainNode = audioContext.createGain();
-    this.fadeGainNode = audioContext.createGain();
+    this.volumeGainNode = channelsInstance.audioContext.createGain();
+    this.fadeGainNode = channelsInstance.audioContext.createGain();
 
     this.setVolume(initialVolume);
 
@@ -59,8 +67,10 @@ export class VolumeNodes extends EventDispatcher implements HasVolume {
   }
 
   private dispatchVolumeChange() {
-    this.dispatchEvent(
-      new VolumeNodesEvent(VolumeNodesEvent.types.VOLUME_CHANGE)
+    this.channelsInstance.dispatchEvent(
+      new VolumeEvent(VolumeEvent.types.VOLUME_CHANGE, {
+        target: this.volumeTarget,
+      })
     );
   }
 
