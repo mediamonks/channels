@@ -1,26 +1,26 @@
-import { VolumeNodes } from '@mediamonks/channels';
+import { HasVolume } from '@mediamonks/channels';
 import { VolumeSlider } from './VolumeSlider';
 import { MuteButtons } from './MuteButtons';
 import { FadeDisplay } from './FadeDisplay';
 
 type Props = {
-  volumeNodes: VolumeNodes;
+  entity: HasVolume;
   showFade?: boolean;
 };
 
-export const VolumeControls = ({ volumeNodes, showFade = true }: Props) => {
+export const VolumeControls = ({ entity, showFade = true }: Props) => {
   return (
     <div style={{ padding: 10 }}>
       <div>
-        <MuteButtons mute={volumeNodes.mute} unmute={volumeNodes.unmute} />
+        <MuteButtons mute={entity.mute} unmute={entity.unmute} />
       </div>
 
       <div>
-        <VolumeSlider volumeNodes={volumeNodes} />
+        <VolumeSlider entity={entity} />
       </div>
       {showFade && (
         <div>
-          <FadeDisplay volumeNodes={volumeNodes} />
+          <FadeDisplay entity={entity} />
         </div>
       )}
     </div>

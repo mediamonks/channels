@@ -34,7 +34,7 @@ export const ChannelsListItem = ({ channel }: Props) => {
       <button onClick={fadeOut}>fade out</button>
       <button onClick={fadeIn}>fade in</button>
       <div>
-        <VolumeControls volumeNodes={channel.volumeNodes} />
+        <VolumeControls entity={channel} />
       </div>
       <div>
         {sounds.map(sound => (

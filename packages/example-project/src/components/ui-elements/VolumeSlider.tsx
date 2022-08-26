@@ -1,32 +1,36 @@
 import { Slider } from './Slider';
 import { useEffect, useState } from 'react';
-import { VolumeNodes, VolumeNodesEvent } from '@mediamonks/channels';
+import { HasVolume, VolumeChangeData, VolumeEvent } from '@mediamonks/channels';
+import { useChannels } from '../../hooks/useChannels';
 
 type Props = {
-  volumeNodes: VolumeNodes;
+  entity: HasVolume;
   enabled?: boolean;
 };
 
-export const VolumeSlider = ({ volumeNodes }: Props) => {
+export const VolumeSlider = ({ entity }: Props) => {
+  const channelsInstance = useChannels();
   const [volumeSliderValue, setVolumeSliderValue] = useState(
-    volumeNodes.getVolume()
+    entity.getVolume()
   );
 
   useEffect(() => {
-    const onVolumeChange = () => {
-      setVolumeSliderValue(volumeNodes.getVolume());
+    const onVolumeChange = ({ target }: VolumeChangeData) => {
+      if (target === entity) {
+        setVolumeSliderValue(entity.getVolume());
+      }
     };
 
-    volumeNodes.addEventListener(
-      VolumeNodesEvent.types.VOLUME_CHANGE,
+    channelsInstance.addEventListener(
+      VolumeEvent.types.VOLUME_CHANGE,
       onVolumeChange
     );
     return () =>
-      volumeNodes.removeEventListener(
-        VolumeNodesEvent.types.VOLUME_CHANGE,
+      channelsInstance.removeEventListener(
+        VolumeEvent.types.VOLUME_CHANGE,
         onVolumeChange
       );
-  }, [volumeNodes]);
+  }, [channelsInstance]);
 
   return (
     <Slider
@@ -34,7 +38,7 @@ export const VolumeSlider = ({ volumeNodes }: Props) => {
       max={1}
       value={volumeSliderValue}
       onChange={value => {
-        volumeNodes.setVolume(value);
+        entity.setVolume(value);
       }}
     />
   );
