@@ -96,6 +96,10 @@ TLDR: The `audioContext` that is used must have been created or resumed on user 
 
 > To check whether the context is suspended: `channelsInstance.contextIsSuspended`
 
+### React
+
+For React projects, there is a [use-channels hook](https://www.npmjs.com/package/use-channels) to create and provide a `Channels` instance.
+
 ## Loading files
 `Channels` uses the [sample-manager](https://www.npmjs.com/package/sample-manager) for dealing with files, and creates an instance of it named `sampleManager`. 
 
