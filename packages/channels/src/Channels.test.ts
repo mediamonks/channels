@@ -4,6 +4,7 @@ import { Channel } from './Channel';
 import { VolumeNodes } from './VolumeNodes';
 import SampleManager from 'sample-manager';
 import { ChannelsEvent } from './event/ChannelsEvent';
+import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 
 it('initializes', () => {
   const channels = new Channels({
@@ -69,15 +70,33 @@ describe('Channels instance', () => {
     expect(gainNode.gain.value).toBe(0.5);
     expect(fadeNode.gain.value).toBe(1);
   });
-  // it('dispatches an event when setting main volume', () => {
-  //   const listener = jest.fn();
-  //   channelsInstance.addEventListener(
-  //     VolumeNodesEvent.types.VOLUME_CHANGE,
-  //     listener
-  //   );
-  //   channelsInstance.setVolume(0.5);
-  //   expect(listener).toHaveBeenCalled();
-  // });
+  it('dispatches an event when setting main volume', () => {
+    const listener = jest.fn();
+    channelsInstance.addEventListener(
+      VolumeChangeEvent.types.VOLUME_CHANGE,
+      listener
+    );
+    channelsInstance.setVolume(0.5);
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ target: channelsInstance }),
+      })
+    );
+  });
+  it("dispatches an event when setting a channel's volume", () => {
+    const listener = jest.fn();
+    channelsInstance.addEventListener(
+      VolumeChangeEvent.types.VOLUME_CHANGE,
+      listener
+    );
+    const channel = channelsInstance.createChannel('mychannel');
+    channel.setVolume(0.5);
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ target: channel }),
+      })
+    );
+  });
   it('mutes main volume', () => {
     channelsInstance.mute();
     const destinationNode = getAudioGraph(channelsInstance);
