@@ -162,7 +162,7 @@ Channels are a way of grouping sounds that are played. They have their audio bus
 The reason to create a channel is to easily do things with a group of sounds, for example:
 - change their volume
 - apply effects
-- stopping them
+- stop all of them
 
 ### Creating a channel
 The only thing needed to create a channel is a name:
@@ -170,8 +170,13 @@ The only thing needed to create a channel is a name:
 ```javascript
 const myChannel = channelsInstance.createChannel('my-channel');
 ```
-> A channel name must be unique.
-> 
+> All channel names must be unique.
+
+### Playing a sound on a channel
+```javascript
+myChannel.play('my-sound');
+```
+
 ### Monophonic vs polyphonic
 A `Channel` can be either **polyphonic** or **monophonic**, which defines how many sounds can be played simultaneously on a channel:
 
