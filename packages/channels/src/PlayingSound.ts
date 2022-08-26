@@ -41,6 +41,7 @@ export class PlayingSound implements HasVolume {
 
     // create and connect volume nodes
     this.volumeNodes = new VolumeNodes(
+      channelsInstance.audioContext,
       channelsInstance,
       this,
       volumeOptions,

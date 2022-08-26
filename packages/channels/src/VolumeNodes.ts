@@ -1,7 +1,7 @@
 import { tweenAudioParamToValue } from './util/fadeGain';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 import { HasVolume } from './types';
-import { Channels } from './Channels';
+import EventDispatcher from 'seng-event';
 
 export type VolumeOptions = {
   initialVolume?: number;
@@ -22,13 +22,14 @@ export class VolumeNodes implements HasVolume {
   private volumeValueBeforeMute: number | undefined;
 
   constructor(
-    private readonly channelsInstance: Channels, //
+    readonly audioContext: AudioContext,
+    private readonly eventDispatcher: EventDispatcher,
     private readonly volumeTarget: HasVolume,
     { initialVolume = 1, initialMuted = false }: VolumeOptions = {},
-    initialFadeVolume = 1
+    initialFadeVolume = 1 // todo: shouldnt this be part of VolumeOptions?
   ) {
-    this.volumeGainNode = channelsInstance.audioContext.createGain();
-    this.fadeGainNode = channelsInstance.audioContext.createGain();
+    this.volumeGainNode = audioContext.createGain();
+    this.fadeGainNode = audioContext.createGain();
 
     this.setVolume(initialVolume);
 
@@ -63,7 +64,7 @@ export class VolumeNodes implements HasVolume {
   }
 
   private dispatchVolumeChange() {
-    this.channelsInstance.dispatchEvent(
+    this.eventDispatcher.dispatchEvent(
       new VolumeChangeEvent(VolumeChangeEvent.types.VOLUME_CHANGE, {
         target: this.volumeTarget,
       })
