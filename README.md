@@ -2,7 +2,7 @@
 This repository contains three npm workspaces: 
 
 * `packages/channels`: The `Channels` library
-* `packages/use-channels`: A React hook to consume the `Channels` library
+* `packages/use-channels`: A React hook to use the `Channels` library
 * `packages/example-project`: A [CRA](https://create-react-app.dev/) based example project, using `Channels`
 
 First, install dependencies for both workspaces by running `npm install` in the root folder.
