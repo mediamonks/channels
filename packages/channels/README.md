@@ -94,7 +94,7 @@ TLDR: The `audioContext` that is used must have been created or resumed on user 
 
 ### React
 
-For React projects, there is a [use-channels hook](https://www.npmjs.com/package/use-channels) to create and provide a `Channels` instance.
+For React projects, there is a [hook](https://www.npmjs.com/package/use-channels) to create and provide a `Channels` instance.
 
 ## Loading files
 `Channels` uses the [sample-manager](https://www.npmjs.com/package/sample-manager) for dealing with files, and creates an instance of it named `sampleManager`. 
@@ -126,7 +126,7 @@ await channelsInstance.loadSounds();
 // optionally, keep track of progress
 await channelsInstance.loadSounds((progress) => {...});
 ```
-> The `loadAllSounds` method is an alias for `sampleManager.loadAllSamples`
+> The `loadSounds` method is an alias for `sampleManager.loadAllSamples`
 
 For more info on how to define sound files, please refer to the [sample-manager page](https://www.npmjs.com/package/sample-manager).
 
@@ -152,16 +152,40 @@ channelsInstance.play('sound', {
 The play function returns a reference to the playing sound, containing various methods to interact with the sound.
 ```javascript
 const sound = channelsInstance.play('sound');
+sound.setVolume(0.5);
 sound.stop();
 ```
 
 ## Channels
-Channels are a way of grouping sounds that are played. Despite being in the actual name of this package, they might not be needed at all.
+Channels are a way of grouping sounds that are played. They are completely optional and might not be necessary, since sounds can also be played without a channel.
 
-The reason to create a channel is to easily do things with a group of sounds: 
+The reason to create a channel is to easily do things with a group of sounds, for example:
 - change their volume
 - apply effects
 - stopping them
+
+## Creating a channel
+The only thing needed to create a channel is a name:
+
+```javascript
+const myChannel = channelsInstance.createChannel('my-channel');
+```
+> A channel name must be unique.
+> 
+### Monophonic vs polyphonic
+A `Channel` can be either **polyphonic** or **monophonic**, which defines how many sounds can be played simultaneously on a channel:
+
+- A `monophonic` channel can play one sound at a time. When playing a sound on such a channel, **all other sounds on that channel will be stopped**
+- A `polyphonic` channel has no restrictions
+
+This `type` can be set during creation. When no `type` is given, the default `polyphonic` is used.
+```javascript
+channelsInstance.createChannel('monophonic-channel', {type: "monophonic"});
+channelsInstance.createChannel('polyphonic-channel');
+```
+Using a monophonic channel can be extremely helpful when creating a background music layer where the music loop needs to be changed now and then.
+
+> The term `monophonic` is used loosely. Since sounds can fade in and out, even on a monophonic channel multiple sounds can be heard at the same time. 
 
 ### Methods operating on a channel
 Various methods on the `Channels` instance that take an optional `channel` property are duplicated on a `Channel` object, for which the `channel` no longer needs to be supplied. 
@@ -195,19 +219,6 @@ channelsInstance.stopAll({ channel: myChannel});
 // although the latter is easier like this:
 myChannel.stopAll();
 ```
-
-### Monophonic vs polyphonic
-A `Channel` can be either **polyphonic** or **monophonic**, which defines how many sounds can be played simultaneously on a channel:
-
-- A `monophonic` channel can play one sound at a time. When playing a sound on such a channel, **all other sounds on that channel will be stopped** 
-- A `polyphonic` channel has no restrictions
-
-This `type` can be set during creation. When no `type` is given, the default `polyphonic` is used.
-```javascript
-channelsInstance.createChannel('monophonic-channel', {type: "monophonic"});
-channelsInstance.createChannel('polyphonic-channel');
-```
-Using a monophonic channel can be extremely helpful when creating a background music layer where the music loop needs to be changed now and then. 
 
 
 ## Volume
