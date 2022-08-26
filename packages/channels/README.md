@@ -25,7 +25,7 @@ const channelsInstance = new Channels({
 });
 
 // load files
-await channelsInstance.loadAllSounds();
+await channelsInstance.loadSounds();
 
 // play a sound
 channelsInstance.play('sound1');
@@ -34,7 +34,7 @@ channelsInstance.play('sound1');
 channelsInstance.createChannel('background-music');
 channelsInstance.play('sound2', {channel: 'background-music'});
 
-// another way to play it on a channel
+// the exact same through the actual channel
 const myChannel = channelsInstance.createChannel('ui-sounds');
 myChannel.play('sound2');
 
@@ -45,17 +45,13 @@ sound1.stop();
 // stop all sounds
 channelsInstance.stopAll();
 
-// stop all sounds on a channel (2 different ways)
+// stop all sounds on a channel 
 channelsInstance.stopAll({channel: 'background-music'});
-myChannel.stopAll();
+myChannel.stopAll(); // or through the actual channel
 
 // set main volume, or for a channel
 channelsInstance.setVolume(0.5);
 myChannel.setVolume(0.5);
-
-// same for muting
-channelsInstance.mute();
-myChannel.mute();
 ```
 
 ## Creating a Channels instance
@@ -125,10 +121,10 @@ const channelsInstance = new Channels({
 channelsInstance.sampleManager.addSamples(soundFiles);
 
 // either way, loading can be done like so:
-await channelsInstance.loadAllSounds();
+await channelsInstance.loadSounds();
 
 // optionally, keep track of progress
-await channelsInstance.loadAllSounds((progress) => {...});
+await channelsInstance.loadSounds((progress) => {...});
 ```
 > The `loadAllSounds` method is an alias for `sampleManager.loadAllSamples`
 
