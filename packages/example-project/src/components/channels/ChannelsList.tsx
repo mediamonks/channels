@@ -1,14 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useChannels } from '../../hooks/useChannels';
 import { ChannelsListItem } from './ChannelsListItem';
+import { AddChannel } from './AddChannel';
+import { ChannelsEvent } from '@mediamonks/channels';
 
 export const ChannelsList = () => {
   const channelsInstance = useChannels();
-  const channels = channelsInstance.getChannels();
+  const [channels, setChannels] = useState(channelsInstance.getChannels());
+
+  useEffect(() => {
+    const onChannelsChange = () => {
+      setChannels(channelsInstance.getChannels());
+    };
+    channelsInstance.addEventListener(
+      ChannelsEvent.types.CHANNELS_CHANGE,
+      onChannelsChange
+    );
+    return () =>
+      channelsInstance.removeEventListener(
+        ChannelsEvent.types.CHANNELS_CHANGE,
+        onChannelsChange
+      );
+  }, []);
 
   return (
     <div>
       <h2>Channels</h2>
+      <AddChannel />
       <ul className="blocks">
         {channels.map(channel => (
           <li key={channel.name}>
