@@ -164,7 +164,7 @@ The reason to create a channel is to easily do things with a group of sounds, fo
 - apply effects
 - stopping them
 
-## Creating a channel
+### Creating a channel
 The only thing needed to create a channel is a name:
 
 ```javascript
