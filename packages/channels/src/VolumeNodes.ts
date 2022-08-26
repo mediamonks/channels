@@ -34,7 +34,7 @@ export class VolumeNodes implements HasVolume {
     this.setVolume(initialVolume);
 
     if (initialMuted) {
-      this.mute();
+      this.mute(); // todo: this dispatches an event, probably not what we want
     }
 
     this.fadeGainNode.gain.value = initialFadeVolume;

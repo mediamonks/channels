@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useChannels } from '../../hooks/useChannels';
+import { useChannels } from '@mediamonks/use-channels';
 import { PlayingSoundsListItem } from './PlayingSoundsListItem';
 import { PlayingSound } from '@mediamonks/channels';
 import { ChannelsEvent } from '@mediamonks/channels/dist/event/ChannelsEvent';

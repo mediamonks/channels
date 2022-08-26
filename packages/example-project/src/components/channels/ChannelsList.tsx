@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useChannels } from '../../hooks/useChannels';
 import { ChannelsListItem } from './ChannelsListItem';
 import { AddChannel } from './AddChannel';
 import { ChannelsEvent } from '@mediamonks/channels';
+import { useChannels } from '@mediamonks/use-channels';
 
 export const ChannelsList = () => {
   const channelsInstance = useChannels();

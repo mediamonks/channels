@@ -1,4 +1,4 @@
-import { useChannels } from '../../hooks/useChannels';
+import { useChannels } from '@mediamonks/use-channels';
 import { useState } from 'react';
 
 export const AddChannel = () => {

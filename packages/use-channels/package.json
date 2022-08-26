@@ -1,0 +1,23 @@
+{
+  "name": "@mediamonks/use-channels",
+  "version": "0.1.0",
+  "description": "React hook for using Channels",
+  "main": "dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "jest --config ./jest.config.js",
+    "lint": "eslint --ignore-path .gitignore --ext .ts .",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
+  },
+  "peerDependencies": {
+    "react": "^18.2.0"
+  }
+}

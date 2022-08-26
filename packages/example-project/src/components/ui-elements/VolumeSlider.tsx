@@ -1,7 +1,7 @@
 import { Slider } from './Slider';
 import { useEffect, useState } from 'react';
 import { HasVolume, VolumeChangeEvent } from '@mediamonks/channels';
-import { useChannels } from '../../hooks/useChannels';
+import { useChannels } from '@mediamonks/use-channels';
 
 type Props = {
   entity: HasVolume;

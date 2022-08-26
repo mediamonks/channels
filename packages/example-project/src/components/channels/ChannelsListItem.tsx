@@ -1,7 +1,7 @@
 import { Channel } from '@mediamonks/channels';
+import { useChannels } from '@mediamonks/use-channels';
 import React from 'react';
 import { VolumeControls } from '../ui-elements/VolumeControls';
-import { useChannels } from '../../hooks/useChannels';
 
 type Props = {
   channel: Channel;

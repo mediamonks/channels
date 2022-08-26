@@ -3,7 +3,7 @@ import { ChannelsList } from './components/channels/ChannelsList';
 import { SoundsList } from './components/sounds/SoundsList';
 import { PlayingSoundsList } from './components/playingsounds/PlayingSoundsList';
 import { VolumeControls } from './components/ui-elements/VolumeControls';
-import { useChannels } from './hooks/useChannels';
+import { useChannels } from '@mediamonks/use-channels';
 
 function App() {
   const [isLoadComplete, setIsLoadComplete] = useState(false);
