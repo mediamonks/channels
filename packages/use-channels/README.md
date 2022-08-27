@@ -57,14 +57,14 @@ export const ChildComponent = () => {
 import { useVolumeChange } from '@mediamonks/use-channels';
 
 // listen to main volume changes
-useVolume({
+useVolumeChange({
     onChange: (value: number) => {
         // ...
     },
 });
 
 // listen to channel volume changes
-useVolume({
+useVolumeChange({
     target: myChannel,
     onChange: (value: number) => {
         // ...
