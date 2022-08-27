@@ -1,21 +1,23 @@
 # use-channels
 
-Hook for using the [Channels](https://www.npmjs.com/package/@mediamonks/use-channels) package in a React project.
+A set of hooks for using the [Channels](https://www.npmjs.com/package/@mediamonks/use-channels) package in a React project.
 
 ## Installation
 ```
 npm install @mediamonks/use-channels
 ```
 
-## How to use
-Somewhere in your React application (probably at the root of the app tree), add the provider which will:
+## Overview
 
-- create a `Channels` instance
-- provide the instance through React Context to the component's children 
+Available hooks: 
+- `useChannels`: provides a `Channels` instance
+- `useVolumeChange`: adds listeners for volume changes
+
+### useChannels
+Before being able to use `useChannels`, somewhere in your React application (probably at the root of the app tree), a `<ChannelsProvider>` must be present. This will create a `Channels` instance and provide it through React Context to the component's children. 
 
 ```javascript
 import { ChannelsProvider } from '@mediamonks/use-channels';
-
 
 export const ParentComponent = () => {
    return <ChannelsProvider
@@ -45,4 +47,27 @@ export const ChildComponent = () => {
     return <button onClick={onClick}>play!</button>
     
 }
+```
+
+### useVolumeChange
+
+`useVolumeChange` is a hook that makes listening to volume changes a bit easier. It has an optional `target` prop, which can either be a `Channel` or a `PlayingSound`. When omitted, changes refer to the main volume. 
+
+```javascript
+import { useVolumeChange } from '@mediamonks/use-channels';
+
+// listen to main volume changes
+useVolume({
+    onChange: (value: number) => {
+        // ...
+    },
+});
+
+// listen to channel volume changes
+useVolume({
+    target: myChannel,
+    onChange: (value: number) => {
+        // ...
+    },
+});
 ```
