@@ -48,6 +48,7 @@ describe('Channels instance', () => {
       channelsInstanceWithSounds.sampleManager.getAllSamples()[0].name
     ).toBe('sound1');
   });
+
   it('creates main volume nodes', () => {
     const destinationNode = getAudioGraph(channelsInstance);
     const fadeNode = destinationNode.inputs[0];
@@ -61,61 +62,102 @@ describe('Channels instance', () => {
     expect(fadeNode.inputs.length).toBe(1);
     expect(gainNode.inputs.length).toBe(0);
   });
-  it('sets main volume', () => {
-    channelsInstance.setVolume(0.5);
-    const destinationNode = getAudioGraph(channelsInstance);
-    const fadeNode = destinationNode.inputs[0];
-    const gainNode = fadeNode.inputs[0];
+  describe('Volume', function () {
+    describe('Main Volume', function () {
+      it('Sets volume', () => {
+        channelsInstance.setVolume(0.5);
+        const destinationNode = getAudioGraph(channelsInstance);
+        const fadeNode = destinationNode.inputs[0];
+        const gainNode = fadeNode.inputs[0];
 
-    expect(gainNode.gain.value).toBe(0.5);
-    expect(fadeNode.gain.value).toBe(1);
-  });
-  it('dispatches an event when setting main volume', () => {
-    const listener = jest.fn();
-    channelsInstance.addEventListener(
-      VolumeChangeEvent.types.VOLUME_CHANGE,
-      listener
-    );
-    channelsInstance.setVolume(0.5);
-    expect(listener).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: expect.objectContaining({ target: channelsInstance }),
-      })
-    );
-  });
-  it("dispatches an event when setting a channel's volume", () => {
-    const listener = jest.fn();
-    channelsInstance.addEventListener(
-      VolumeChangeEvent.types.VOLUME_CHANGE,
-      listener
-    );
-    const channel = channelsInstance.createChannel('mychannel');
-    channel.setVolume(0.5);
-    expect(listener).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: expect.objectContaining({ target: channel }),
-      })
-    );
-  });
-  it('mutes main volume', () => {
-    channelsInstance.mute();
-    const destinationNode = getAudioGraph(channelsInstance);
-    const fadeNode = destinationNode.inputs[0];
-    const gainNode = fadeNode.inputs[0];
+        expect(gainNode.gain.value).toBe(0.5);
+        expect(fadeNode.gain.value).toBe(1);
+        expect(channelsInstance.getVolume()).toBe(0.5);
+      });
+      it('dispatches an event when setting main volume', () => {
+        const listener = jest.fn();
+        channelsInstance.addEventListener(
+          VolumeChangeEvent.types.VOLUME_CHANGE,
+          listener
+        );
+        channelsInstance.setVolume(0.5);
+        expect(listener).toHaveBeenCalledWith(
+          expect.objectContaining({
+            data: expect.objectContaining({ target: channelsInstance }),
+          })
+        );
+      });
+      it('mutes main volume', () => {
+        channelsInstance.mute();
+        const destinationNode = getAudioGraph(channelsInstance);
+        const fadeNode = destinationNode.inputs[0];
+        const gainNode = fadeNode.inputs[0];
 
-    expect(gainNode.gain.value).toBe(0);
-    expect(fadeNode.gain.value).toBe(1);
-  });
-  it('restores volume after unmuting', () => {
-    channelsInstance.setVolume(0.5);
-    channelsInstance.mute();
-    channelsInstance.unmute();
-    const destinationNode = getAudioGraph(channelsInstance);
-    const fadeNode = destinationNode.inputs[0];
-    const gainNode = fadeNode.inputs[0];
+        expect(channelsInstance.getVolume()).toBe(0);
+        expect(gainNode.gain.value).toBe(0);
+        expect(fadeNode.gain.value).toBe(1);
+      });
+      it('restores volume after unmuting', () => {
+        channelsInstance.setVolume(0.5);
+        channelsInstance.mute();
+        channelsInstance.unmute();
+        const destinationNode = getAudioGraph(channelsInstance);
+        const fadeNode = destinationNode.inputs[0];
+        const gainNode = fadeNode.inputs[0];
 
-    expect(gainNode.gain.value).toBe(0.5);
-    expect(fadeNode.gain.value).toBe(1);
+        expect(channelsInstance.getVolume()).toBe(0.5);
+        expect(gainNode.gain.value).toBe(0.5);
+        expect(fadeNode.gain.value).toBe(1);
+      });
+    });
+    describe('Channel volume', () => {
+      it('sets channel volume', () => {
+        const channel = channelsInstance.createChannel('ch');
+
+        channel.setVolume(0.5);
+        const destinationNode = getAudioGraph(channelsInstance);
+        const mainFadeNode = destinationNode.inputs[0];
+        const mainGainNode = mainFadeNode.inputs[0];
+        const channelFadeNode = mainGainNode.inputs[0];
+        const channelGainNode = channelFadeNode.inputs[0];
+
+        expect(channelGainNode.gain.value).toBe(0.5);
+        expect(channelGainNode.gain.value).toBe(0.5);
+        expect(channelsInstance.getChannel('ch').getVolume()).toBe(0.5);
+
+        // set through method on main lib
+        channelsInstance.setChannelVolume('ch', 0.25);
+        const destinationNode2 = getAudioGraph(channelsInstance);
+        const mainFadeNode2 = destinationNode2.inputs[0];
+        const mainGainNode2 = mainFadeNode2.inputs[0];
+        const channelFadeNode2 = mainGainNode2.inputs[0];
+        const channelGainNode2 = channelFadeNode2.inputs[0];
+
+        expect(channelGainNode2.gain.value).toBe(0.25);
+        expect(channelFadeNode2.gain.value).toBe(1);
+        expect(channelsInstance.getChannel('ch').getVolume()).toBe(0.25);
+      });
+      it("dispatches an event when setting a channel's volume", () => {
+        const listener = jest.fn();
+        channelsInstance.addEventListener(
+          VolumeChangeEvent.types.VOLUME_CHANGE,
+          listener
+        );
+        const channel = channelsInstance.createChannel('ch');
+        channel.setVolume(0.5);
+        expect(listener).toHaveBeenCalledWith(
+          expect.objectContaining({
+            data: expect.objectContaining({ target: channel }),
+          })
+        );
+      });
+    });
+
+    describe('Sound volume', () => {
+      expect(true).toBe(true); // todo
+    });
+
+    // todo: volume change on sound
   });
   describe('Channel creation', () => {
     it('creates a channel', () => {

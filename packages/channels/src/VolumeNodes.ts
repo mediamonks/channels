@@ -26,7 +26,7 @@ export class VolumeNodes implements HasVolume {
     private readonly eventDispatcher: EventDispatcher,
     private readonly volumeTarget: HasVolume,
     { initialVolume = 1, initialMuted = false }: VolumeOptions = {},
-    initialFadeVolume = 1 // todo: shouldnt this be part of VolumeOptions?
+    initialFadeVolume = 1 // todo: shouldn't this be part of VolumeOptions?
   ) {
     this.volumeGainNode = audioContext.createGain();
     this.fadeGainNode = audioContext.createGain();
