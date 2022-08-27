@@ -1,11 +1,12 @@
 import gsap from 'gsap';
 
+// todo: rename to more generic audio param changes.
 /**
- * Absolutely ridiculous that i have to use this, but i can't get AudioParam's
- * ramps to work on firefox, specifically creating a new ramp while one is already
- * busy. May be doing something wrong but have never successfully implemented those.
- * Ideally, we do not need gsap, although the api is so much nicer than the
- * garbage of setting tween like this up on an AudioParam
+ * Applies gradual changes on a given AudioParam.
+ *
+ * Note that these changes are done using tweens instead of the
+ * actual AudioParam functionality, because of issues with getting
+ * this reliably to work on different browsers.
  * @param audioParam
  * @param value
  * @param duration

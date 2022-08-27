@@ -8,11 +8,10 @@ export type VolumeOptions = {
   initialMuted?: boolean;
 };
 
-/*
-VolumeTarget refers to the instance that contains the VolumeNodes
-instance. This entity is sent along when dispatching VOLUME_CHANGE events
+/**
+ * Class that creates two gainNodes, one for the user to freely set,
+ * one for applying fades.
  */
-
 export class VolumeNodes implements HasVolume {
   private readonly volumeGainNode: GainNode;
   private readonly fadeGainNode: GainNode;

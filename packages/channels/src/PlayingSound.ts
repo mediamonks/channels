@@ -3,6 +3,9 @@ import { Channels } from './Channels';
 import { Channel } from './Channel';
 import { VolumeNodes } from './VolumeNodes';
 
+/**
+ * Represents a playing sound.
+ */
 export class PlayingSound implements HasVolume {
   private readonly bufferSourceNode: AudioBufferSourceNode;
   private readonly startedAt: number;

@@ -10,7 +10,11 @@ function App() {
   const channelsInstance = useChannels();
 
   useEffect(() => {
-    channelsInstance.createChannel('main', { initialVolume: 0.5 });
+    channelsInstance.createChannel(
+      'main',
+      { initialVolume: 0.5 },
+      { initialVolume: 0.3, fadeInTime: 1, fadeOutTime: 1 }
+    );
     channelsInstance.createChannel('music', { type: 'monophonic' });
 
     const loadSamples = async () => {
