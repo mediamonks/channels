@@ -1,17 +1,7 @@
-import { HasVolume, Sound } from './types';
+import { HasVolume, PlaySoundOptions, Sound, StopSoundOptions } from './types';
 import { Channels } from './Channels';
 import { Channel } from './Channel';
-import { VolumeNodes, VolumeOptions } from './VolumeNodes';
-
-export type PlaySoundOptions = {
-  loop?: boolean;
-  fadeInTime?: number;
-} & VolumeOptions;
-
-export type StopSoundOptions = {
-  fadeOutTime?: number;
-  onStopped?: () => void;
-};
+import { VolumeNodes } from './VolumeNodes';
 
 export class PlayingSound implements HasVolume {
   private readonly bufferSourceNode: AudioBufferSourceNode;

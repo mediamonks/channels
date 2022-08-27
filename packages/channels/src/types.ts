@@ -1,5 +1,6 @@
 import { ICreateSample, ISample } from 'sample-manager';
 import { Channel } from './Channel';
+import { VolumeOptions } from './VolumeNodes';
 
 export type Sound = ISample;
 export type CreateSound = ICreateSample;
@@ -17,3 +18,15 @@ export interface HasVolume {
   fadeOut: (duration: number, onComplete?: () => void) => void;
   fadeIn: (duration: number, onComplete?: () => void) => void;
 }
+
+export type DefaultSoundOptions = PlaySoundOptions & StopSoundOptions;
+
+export type PlaySoundOptions = {
+  loop?: boolean;
+  fadeInTime?: number;
+} & VolumeOptions;
+
+export type StopSoundOptions = {
+  fadeOutTime?: number;
+  onStopped?: () => void;
+};

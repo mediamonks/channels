@@ -1,9 +1,15 @@
-import { CreateSound, HasVolume, OptionalChannel } from './types';
+import {
+  CreateSound,
+  DefaultSoundOptions,
+  HasVolume,
+  OptionalChannel,
+  PlaySoundOptions,
+} from './types';
 import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
 import { VolumeNodes } from './VolumeNodes';
 import { CreateChannelOptions, Channel } from './Channel';
-import { PlayingSound, PlaySoundOptions } from './PlayingSound';
+import { PlayingSound } from './PlayingSound';
 import EventDispatcher from 'seng-event';
 import { ChannelsEvent } from './event/ChannelsEvent';
 import { getOptionalChannelByNameOrInstance } from './util/getOptionalChannelOrInstance';
@@ -94,10 +100,12 @@ export class Channels extends EventDispatcher implements HasVolume {
    * Creates a new channel.
    * @param name
    * @param createChannelOptions
+   * @param defaultSoundOptions
    */
   public createChannel = (
     name: string,
-    createChannelOptions: CreateChannelOptions = {}
+    createChannelOptions: CreateChannelOptions = {},
+    defaultSoundOptions: DefaultSoundOptions = {}
   ): Channel => {
     if (name === '') {
       throw new Error('Channel name cannot be blank');
@@ -106,7 +114,12 @@ export class Channels extends EventDispatcher implements HasVolume {
       throw new Error(`Channel with name '${name}' already exists`);
     }
 
-    const channel = new Channel(name, this, createChannelOptions);
+    const channel = new Channel(
+      name,
+      this,
+      createChannelOptions,
+      defaultSoundOptions
+    );
 
     this.channelsByName[name] = channel;
 
@@ -239,6 +252,8 @@ export class Channels extends EventDispatcher implements HasVolume {
       channel,
       this.channelsByName
     );
+
+    // const defaultSoundOptions = ch;
 
     const playingSound = new PlayingSound(
       this,
