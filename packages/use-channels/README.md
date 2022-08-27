@@ -1,6 +1,6 @@
 # use-channels
 
-A set of hooks for using the [Channels](https://www.npmjs.com/package/@mediamonks/use-channels) package in a React project.
+A set of hooks for using the [Channels](https://www.npmjs.com/package/@mediamonks/channels) package in a React project.
 
 ## Installation
 ```
