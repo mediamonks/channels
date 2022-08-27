@@ -163,6 +163,18 @@ describe('Channels instance', () => {
         expect(channelGainNode.gain.value).toBe(0.5);
         expect(channel.getVolume()).toBe(0.5);
       });
+      it('creates channel with initial mute', () => {
+        const channel = channelsInstance.createChannel('channel', {
+          initialMuted: true,
+        });
+        const destinationNode = getAudioGraph(channelsInstance);
+        const mainFadeNode = destinationNode.inputs[0];
+        const mainGainNode = mainFadeNode.inputs[0];
+        const channelFadeNode = mainGainNode.inputs[0];
+        const channelGainNode = channelFadeNode.inputs[0];
+        expect(channelGainNode.gain.value).toBe(0);
+        expect(channel.getVolume()).toBe(0);
+      });
     });
 
     describe('Sound volume', () => {
