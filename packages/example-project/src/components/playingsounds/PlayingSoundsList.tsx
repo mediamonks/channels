@@ -1,30 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useChannels } from '@mediamonks/use-channels';
+import React from 'react';
+import { useChannels, usePlayingSounds } from '@mediamonks/use-channels';
 import { PlayingSoundsListItem } from './PlayingSoundsListItem';
-import { PlayingSound } from '@mediamonks/channels';
-import { ChannelsEvent } from '@mediamonks/channels/dist/event/ChannelsEvent';
 
 export const PlayingSoundsList = () => {
   const channelsInstance = useChannels();
-  const [playingSounds, setPlayingSounds] = useState<Array<PlayingSound>>([]);
+
+  const playingSounds = usePlayingSounds();
 
   const stopAll = () => channelsInstance.stopAll();
-
-  useEffect(() => {
-    const onPlayingSoundsUpdate = () => {
-      setPlayingSounds(channelsInstance.getPlayingSounds());
-    };
-
-    channelsInstance.addEventListener(
-      ChannelsEvent.types.PLAYING_SOUNDS_CHANGE,
-      onPlayingSoundsUpdate
-    );
-    return () =>
-      channelsInstance.removeEventListener(
-        ChannelsEvent.types.PLAYING_SOUNDS_CHANGE,
-        onPlayingSoundsUpdate
-      );
-  }, [channelsInstance]);
 
   return (
     <div>
