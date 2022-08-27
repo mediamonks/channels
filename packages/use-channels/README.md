@@ -12,6 +12,7 @@ npm install @mediamonks/use-channels
 Available hooks: 
 - `useChannels`: provides a `Channels` instance
 - `useVolumeChange`: adds listeners for volume changes
+- `usePlayingSounds`: keeps track of sounds that are being played
 
 ### useChannels
 Before being able to use `useChannels`, somewhere in your React application (probably at the root of the app tree), a `<ChannelsProvider>` must be present. This will create a `Channels` instance and provide it through React Context to the component's children. 
