@@ -71,3 +71,15 @@ useVolumeChange({
     },
 });
 ```
+
+### usePlayingSounds
+
+The `usePlayingSounds` hook returns a list of all the currently playing sounds.
+
+```javascript
+import { usePlayingSounds } from '@mediamonks/use-channels';
+
+const playingSounds = usePlayingSounds();
+
+
+```
