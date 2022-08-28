@@ -7,11 +7,15 @@ export const SoundsList = () => {
   const [loopIsChecked, setLoopIsChecked] = useState(false);
   const [fadeInTime, setFadeInTime] = useState(0);
 
-  const playSound = (soundName: string, channelName?: string) => {
+  const playSound = (
+    soundName: string,
+    channelName: string | undefined,
+    usePlayOptions: boolean
+  ) => {
     channelsInstance.play(soundName, {
       channel: channelName,
-      // loop: loopIsChecked,
-      // fadeInTime,
+      loop: usePlayOptions ? loopIsChecked : undefined,
+      fadeInTime: usePlayOptions ? fadeInTime : undefined,
     });
   };
 

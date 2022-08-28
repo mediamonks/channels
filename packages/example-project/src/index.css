@@ -19,3 +19,7 @@ ul.blocks li {
 .block-padding {
   padding: 10px;
 }
+
+h3 {
+  margin: 0
+}

@@ -18,15 +18,18 @@ export const PlayingSoundsListItem = ({ playingSound }: Props) => {
   return (
     <div style={{ backgroundColor: 'lightblue' }}>
       <div className="block-padding">
-        <p>
-          <strong>{playingSound.sound.name}</strong>
-          &nbsp;
-          <small>(channel {playingSound.channel?.name || '---'})</small>
-          <button onClick={() => playingSound.stop()}>stop</button>
-          <button onClick={() => playingSound.stop({ fadeOutTime: 2 })}>
-            stop with fade
-          </button>
-        </p>
+        <h3>
+          {playingSound.sound.name}{' '}
+          {playingSound.channel && (
+            <small>(channel {playingSound.channel?.name})</small>
+          )}
+        </h3>
+
+        <button onClick={() => playingSound.stop()}>stop</button>
+        <button onClick={() => playingSound.stop({ fadeOutTime: 2 })}>
+          stop with fade
+        </button>
+
         <VolumeControls entity={playingSound} />
       </div>
       <ProgressBar progress={progress} foregroundColor={'red'} height={5} />
