@@ -13,7 +13,7 @@ function App() {
     channelsInstance.createChannel(
       'main',
       { initialVolume: 0.5 },
-      { initialVolume: 0.3, fadeInTime: 1, fadeOutTime: 1 }
+      { initialVolume: 0.3, fadeInTime: 1, fadeOutTime: 1, loop: true }
     );
     channelsInstance.createChannel('music', { type: 'monophonic' });
 

@@ -10,8 +10,8 @@ export const SoundsList = () => {
   const playSound = (soundName: string, channelName?: string) => {
     channelsInstance.play(soundName, {
       channel: channelName,
-      loop: loopIsChecked,
-      fadeInTime,
+      // loop: loopIsChecked,
+      // fadeInTime,
     });
   };
 
