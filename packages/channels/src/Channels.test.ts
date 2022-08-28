@@ -1,3 +1,4 @@
+import { newServer } from 'mock-xmlhttprequest';
 import { Channels } from './Channels';
 import 'web-audio-test-api';
 import { Channel } from './Channel';
@@ -9,6 +10,17 @@ import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 const getAudioGraph = (channels: Channels) =>
   (channels.audioContext as any).toJSON();
 
+const server = newServer({
+  get: [
+    () => true,
+    {
+      status: 200,
+      body: new ArrayBuffer(10000000),
+    } as any,
+  ],
+});
+server.install();
+
 describe('Channels instance', () => {
   let channelsInstance: Channels;
 
@@ -17,6 +29,10 @@ describe('Channels instance', () => {
       soundsPath: 'path',
       soundsExtension: 'mp3',
     });
+
+    // sets a default audiobuffer for loaded sounds
+    (channelsInstance.audioContext as any).DECODE_AUDIO_DATA_RESULT =
+      channelsInstance.audioContext.createBuffer(2, 44100, 44100);
   });
 
   it('initializes', () => {
@@ -45,27 +61,31 @@ describe('Channels instance', () => {
     ).toBe('sound1');
   });
 
-  it('creates main volume nodes', () => {
-    const destinationNode = getAudioGraph(channelsInstance);
-    const fadeNode = destinationNode.inputs[0];
-    const gainNode = fadeNode.inputs[0];
-
-    expect(gainNode.name).toBe('GainNode');
-    expect(fadeNode.name).toBe('GainNode');
-    expect(gainNode.gain.value).toBe(1);
-    expect(fadeNode.gain.value).toBe(1);
-    expect(destinationNode.inputs.length).toBe(1);
-    expect(fadeNode.inputs.length).toBe(1);
-    expect(gainNode.inputs.length).toBe(0);
-  });
   describe('Loading sounds', () => {
-    it('loads samples', () => {
-      expect(true).toBe(true);
+    it('loads a sample', async () => {
+      channelsInstance.sampleManager.addSample({ name: 'sound' });
+      await channelsInstance.loadSounds();
+      expect(
+        channelsInstance.sampleManager.getSampleByName('sound').audioBuffer
+      ).toBeInstanceOf(AudioBuffer);
     });
   });
 
   describe('Volume', function () {
     describe('Main Volume', function () {
+      it('creates main volume nodes', () => {
+        const destinationNode = getAudioGraph(channelsInstance);
+        const fadeNode = destinationNode.inputs[0];
+        const gainNode = fadeNode.inputs[0];
+
+        expect(gainNode.name).toBe('GainNode');
+        expect(fadeNode.name).toBe('GainNode');
+        expect(gainNode.gain.value).toBe(1);
+        expect(fadeNode.gain.value).toBe(1);
+        expect(destinationNode.inputs.length).toBe(1);
+        expect(fadeNode.inputs.length).toBe(1);
+        expect(gainNode.inputs.length).toBe(0);
+      });
       it('Sets volume', () => {
         channelsInstance.setVolume(0.5);
         const destinationNode = getAudioGraph(channelsInstance);

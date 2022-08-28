@@ -19,7 +19,7 @@
   },
   "peerDependencies": {
     "react": "^18.2.0",
-    "@mediamonks/channels": "^0.3.1"
+    "@mediamonks/channels": "*"
   },
   "homepage": "https://github.com/petervdn/channels/"
 }
