@@ -38,11 +38,13 @@ function App() {
           </ul>
 
           <div style={{ display: 'flex' }}>
-            <div style={{ width: '50%', padding: 5 }}>
+            <div style={{ width: '33%', padding: 5 }}>
               <SoundsList />
+            </div>
+            <div style={{ width: '33%', padding: 5 }}>
               <ChannelsList />
             </div>
-            <div style={{ width: '50%', padding: 5 }}>
+            <div style={{ width: '33%', padding: 5 }}>
               <PlayingSoundsList />
             </div>
           </div>

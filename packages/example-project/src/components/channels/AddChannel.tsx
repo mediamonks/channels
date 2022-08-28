@@ -35,7 +35,7 @@ export const AddChannel = () => {
   };
 
   return (
-    <>
+    <div style={{ backgroundColor: 'lightgray', padding: 10 }}>
       <div>
         <input
           type="text"
@@ -79,6 +79,6 @@ export const AddChannel = () => {
       <div>
         <button onClick={onAddChannelClick}>add channel</button>
       </div>
-    </>
+    </div>
   );
 };

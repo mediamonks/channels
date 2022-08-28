@@ -23,6 +23,9 @@ export const PlayingSoundsListItem = ({ playingSound }: Props) => {
           &nbsp;
           <small>(channel {playingSound.channel?.name || '---'})</small>
           <button onClick={() => playingSound.stop()}>stop</button>
+          <button onClick={() => playingSound.stop({ fadeOutTime: 2 })}>
+            stop with fade
+          </button>
         </p>
         <VolumeControls entity={playingSound} />
       </div>
