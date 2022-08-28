@@ -23,7 +23,8 @@ ul.blocks li {
 }
 
 .top-block {
-  background-color: lightgrey;
+  background-color: lightslategray;
+  color: white;
 }
 
 h3 {

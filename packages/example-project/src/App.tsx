@@ -23,7 +23,7 @@ function App() {
     };
 
     loadSamples();
-  }, []);
+  }, [channelsInstance]);
 
   return (
     <div style={{ margin: 20 }}>
@@ -32,7 +32,7 @@ function App() {
       {isLoadComplete && (
         <>
           <ul className="blocks">
-            <li style={{ backgroundColor: 'lightslategray' }}>
+            <li style={{ backgroundColor: 'lightgray' }}>
               <VolumeControls entity={channelsInstance} showFade={false} />
             </li>
           </ul>
