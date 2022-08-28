@@ -12,11 +12,12 @@ export const SoundsList = () => {
     channelName: string | undefined,
     usePlayOptions: boolean
   ) => {
-    channelsInstance.play(soundName, {
-      channel: channelName,
-      loop: usePlayOptions ? loopIsChecked : undefined,
-      fadeInTime: usePlayOptions ? fadeInTime : undefined,
-    });
+    const options: any = { channel: channelName };
+    if (usePlayOptions) {
+      options.loop = loopIsChecked;
+      options.fadeInTime = fadeInTime;
+    }
+    channelsInstance.play(soundName, options);
   };
 
   return (

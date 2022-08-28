@@ -32,7 +32,7 @@ function App() {
       {isLoadComplete && (
         <>
           <ul className="blocks">
-            <li style={{ backgroundColor: 'lightgreen' }}>
+            <li style={{ backgroundColor: 'lightslategray' }}>
               <VolumeControls entity={channelsInstance} showFade={false} />
             </li>
           </ul>

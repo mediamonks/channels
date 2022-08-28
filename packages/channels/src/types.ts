@@ -24,6 +24,7 @@ export type PlayStopOptions = PlaySoundOptions & StopSoundOptions;
 export type PlaySoundOptions = {
   loop?: boolean;
   fadeInTime?: number;
+  // todo: add onComplete
 } & VolumeOptions;
 
 export type StopSoundOptions = {
