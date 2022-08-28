@@ -12,7 +12,6 @@ import { CreateChannelOptions, Channel } from './Channel';
 import { PlayingSound } from './PlayingSound';
 import EventDispatcher from 'seng-event';
 import { ChannelsEvent } from './event/ChannelsEvent';
-import { getOptionalChannelByNameOrInstance } from './util/getOptionalChannelOrInstance';
 
 type ConstructorProps = {
   soundsPath: string;
@@ -66,6 +65,20 @@ export class Channels extends EventDispatcher implements HasVolume {
       ? this.audioContext.resume()
       : Promise.resolve();
   };
+
+  /**
+   * Utility function to handle often used optional channel parameters,
+   * which can be either the channel's name or a channel instance
+   * @param channel
+   */
+  private getOptionalChannelByNameOrInstance(
+    channel: OptionalChannel['channel']
+  ): Channel | undefined {
+    if (typeof channel === 'string' && !this.channelsByName[channel]) {
+      throw new Error(`Channel '${channel}' does not exist`);
+    }
+    return typeof channel === 'string' ? this.channelsByName[channel] : channel;
+  }
 
   /**
    * Check if the context is in the suspended state.
@@ -162,10 +175,7 @@ export class Channels extends EventDispatcher implements HasVolume {
    * @param channelName
    */
   public stopAll = ({ channel }: OptionalChannel = {}) => {
-    const channelToStop = getOptionalChannelByNameOrInstance(
-      channel,
-      this.channelsByName
-    );
+    const channelToStop = this.getOptionalChannelByNameOrInstance(channel);
 
     this.playingSounds
       .filter(({ channel }) =>
@@ -195,10 +205,7 @@ export class Channels extends EventDispatcher implements HasVolume {
    * @private
    */
   private getVolumeNodes = ({ channel }: OptionalChannel = {}): VolumeNodes => {
-    const optionalChannel = getOptionalChannelByNameOrInstance(
-      channel,
-      this.channelsByName
-    );
+    const optionalChannel = this.getOptionalChannelByNameOrInstance(channel);
 
     return optionalChannel?.volumeNodes || this.volumeNodes;
   };
@@ -248,10 +255,7 @@ export class Channels extends EventDispatcher implements HasVolume {
     if (!sound) {
       throw new Error(`Cannot find sound: '${name}`);
     }
-    const channelForSound = getOptionalChannelByNameOrInstance(
-      channel,
-      this.channelsByName
-    );
+    const channelForSound = this.getOptionalChannelByNameOrInstance(channel);
 
     // const defaultSoundOptions = ch;
 
