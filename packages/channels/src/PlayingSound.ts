@@ -16,8 +16,10 @@ export class PlayingSound implements HasVolume {
     public readonly sound: Sound,
     private readonly destination: AudioNode,
     public readonly channel?: Channel,
-    { loop = false, fadeInTime = 0, ...volumeOptions }: PlaySoundOptions = {}
+    playSoundOptions: PlaySoundOptions = {}
   ) {
+    const { loop = false, fadeInTime = 0, ...volumeOptions } = playSoundOptions;
+
     if (!sound.audioBuffer) {
       // todo: check how/if this works, audioBuffer seems to always exist on Sound/ISample
       throw new Error(`Sound '${sound.name}' is not loaded`);

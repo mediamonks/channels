@@ -20,6 +20,10 @@ ul.blocks li {
   padding: 10px;
 }
 
+.top-block {
+  background-color: lightgrey;
+}
+
 h3 {
   margin: 0
 }

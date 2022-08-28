@@ -12,7 +12,9 @@ export const PlayingSoundsList = () => {
   return (
     <div>
       <h2>Playing sounds</h2>
-      <button onClick={stopAll}>stop all sounds</button>
+      <div className="block-padding top-block">
+        <button onClick={stopAll}>stop all sounds</button>
+      </div>
       <ul className={'blocks'}>
         {playingSounds.map((playingSound, index) => (
           <li key={index}>

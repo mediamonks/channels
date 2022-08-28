@@ -22,7 +22,7 @@ export const SoundsList = () => {
   return (
     <div>
       <h2>Available sounds</h2>
-      <div>
+      <div className="block-padding top-block">
         <label>
           play looped
           <input

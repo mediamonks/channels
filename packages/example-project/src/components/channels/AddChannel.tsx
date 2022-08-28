@@ -35,7 +35,7 @@ export const AddChannel = () => {
   };
 
   return (
-    <div style={{ backgroundColor: 'lightgray', padding: 10 }}>
+    <div className="block-padding top-block">
       <div>
         <input
           type="text"

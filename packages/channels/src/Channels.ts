@@ -12,6 +12,7 @@ import { CreateChannelOptions, Channel } from './Channel';
 import { PlayingSound } from './PlayingSound';
 import EventDispatcher from 'seng-event';
 import { ChannelsEvent } from './event/ChannelsEvent';
+import { mergeObjectsWhenPropExists } from './util/mergeObjectsWhenPropExists';
 
 type ConstructorProps = {
   soundsPath: string;
@@ -257,11 +258,8 @@ export class Channels extends EventDispatcher implements HasVolume {
     }
     const channelForSound = this.getOptionalChannelByNameOrInstance(channel);
 
-    const playStopOptionsFromChannel =
-      channelForSound?.defaultPlayStopOptions || {};
-    const resultingPlayStopOptions = Object.assign(
-      {},
-      playStopOptionsFromChannel,
+    const resultingPlayStopOptions = mergeObjectsWhenPropExists(
+      channelForSound?.defaultPlayStopOptions || {},
       playSoundOptions
     );
 
