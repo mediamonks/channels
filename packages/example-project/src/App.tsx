@@ -12,10 +12,15 @@ function App() {
   useEffect(() => {
     channelsInstance.createChannel(
       'main',
-      { initialVolume: 0.5 },
-      { initialVolume: 0.3, fadeInTime: 1, fadeOutTime: 1, loop: true }
+      { initialVolume: 0.5, type: 'monophonic' },
+      {
+        initialVolume: 0.3,
+        fadeInTime: 2,
+        fadeOutTime: 2,
+        loop: true,
+      }
     );
-    channelsInstance.createChannel('music', { type: 'monophonic' });
+    channelsInstance.createChannel('music');
 
     const loadSamples = async () => {
       await channelsInstance.loadSounds();

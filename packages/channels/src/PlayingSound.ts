@@ -62,7 +62,14 @@ export class PlayingSound implements HasVolume {
     this.channelsInstance.removePlayingSound(this);
   };
 
-  public stop = ({ fadeOutTime, onStopped }: StopSoundOptions = {}) => {
+  public stop = (stopSoundOptions: StopSoundOptions = {}) => {
+    const mergedOptions = Object.assign(
+      this.channel?.defaultPlayStopOptions || {},
+      stopSoundOptions
+    );
+
+    const { fadeOutTime, onStopped } = mergedOptions;
+
     if (fadeOutTime !== undefined && fadeOutTime > 0) {
       // todo: add isStopping param that prevents further actions?
       this.volumeNodes.fadeOut(fadeOutTime, () => {
