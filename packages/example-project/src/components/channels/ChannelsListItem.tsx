@@ -25,10 +25,12 @@ export const ChannelsListItem = ({ channel }: Props) => {
       }}
     >
       <h3>
-        Channel: {channel.name}{' '}
-        <small>{JSON.stringify(channel.defaultSoundOptions)}</small>
+        Channel: {channel.name}
         {channel.type === 'monophonic' ? <small>(monophonic)</small> : null}
       </h3>
+      <p>
+        <small>{JSON.stringify(channel.defaultSoundOptions)}</small>
+      </p>
       <button onClick={() => channelsInstance.stopAll({ channel })}>
         stop all sounds on this channel
       </button>

@@ -1,6 +1,6 @@
 import { Channels } from './Channels';
 import { VolumeNodes, VolumeOptions } from './VolumeNodes';
-import { DefaultSoundOptions, HasVolume } from './types';
+import { HasVolume, PlayStopOptions } from './types';
 
 export type ChannelType = 'monophonic' | 'polyphonic';
 
@@ -22,7 +22,7 @@ export class Channel implements HasVolume {
       initialMuted,
       type = 'polyphonic',
     }: CreateChannelOptions = {},
-    public readonly defaultSoundOptions?: DefaultSoundOptions
+    public readonly defaultPlayStopOptions?: PlayStopOptions
   ) {
     this.type = type;
 

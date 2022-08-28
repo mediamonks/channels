@@ -19,7 +19,7 @@ export interface HasVolume {
   fadeIn: (duration: number, onComplete?: () => void) => void;
 }
 
-export type DefaultSoundOptions = PlaySoundOptions & StopSoundOptions;
+export type PlayStopOptions = PlaySoundOptions & StopSoundOptions;
 
 export type PlaySoundOptions = {
   loop?: boolean;
