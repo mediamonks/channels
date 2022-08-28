@@ -6,21 +6,8 @@ import SampleManager from 'sample-manager';
 import { ChannelsEvent } from './event/ChannelsEvent';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 
-it('initializes', () => {
-  const channels = new Channels({
-    soundsPath: '',
-    soundsExtension: '',
-  });
-
-  expect(channels).toBeInstanceOf(Channels);
-});
-
 const getAudioGraph = (channels: Channels) =>
   (channels.audioContext as any).toJSON();
-
-// const logJson = (json: any) => {
-//   console.log(JSON.stringify(json, null, 2));
-// };
 
 describe('Channels instance', () => {
   let channelsInstance: Channels;
@@ -30,6 +17,15 @@ describe('Channels instance', () => {
       soundsPath: 'path',
       soundsExtension: 'mp3',
     });
+  });
+
+  it('initializes', () => {
+    const channels = new Channels({
+      soundsPath: '',
+      soundsExtension: '',
+    });
+
+    expect(channels).toBeInstanceOf(Channels);
   });
 
   it('creates a sample manager', () => {
@@ -62,6 +58,12 @@ describe('Channels instance', () => {
     expect(fadeNode.inputs.length).toBe(1);
     expect(gainNode.inputs.length).toBe(0);
   });
+  describe('Loading sounds', () => {
+    it('loads samples', () => {
+      expect(true).toBe(true);
+    });
+  });
+
   describe('Volume', function () {
     describe('Main Volume', function () {
       it('Sets volume', () => {
