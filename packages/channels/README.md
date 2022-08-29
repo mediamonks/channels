@@ -72,7 +72,7 @@ Finally, sounds also have an internal volume instance:
 
 ## Creating a Channels instance
 
-When creating a `Channels` object, two parameters are required: the location of the sound files, and the file extension to use:
+Before we can do anything, an instance of `Channels` has to be created. Two parameters are required: the location of the sound files, and the file extension to use:
 
 ```javascript
 new Channels({
