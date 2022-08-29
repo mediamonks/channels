@@ -68,17 +68,15 @@ export class PlayingSound implements HasVolume {
       stopSoundOptions
     );
 
-    const { fadeOutTime, onStopped } = mergedOptions;
+    const { fadeOutTime } = mergedOptions;
 
     if (fadeOutTime !== undefined && fadeOutTime > 0) {
       // todo: add isStopping param that prevents further actions?
       this.volumeNodes.fadeOut(fadeOutTime, () => {
         this.bufferSourceNode.stop(0);
-        onStopped?.();
       });
     } else {
       this.bufferSourceNode.stop(0);
-      onStopped?.();
     }
   };
 

@@ -29,5 +29,4 @@ export type PlaySoundOptions = {
 
 export type StopSoundOptions = {
   fadeOutTime?: number;
-  onStopped?: () => void;
 };
