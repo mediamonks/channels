@@ -59,7 +59,7 @@ Everything in `Channels` connects to one main volume node, which is the final st
 
 Sounds can be played either on a channel, or directly on the main output.
 
-![Main structure](https://github.com/petervdn/channels/blob/830898e927855823f311960070afcf7158fc0ab6/assets/overview-diagram.png?raw=true)
+![Main structure](https://github.com/petervdn/channels/blob/14-add-explanatory-image-of-routing-to-readme/assets/overview-diagram.png?raw=true)
 
 ### Volume structure
 The volume instances contain two gain nodes: one for applying volume, and a separate one for fading. They can also contain an option chain of audio effects.
@@ -67,8 +67,8 @@ The volume instances contain two gain nodes: one for applying volume, and a sepa
 ![Volume structure](https://github.com/petervdn/channels/blob/14-add-explanatory-image-of-routing-to-readme/assets/volume-diagram.png?raw=true)
 
 ### Sound structure
-
-
+Finally, sounds also have an internal volume instance:
+![Sound structure](https://github.com/petervdn/channels/blob/14-add-explanatory-image-of-routing-to-readme/assets/sound-diagram.png?raw=true)
 ## Creating a Channels instance
 
 When creating a `Channels` object, two parameters are required: the location of the sound files, and the extension to use:
