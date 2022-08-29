@@ -69,6 +69,7 @@ The volume instances contain two gain nodes: one for applying volume, and a sepa
 ### Sound structure
 Finally, sounds also have an internal volume instance:
 <div align="center"><img src="https://github.com/petervdn/channels/blob/14-add-explanatory-image-of-routing-to-readme/assets/sound-diagram.png?raw=true"/></div>
+
 ## Creating a Channels instance
 
 When creating a `Channels` object, two parameters are required: the location of the sound files, and the extension to use:
