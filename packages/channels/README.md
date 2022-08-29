@@ -54,22 +54,6 @@ channelsInstance.setVolume(0.5);
 myChannel.setVolume(0.5);
 ```
 
-## Structure
-Everything in `Channels` connects to one main volume node, which is the final step before going to the actual sound output. A channel has its own volume instance, which connects to the main volume.
-
-Sounds can be played either on a channel, or directly on the main output.
-
-<div align="center"><img src="https://github.com/petervdn/channels/blob/develop/assets/overview-diagram.png?raw=true" /></div>
-
-### Volume structure
-The volume instances each contain two gain nodes: one for applying volume, and a separate one for fading. They can also contain an optional chain of audio effects.
-
-<div align="center"><img src="https://github.com/petervdn/channels/blob/develop/assets/volume-diagram.png?raw=true"/></div>
-
-### Sound structure
-Finally, sounds also have an internal volume instance:
-<div align="center"><img src="https://github.com/petervdn/channels/blob/develop/assets/sound-diagram.png?raw=true"/></div>
-
 ## Getting started
 
 Before we can do anything, an instance of `Channels` has to be created. Two parameters are required: the **location of the sound files**, and the **file extension** to use:
@@ -266,6 +250,24 @@ There are three places where volume is applied:
 3. On the **main output**
 
 These are all separate modifiers to the signal, and they stack up: when a sound is played at volume `0.5`, on a channel with volume `0.5`, while the main volume has been set to `0.5`, then the resulting volume will be `0.5 * 0.5 * 0.5 = 0.125`. 
+
+
+### Structure
+Everything in `Channels` connects to one main volume node, which is the final step before going to the actual sound output. A channel has its own volume instance, which connects to the main volume.
+
+Sounds can be played either on a channel, or directly on the main output.
+
+<div align="center"><img src="https://github.com/petervdn/channels/blob/develop/assets/overview-diagram.png?raw=true" /></div>
+
+#### Volume structure
+The volume instances each contain two gain nodes: one for applying volume, and a separate one for fading. They can also contain an optional chain of audio effects.
+
+<div align="center"><img src="https://github.com/petervdn/channels/blob/develop/assets/volume-diagram.png?raw=true"/></div>
+
+#### Sound structure
+Finally, sounds also have an internal volume instance:
+<div align="center"><img src="https://github.com/petervdn/channels/blob/develop/assets/sound-diagram.png?raw=true"/></div>
+
 
 ### Changing volume
 
