@@ -204,7 +204,7 @@ const myChannel = channelsInstance.createChannel('my-channel');
 const myChannel = channelsInstance.getChannel('my-channel');
 ```
 ### Default play/stop options
-Channels can have default options to use when calling `play()` or `stop()` for sounds playing on that channel. 
+Channels can have default options to use when calling `play()` or `stop()` for sounds playing on that channel. This can be used for example to create a channel on which every sound automatically always loops when played. 
 
 These default options are the combination of the options for `play()` and `stop()`, **without the channel**.
 ```javascript
@@ -215,6 +215,7 @@ const sound = channelsInstance.play({
     initialVolume: 0.5,
     channel: 'my-channel'
 });
+
 // options for stop
 sound.stop({
     fadeOutTime: 1,
@@ -228,6 +229,8 @@ myChannel.defaultStartStopProps = {
     fadeOutTime: 1,
 };
 ```
+
+> Passing props to`play()` or `stop()` will **always** override the defaultStartStopProps of a channel.  
 
 ### Monophonic vs polyphonic
 A `Channel` can be either **polyphonic** or **monophonic**, which defines how many sounds can be played simultaneously on a channel:
