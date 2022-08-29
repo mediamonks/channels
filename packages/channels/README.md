@@ -175,24 +175,38 @@ sound.stop();
 ## Channels
 Channels are a way of grouping sounds that are played. They have their audio bus with volume and optional effects, and their output connects to the main output of a `Channels` instance. They are, however, **completely optional** and might not be needed at all, since **sounds can also be played without a channel**.
 
-The reason to create a channel is to easily do things with a group of sounds, for example:
+The reason to create a channel is to easily manage a group of sounds, for example:
 - change their volume
 - apply effects
 - fade out
 - stop all of them
 
 ### Creating a channel
-The only thing needed to create a channel is a name:
+The only thing needed to create a channel is a **unique** name:
 
 ```javascript
-const myChannel = channelsInstance.createChannel('my-channel');
+channelsInstance.createChannel('my-channel');
 ```
-> All channel names must be unique.
 
 ### Playing a sound on a channel
+There are two ways to play a sound on a channel. First of all, directly on the `channelsInstance`:
+
+```javascript
+channelsInstance.play('mysound', { channel: 'mychannel'});
+```
+
+Or, if you happen to have a reference to an actual channel:
 ```javascript
 myChannel.play('my-sound');
 ```
+
+### Getting a channel reference
+A reference to a channel is returned when creating it, or can be retrieved afterwards.
+```javascript
+const myChannel = channelsInstance.createChannel('my-channel');
+const myChannel = channelsInstance.getChannel('my-channel');
+```
+
 
 ### Monophonic vs polyphonic
 A `Channel` can be either **polyphonic** or **monophonic**, which defines how many sounds can be played simultaneously on a channel:
