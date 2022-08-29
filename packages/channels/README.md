@@ -54,6 +54,21 @@ channelsInstance.setVolume(0.5);
 myChannel.setVolume(0.5);
 ```
 
+## Structure
+Everything in `Channels` connects to one main volume node, which is the final step before going to the actual sound output . A channel has its own volume instance, which connect to the main volume.
+
+Sounds can be played either on a channel, or directly on the main output.
+
+![Main structure](https://github.com/petervdn/channels/blob/830898e927855823f311960070afcf7158fc0ab6/assets/overview-diagram.png?raw=true)
+
+### Volume structure
+The volume instances contain two gain nodes: one for applying volume, and a separate one for fading. They can also contain an option chain of audio effects.
+
+![Volume structure](https://github.com/petervdn/channels/blob/14-add-explanatory-image-of-routing-to-readme/assets/volume-diagram.png?raw=true)
+
+### Sound structure
+
+
 ## Creating a Channels instance
 
 When creating a `Channels` object, two parameters are required: the location of the sound files, and the extension to use:
