@@ -55,7 +55,7 @@ myChannel.setVolume(0.5);
 ```
 
 ## Structure
-Everything in `Channels` connects to one main volume node, which is the final step before going to the actual sound output. A channel has its own volume instance, which connect to the main volume.
+Everything in `Channels` connects to one main volume node, which is the final step before going to the actual sound output. A channel has its own volume instance, which connects to the main volume.
 
 Sounds can be played either on a channel, or directly on the main output.
 
