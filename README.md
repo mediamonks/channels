@@ -1,7 +1,5 @@
 ### Channels
 
-<img width="200" height="200" src="https://github.com/petervdn/channels/blob/develop/assets/channels-logo.png?raw=true"/>
-
 This repository contains three npm workspaces: 
 
 * `packages/channels`: The `Channels` library

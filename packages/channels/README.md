@@ -1,4 +1,4 @@
-# <img width="70" height="70" src="https://github.com/petervdn/channels/blob/develop/assets/channels-logo.png?raw=true"/> Channels
+# Channels
 `Channels` is a channel based sound player for the web.
 
 
