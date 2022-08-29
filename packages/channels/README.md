@@ -271,12 +271,13 @@ Finally, sounds also have an internal volume instance:
 
 ### Changing volume
 
-To change the volume, the three cases listed above all have a set of related methods implemented:
+To change the volume, the three places that apply volume (sound, channel or main output) all have a set of methods implemented:
 
 ```javascript
 const channelsInstance = new Channels({...});
 const myChannel = channelsInstance.getChannel('my-channel');
 
+// on a channel
 myChannel.setVolume(0.5);
 myChannel.getVolume();
 myChannel.mute();
