@@ -173,11 +173,12 @@ sound.stop();
 ```
 
 ## Channels
-Channels are a way of grouping sounds that are played. They have their audio bus with volume and optional effects, and their output connects to the main output of a `Channels` instance. They are, however, completely optional and might not be needed at all, since sounds can also be played without a channel.
+Channels are a way of grouping sounds that are played. They have their audio bus with volume and optional effects, and their output connects to the main output of a `Channels` instance. They are, however, **completely optional** and might not be needed at all, since **sounds can also be played without a channel**.
 
 The reason to create a channel is to easily do things with a group of sounds, for example:
 - change their volume
 - apply effects
+- fade out
 - stop all of them
 
 ### Creating a channel
