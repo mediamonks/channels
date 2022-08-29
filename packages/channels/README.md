@@ -93,6 +93,10 @@ new Channels({
 })
 ```
 
+### React
+
+For React projects, there is a [useChannels hook](https://www.npmjs.com/package/use-channels) to create and provide a `Channels` instance.
+
 ### Suspended state
 
 An `AudioContext` created without user interaction (for example a click) will be in the `suspended` state, in which no sound can be produced. This can happen for example if a `Channels` instance is created on page landing without supplying a (non-suspended) `audioContext`, since one will be created then automatically.
@@ -107,10 +111,6 @@ const onClick = async () => {
 TLDR: The `audioContext` that is used must have been created or resumed on user interaction.
 
 > To check whether the context is suspended: `channelsInstance.contextIsSuspended`
-
-### React
-
-For React projects, there is a [hook](https://www.npmjs.com/package/use-channels) to create and provide a `Channels` instance.
 
 ## Loading files
 `Channels` uses the [sample-manager](https://www.npmjs.com/package/sample-manager) for dealing with files, and creates an instance of it named `sampleManager`. 
