@@ -22,7 +22,7 @@ export class Channel implements HasVolume {
       initialMuted,
       type = 'polyphonic',
     }: CreateChannelOptions = {},
-    public readonly defaultPlayStopOptions?: PlayStopOptions
+    public defaultPlayStopOptions?: PlayStopOptions
   ) {
     this.type = type;
 

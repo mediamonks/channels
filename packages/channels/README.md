@@ -142,7 +142,7 @@ A second argument can be passed with optional properties:
 
 ```javascript
 channelsInstance.play('sound', {
-    volume: 0.5,
+    initialVolume: 0.5,
     channel: 'channel1',
     loop: true,
     fadeInTime: 2,
@@ -153,7 +153,19 @@ The play function returns a reference to the playing sound, containing various m
 ```javascript
 const sound = channelsInstance.play('sound');
 sound.setVolume(0.5);
-sound.stop();
+```
+
+## Stopping a sound
+Stopping a sound can be done by calling `stop()` on the playing sound reference.
+
+```javascript
+const playingSound = channelsInstance.play('sound');
+playingSound.stop();
+```
+
+Sounds can be faded out before stopping by providing a `fadeOutTime` 
+```javascript
+playingSound.stop({ fadeOutTime: 2 });
 ```
 
 ## Channels
@@ -188,9 +200,34 @@ myChannel.play('my-sound');
 A reference to a channel is returned when creating it, or can be retrieved afterwards.
 ```javascript
 const myChannel = channelsInstance.createChannel('my-channel');
+
 const myChannel = channelsInstance.getChannel('my-channel');
 ```
+### Default play/stop options
+Channels can have default options to use when calling `play()` or `stop()` for sounds playing on that channel. 
 
+These default options are the combination of the options for `play()` and `stop()`, **without the channel**.
+```javascript
+// options for play
+const sound = channelsInstance.play({
+    loop: true,
+    fadeInTime: 1,
+    initialVolume: 0.5,
+    channel: 'my-channel'
+});
+// options for stop
+sound.stop({
+    fadeOutTime: 1,
+})
+
+// all above props combined (except channel) can be used
+myChannel.defaultStartStopProps = {
+    loop: true,
+    fadeInTime: 1,
+    initialVolume: 0.5,
+    fadeOutTime: 1,
+};
+```
 
 ### Monophonic vs polyphonic
 A `Channel` can be either **polyphonic** or **monophonic**, which defines how many sounds can be played simultaneously on a channel:
@@ -198,14 +235,15 @@ A `Channel` can be either **polyphonic** or **monophonic**, which defines how ma
 - A `monophonic` channel can play one sound at a time. When playing a sound on such a channel, **all other sounds on that channel will be stopped**
 - A `polyphonic` channel has no restrictions
 
+> The term `monophonic` is used loosely. Since sounds can fade in and out, even on a monophonic channel multiple sounds may be audible at the same time. 
+
 This `type` can be set during creation. When no `type` is given, the default `polyphonic` is used.
 ```javascript
 channelsInstance.createChannel('monophonic-channel', {type: "monophonic"});
 channelsInstance.createChannel('polyphonic-channel');
 ```
-Using a monophonic channel can be extremely helpful when creating a background music layer where the music loop needs to be changed now and then.
+Using a monophonic channel can be very helpful when creating a background music layer where the music loop needs to be changed now and then.
 
-> The term `monophonic` is used loosely. Since sounds can fade in and out, even on a monophonic channel multiple sounds can be heard at the same time. 
 
 ### Methods operating on a channel
 Various methods on the `Channels` instance that take an optional `channel` property are duplicated on a `Channel` object, for which the `channel` no longer needs to be supplied. 

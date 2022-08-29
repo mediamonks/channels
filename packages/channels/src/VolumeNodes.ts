@@ -4,8 +4,8 @@ import { HasVolume } from './types';
 import EventDispatcher from 'seng-event';
 
 export type VolumeOptions = {
-  initialVolume?: number;
-  initialMuted?: boolean;
+  initialVolume?: number; // todo: rename
+  initialMuted?: boolean; // todo: remove
 };
 
 /**
