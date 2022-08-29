@@ -1,5 +1,5 @@
 # Channels
-Channel based sound player, intended to provide a minimal and clear api for simple use cases.
+`Channels` is a channel based sound player for the web.
 
 
 ## Installation
@@ -54,9 +54,25 @@ channelsInstance.setVolume(0.5);
 myChannel.setVolume(0.5);
 ```
 
-## Creating a Channels instance
+## Structure
+Everything in `Channels` connects to one main volume node, which is the final step before going to the actual sound output. A channel has its own volume instance, which connects to the main volume.
 
-When creating a `Channels` object, two parameters are required: the location of the sound files, and the extension to use:
+Sounds can be played either on a channel, or directly on the main output.
+
+<div align="center"><img src="https://github.com/petervdn/channels/blob/14-add-explanatory-image-of-routing-to-readme/assets/overview-diagram.png?raw=true" /></div>
+
+### Volume structure
+The volume instances each contain two gain nodes: one for applying volume, and a separate one for fading. They can also contain an optional chain of audio effects.
+
+<div align="center"><img src="https://github.com/petervdn/channels/blob/14-add-explanatory-image-of-routing-to-readme/assets/volume-diagram.png?raw=true"/></div>
+
+### Sound structure
+Finally, sounds also have an internal volume instance:
+<div align="center"><img src="https://github.com/petervdn/channels/blob/14-add-explanatory-image-of-routing-to-readme/assets/sound-diagram.png?raw=true"/></div>
+
+## Getting started
+
+Before we can do anything, an instance of `Channels` has to be created. Two parameters are required: the location of the sound files, and the file extension to use:
 
 ```javascript
 new Channels({
@@ -77,6 +93,10 @@ new Channels({
 })
 ```
 
+### React
+
+For React projects, there is a [useChannels hook](https://www.npmjs.com/package/@mediamonks/use-channels) to create and provide a `Channels` instance.
+
 ### Suspended state
 
 An `AudioContext` created without user interaction (for example a click) will be in the `suspended` state, in which no sound can be produced. This can happen for example if a `Channels` instance is created on page landing without supplying a (non-suspended) `audioContext`, since one will be created then automatically.
@@ -91,10 +111,6 @@ const onClick = async () => {
 TLDR: The `audioContext` that is used must have been created or resumed on user interaction.
 
 > To check whether the context is suspended: `channelsInstance.contextIsSuspended`
-
-### React
-
-For React projects, there is a [hook](https://www.npmjs.com/package/use-channels) to create and provide a `Channels` instance.
 
 ## Loading files
 `Channels` uses the [sample-manager](https://www.npmjs.com/package/sample-manager) for dealing with files, and creates an instance of it named `sampleManager`. 
@@ -157,25 +173,40 @@ sound.stop();
 ```
 
 ## Channels
-Channels are a way of grouping sounds that are played. They have their audio bus with volume and optional effects, and their output connects to the main output of a `Channels` instance. They are, however, completely optional and might not be needed at all, since sounds can also be played without a channel.
+Channels are a way of grouping sounds that are played. They have their own volume and optional effects, and their output connects to the main output. They are **completely optional** and might not be needed at all, since **sounds can also be played without a channel**.
 
-The reason to create a channel is to easily do things with a group of sounds, for example:
+The reason to create a channel is to easily manage a group of sounds, for example to:
 - change their volume
 - apply effects
+- fade out
 - stop all of them
 
 ### Creating a channel
-The only thing needed to create a channel is a name:
+The only thing needed to create a channel is a **unique** name:
 
 ```javascript
-const myChannel = channelsInstance.createChannel('my-channel');
+channelsInstance.createChannel('my-channel');
 ```
-> All channel names must be unique.
 
 ### Playing a sound on a channel
+There are two ways to play a sound on a channel. First of all, directly on the `channelsInstance`:
+
+```javascript
+channelsInstance.play('mysound', { channel: 'mychannel'});
+```
+
+Or, if you happen to have a reference to an actual channel:
 ```javascript
 myChannel.play('my-sound');
 ```
+
+### Getting a channel reference
+A reference to a channel is returned when creating it, or can be retrieved afterwards.
+```javascript
+const myChannel = channelsInstance.createChannel('my-channel');
+const myChannel = channelsInstance.getChannel('my-channel');
+```
+
 
 ### Monophonic vs polyphonic
 A `Channel` can be either **polyphonic** or **monophonic**, which defines how many sounds can be played simultaneously on a channel:
