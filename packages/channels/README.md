@@ -122,14 +122,14 @@ channelsInstance.sampleManager
 The easiest way to load files is to supply a list of objects with a `name` property, matching the filenames *without extension*. The file extension has to be set when creating the `Channels` object (which allows for an easy switch to different filetypes on certain clients).  
 
 ```javascript
-// - sound1.mp3
-// - sound2.mp3
+// - soundfiles/sound1.mp3
+// - soundfiles/sound2.mp3
 const soundFiles = [{name: 'sound1'}, {name: 'sound2'}];
 
 // list can be used when instantiating Channels 
 const channelsInstance = new Channels({
-    soundsPath,
-    soundsExtension,
+    soundsPath: 'soundfiles/',
+    soundsExtension: 'mp3',
     sounds: soundFiles,
 })
 
