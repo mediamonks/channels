@@ -72,7 +72,7 @@ Finally, sounds also have an internal volume instance:
 
 ## Creating a Channels instance
 
-When creating a `Channels` object, two parameters are required: the location of the sound files, and the extension to use:
+When creating a `Channels` object, two parameters are required: the location of the sound files, and the file extension to use:
 
 ```javascript
 new Channels({
@@ -95,7 +95,7 @@ new Channels({
 
 ### React
 
-For React projects, there is a [useChannels hook](https://www.npmjs.com/package/use-channels) to create and provide a `Channels` instance.
+For React projects, there is a [useChannels hook](https://www.npmjs.com/package/@mediamonks/use-channels) to create and provide a `Channels` instance.
 
 ### Suspended state
 
