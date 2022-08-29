@@ -62,7 +62,7 @@ Sounds can be played either on a channel, or directly on the main output.
 <div align="center"><img src="https://github.com/petervdn/channels/blob/14-add-explanatory-image-of-routing-to-readme/assets/overview-diagram.png?raw=true" /></div>
 
 ### Volume structure
-The volume instances contain two gain nodes: one for applying volume, and a separate one for fading. They can also contain an option chain of audio effects.
+The volume instances each contain two gain nodes: one for applying volume, and a separate one for fading. They can also contain an optional chain of audio effects.
 
 <div align="center"><img src="https://github.com/petervdn/channels/blob/14-add-explanatory-image-of-routing-to-readme/assets/volume-diagram.png?raw=true"/></div>
 
