@@ -124,7 +124,9 @@ channelsInstance.sampleManager.addSamples(soundFiles);
 await channelsInstance.loadSounds();
 
 // optionally, keep track of progress
-await channelsInstance.loadSounds((progress) => {...});
+await channelsInstance.loadSounds((progress) => {
+    // ...
+});
 ```
 > The `loadSounds` method is an alias for `sampleManager.loadAllSamples`
 
@@ -142,7 +144,7 @@ A second argument can be passed with optional properties:
 
 ```javascript
 channelsInstance.play('sound', {
-    initialVolume: 0.5,
+    volume: 0.5,
     channel: 'channel1',
     loop: true,
     fadeInTime: 2,
@@ -184,6 +186,37 @@ The only thing needed to create a channel is a **unique** name:
 channelsInstance.createChannel('my-channel');
 ```
 
+Second parameter can be used for some optional properties.
+```javascript
+channelsInstance.createChannel('my-channel',{
+    type: 'monophonic',
+    volume: 0.5,
+});
+```
+
+A reference to a channel is returned when creating it, or can be retrieved afterwards.
+```javascript
+const myChannel = channelsInstance.createChannel('my-channel');
+
+const myChannel = channelsInstance.getChannel('my-channel');
+```
+
+### Monophonic vs polyphonic
+A `Channel` can be either **polyphonic** or **monophonic**, which defines how many sounds can be played simultaneously on a channel:
+
+- A `monophonic` channel can play one sound at a time. When playing a sound on such a channel, **all other sounds on that channel will be stopped**
+- A `polyphonic` channel has no restrictions
+
+> The term `monophonic` is used loosely. Since sounds can fade in and out, even on a monophonic channel multiple sounds may be audible at the same time.
+
+This `type` can be set during creation. When no `type` is given, the default `polyphonic` is used.
+```javascript
+channelsInstance.createChannel('monophonic-channel', {type: "monophonic"});
+channelsInstance.createChannel('polyphonic-channel');
+```
+Using a monophonic channel can be very helpful when creating a background music layer where the music loop needs to be changed now and then.
+
+
 ### Playing a sound on a channel
 There are two ways to play a sound on a channel. First of all, directly on the `channelsInstance`:
 
@@ -195,14 +228,23 @@ Or, if you happen to have a reference to an actual channel:
 ```javascript
 myChannel.play('my-sound');
 ```
+All options for the `play()` method can still be used, except for the (in this context useless) `channel` prop.
 
-### Getting a channel reference
-A reference to a channel is returned when creating it, or can be retrieved afterwards.
 ```javascript
-const myChannel = channelsInstance.createChannel('my-channel');
-
-const myChannel = channelsInstance.getChannel('my-channel');
+myChannel.play('sound', {
+    volume: 0.5,
+    loop: true,
+    fadeInTime: 2,
+});
 ```
+
+### Stopping all sounds on a channel
+```javascript
+channelsInstance.stopAll({channel: 'channel-name'});
+// or:
+myChannel.stopAll();
+```
+
 ### Default play/stop options
 Channels can have default options to use when calling `play()` or `stop()` for sounds playing on that channel. This can be used for example to create a channel on which every sound automatically always loops when played. 
 
@@ -212,7 +254,7 @@ These default options are the combination of the options for `play()` and `stop(
 const sound = channelsInstance.play({
     loop: true,
     fadeInTime: 1,
-    initialVolume: 0.5,
+    volume: 0.5,
     channel: 'my-channel'
 });
 
@@ -222,63 +264,35 @@ sound.stop({
 })
 
 // all above props combined (except channel) can be used
-myChannel.defaultStartStopProps = {
+const defaultStartStopProps = {
     loop: true,
     fadeInTime: 1,
-    initialVolume: 0.5,
+    volume: 0.5,
     fadeOutTime: 1,
 };
+myChannel.defaultStartStopProps = defaultStartStopProps;
+
+// can also be set on creation as the 3rd argument
+channelsInstance.createChannel('my-channel', null, defaultStartStopProps);
 ```
+
+
 
 > Passing props to`play()` or `stop()` will **always** override the defaultStartStopProps of a channel.  
 
-### Monophonic vs polyphonic
-A `Channel` can be either **polyphonic** or **monophonic**, which defines how many sounds can be played simultaneously on a channel:
+Default props (in combination with a `monophonic` channel) can be very helpful when creating a background music layer with music loops that need to change now and then:
 
-- A `monophonic` channel can play one sound at a time. When playing a sound on such a channel, **all other sounds on that channel will be stopped**
-- A `polyphonic` channel has no restrictions
-
-> The term `monophonic` is used loosely. Since sounds can fade in and out, even on a monophonic channel multiple sounds may be audible at the same time. 
-
-This `type` can be set during creation. When no `type` is given, the default `polyphonic` is used.
 ```javascript
-channelsInstance.createChannel('monophonic-channel', {type: "monophonic"});
-channelsInstance.createChannel('polyphonic-channel');
-```
-Using a monophonic channel can be very helpful when creating a background music layer where the music loop needs to be changed now and then.
+const channel = channelsInstance.createChannel(
+    'background-music',
+    null, 
+    { fadeInTime: 2, fadeOutTime: 2, loop: true }
+);
+// start a loop
+channel.play('loop1');
 
-
-### Methods operating on a channel
-Various methods on the `Channels` instance that take an optional `channel` property are duplicated on a `Channel` object, for which the `channel` no longer needs to be supplied. 
-```javascript
-// get a channel reference somehow
-const myChannel = channelsInstance.createChannel('channel-name');
-const myChannel = channelsInstance.getChannel('channel-name'); // obviously has to be created first
-
-// use the prefered approach
-channelsInstance.play('sound1', {channel: 'channel-name'});
-myChannel.play('sound1')
-
-channelsInstance.stopAll({channel: 'channel-name'});
-myChannel.stopAll();
-```
-
-Only the `channel` property for the options is removed, any remaining properties stay the same:
-```javascript
-channelsInstance.play('sound1', {channel: 'channel-name', volume: 0.5});
-myChannel.play('sound1', {volume: 0.5})
-```
-
-Note that for functions that accept a `channel` property, both the channel's **name** or the **instance** are allowed.
-```javascript
-const myChannel = channelsInstance.getChannel('my-channel');
-
-// both are valid:
-channelsInstance.stopAll({ channel: 'my-channel'});
-channelsInstance.stopAll({ channel: myChannel});
-
-// although the latter is easier like this:
-myChannel.stopAll();
+// starting 2nd loop some time later, loop1 will fade out, loop2 will fade in 
+channel.play('loop2');
 ```
 
 

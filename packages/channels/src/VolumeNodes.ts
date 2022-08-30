@@ -3,11 +3,6 @@ import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 import { HasVolume } from './types';
 import EventDispatcher from 'seng-event';
 
-export type VolumeOptions = {
-  initialVolume?: number; // todo: rename
-  initialMuted?: boolean; // todo: remove
-};
-
 /**
  * Class that creates two gainNodes, one for the user to freely set,
  * one for applying fades.
@@ -24,19 +19,15 @@ export class VolumeNodes implements HasVolume {
     readonly audioContext: AudioContext,
     private readonly eventDispatcher: EventDispatcher,
     private readonly volumeTarget: HasVolume,
-    { initialVolume = 1, initialMuted = false }: VolumeOptions = {},
-    initialFadeVolume = 1 // todo: shouldn't this be part of VolumeOptions?
+    volume = 1,
+    fadeVolume = 1
   ) {
     this.volumeGainNode = audioContext.createGain();
     this.fadeGainNode = audioContext.createGain();
 
-    this.setVolume(initialVolume);
+    this.setVolume(volume);
 
-    if (initialMuted) {
-      this.mute(); // todo: this dispatches an event, probably not what we want
-    }
-
-    this.fadeGainNode.gain.value = initialFadeVolume;
+    this.fadeGainNode.gain.value = fadeVolume;
 
     // set up the graph: volume -> fade -> mute
     this.volumeGainNode.connect(this.fadeGainNode);

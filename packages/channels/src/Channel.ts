@@ -1,12 +1,13 @@
 import { Channels } from './Channels';
-import { VolumeNodes, VolumeOptions } from './VolumeNodes';
+import { VolumeNodes } from './VolumeNodes';
 import { HasVolume, PlayStopOptions } from './types';
 
 export type ChannelType = 'monophonic' | 'polyphonic';
 
 export type CreateChannelOptions = {
   type?: ChannelType;
-} & VolumeOptions;
+  volume?: number;
+};
 
 type PlayParameters = Parameters<InstanceType<typeof Channels>['play']>;
 
@@ -17,11 +18,7 @@ export class Channel implements HasVolume {
   constructor(
     public readonly name: string,
     public readonly channelsInstance: Channels,
-    {
-      initialVolume,
-      initialMuted,
-      type = 'polyphonic',
-    }: CreateChannelOptions = {},
+    { volume, type = 'polyphonic' }: CreateChannelOptions = {},
     public defaultPlayStopOptions?: PlayStopOptions
   ) {
     this.type = type;
@@ -30,10 +27,7 @@ export class Channel implements HasVolume {
       channelsInstance.audioContext,
       channelsInstance,
       this,
-      {
-        initialVolume,
-        initialMuted,
-      }
+      volume
     );
 
     this.volumeNodes.output.connect(this.channelsInstance.volumeNodes.input);

@@ -86,6 +86,16 @@ describe('Channels instance', () => {
         expect(fadeNode.inputs.length).toBe(1);
         expect(gainNode.inputs.length).toBe(0);
       });
+      it('Has default volume', () => {
+        const destinationNode = getAudioGraph(channelsInstance);
+        const fadeNode = destinationNode.inputs[0];
+        const gainNode = fadeNode.inputs[0];
+
+        expect(gainNode.gain.value).toBe(1);
+        expect(fadeNode.gain.value).toBe(1);
+        expect(channelsInstance.getVolume()).toBe(1);
+        expect(channelsInstance.getFadeVolume()).toBe(1);
+      });
       it('Sets volume', () => {
         channelsInstance.setVolume(0.5);
         const destinationNode = getAudioGraph(channelsInstance);
@@ -95,6 +105,7 @@ describe('Channels instance', () => {
         expect(gainNode.gain.value).toBe(0.5);
         expect(fadeNode.gain.value).toBe(1);
         expect(channelsInstance.getVolume()).toBe(0.5);
+        expect(channelsInstance.getFadeVolume()).toBe(1);
       });
       it('dispatches an event when setting main volume', () => {
         const listener = jest.fn();
@@ -159,6 +170,20 @@ describe('Channels instance', () => {
         expect(channelFadeNode2.gain.value).toBe(1);
         expect(channelsInstance.getChannel('ch').getVolume()).toBe(0.25);
       });
+      it('Has default volume', () => {
+        const channel = channelsInstance.createChannel('ch');
+
+        const destinationNode = getAudioGraph(channelsInstance);
+        const fadeNode = destinationNode.inputs[0];
+        const gainNode = fadeNode.inputs[0];
+        const channelFadeNode = gainNode.inputs[0];
+        const channelGainNode = channelFadeNode.inputs[0];
+
+        expect(channelGainNode.gain.value).toBe(1);
+        expect(channelFadeNode.gain.value).toBe(1);
+        expect(channel.getVolume()).toBe(1);
+        expect(channel.getFadeVolume()).toBe(1);
+      });
       it("dispatches an event when setting a channel's volume", () => {
         const listener = jest.fn();
         channelsInstance.addEventListener(
@@ -175,7 +200,7 @@ describe('Channels instance', () => {
       });
       it('creates channel with initial volume', () => {
         const channel = channelsInstance.createChannel('channel', {
-          initialVolume: 0.5,
+          volume: 0.5,
         });
         const destinationNode = getAudioGraph(channelsInstance);
         const mainFadeNode = destinationNode.inputs[0];
@@ -184,18 +209,6 @@ describe('Channels instance', () => {
         const channelGainNode = channelFadeNode.inputs[0];
         expect(channelGainNode.gain.value).toBe(0.5);
         expect(channel.getVolume()).toBe(0.5);
-      });
-      it('creates channel with initial mute', () => {
-        const channel = channelsInstance.createChannel('channel', {
-          initialMuted: true,
-        });
-        const destinationNode = getAudioGraph(channelsInstance);
-        const mainFadeNode = destinationNode.inputs[0];
-        const mainGainNode = mainFadeNode.inputs[0];
-        const channelFadeNode = mainGainNode.inputs[0];
-        const channelGainNode = channelFadeNode.inputs[0];
-        expect(channelGainNode.gain.value).toBe(0);
-        expect(channel.getVolume()).toBe(0);
       });
     });
 

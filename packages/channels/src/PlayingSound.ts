@@ -18,7 +18,7 @@ export class PlayingSound implements HasVolume {
     public readonly channel?: Channel,
     playSoundOptions: PlaySoundOptions = {}
   ) {
-    const { loop = false, fadeInTime = 0, ...volumeOptions } = playSoundOptions;
+    const { loop = false, fadeInTime = 0, volume = 1 } = playSoundOptions;
 
     if (!sound.audioBuffer) {
       // todo: check how/if this works, audioBuffer seems to always exist on Sound/ISample
@@ -39,7 +39,7 @@ export class PlayingSound implements HasVolume {
       channelsInstance.audioContext,
       channelsInstance,
       this,
-      volumeOptions,
+      volume,
       fadeInTime > 0 ? 0 : 1 // when fading in, initial fade volume is 0
     );
 
