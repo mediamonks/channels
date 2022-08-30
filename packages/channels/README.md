@@ -194,6 +194,12 @@ channelsInstance.createChannel('my-channel',{
 });
 ```
 
+A reference to a channel is returned when creating it, or can be retrieved afterwards.
+```javascript
+const myChannel = channelsInstance.createChannel('my-channel');
+
+const myChannel = channelsInstance.getChannel('my-channel');
+```
 
 ### Monophonic vs polyphonic
 A `Channel` can be either **polyphonic** or **monophonic**, which defines how many sounds can be played simultaneously on a channel:
@@ -222,14 +228,23 @@ Or, if you happen to have a reference to an actual channel:
 ```javascript
 myChannel.play('my-sound');
 ```
+All options for the `play()` method can still be used, except for the (in this context useless) `channel` prop.
 
-### Getting a channel reference
-A reference to a channel is returned when creating it, or can be retrieved afterwards.
 ```javascript
-const myChannel = channelsInstance.createChannel('my-channel');
-
-const myChannel = channelsInstance.getChannel('my-channel');
+myChannel.play('sound', {
+    volume: 0.5,
+    loop: true,
+    fadeInTime: 2,
+});
 ```
+
+### Stopping all sounds on a channel
+```javascript
+channelsInstance.stopAll({channel: 'channel-name'});
+// or:
+myChannel.stopAll();
+```
+
 ### Default play/stop options
 Channels can have default options to use when calling `play()` or `stop()` for sounds playing on that channel. This can be used for example to create a channel on which every sound automatically always loops when played. 
 
@@ -278,42 +293,6 @@ channel.play('loop1');
 
 // starting 2nd loop some time later, loop1 will fade out, loop2 will fade in 
 channel.play('loop2');
-
-```
-
-
-
-### Methods operating on a channel
-Various methods on the `Channels` instance that take an optional `channel` property are duplicated on a `Channel` object, for which the `channel` no longer needs to be supplied. 
-```javascript
-// get a channel reference somehow
-const myChannel = channelsInstance.createChannel('channel-name');
-const myChannel = channelsInstance.getChannel('channel-name'); // obviously has to be created first
-
-// use the prefered approach
-channelsInstance.play('sound1', {channel: 'channel-name'});
-myChannel.play('sound1')
-
-channelsInstance.stopAll({channel: 'channel-name'});
-myChannel.stopAll();
-```
-
-Only the `channel` property for the options is removed, any remaining properties stay the same:
-```javascript
-channelsInstance.play('sound1', {channel: 'channel-name', volume: 0.5});
-myChannel.play('sound1', {volume: 0.5})
-```
-
-Note that for functions that accept a `channel` property, both the channel's **name** or the **instance** are allowed.
-```javascript
-const myChannel = channelsInstance.getChannel('my-channel');
-
-// both are valid:
-channelsInstance.stopAll({ channel: 'my-channel'});
-channelsInstance.stopAll({ channel: myChannel});
-
-// although the latter is easier like this:
-myChannel.stopAll();
 ```
 
 
