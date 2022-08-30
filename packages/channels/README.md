@@ -142,7 +142,7 @@ A second argument can be passed with optional properties:
 
 ```javascript
 channelsInstance.play('sound', {
-    initialVolume: 0.5,
+    volume: 0.5,
     channel: 'channel1',
     loop: true,
     fadeInTime: 2,
@@ -212,7 +212,7 @@ These default options are the combination of the options for `play()` and `stop(
 const sound = channelsInstance.play({
     loop: true,
     fadeInTime: 1,
-    initialVolume: 0.5,
+    volume: 0.5,
     channel: 'my-channel'
 });
 
@@ -225,7 +225,7 @@ sound.stop({
 myChannel.defaultStartStopProps = {
     loop: true,
     fadeInTime: 1,
-    initialVolume: 0.5,
+    volume: 0.5,
     fadeOutTime: 1,
 };
 ```
