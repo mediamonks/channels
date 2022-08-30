@@ -1,6 +1,6 @@
 import { tweenAudioParamToValue } from './util/fadeGain';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
-import { HasVolume } from './types';
+import { EffectsChain, HasVolume } from './types';
 import EventDispatcher from 'seng-event';
 
 /**
@@ -10,8 +10,8 @@ import EventDispatcher from 'seng-event';
 export class VolumeNodes implements HasVolume {
   private readonly volumeGainNode: GainNode;
   private readonly fadeGainNode: GainNode;
-  public readonly input: GainNode; // todo should be private?
-  public readonly output: GainNode;
+  public readonly input: AudioNode; // todo should be private?
+  public readonly output: AudioNode;
 
   private volumeValueBeforeMute: number | undefined;
 
@@ -20,7 +20,8 @@ export class VolumeNodes implements HasVolume {
     private readonly eventDispatcher: EventDispatcher,
     private readonly volumeTarget: HasVolume,
     volume = 1,
-    fadeVolume = 1
+    fadeVolume = 1,
+    effectsChain?: EffectsChain
   ) {
     this.volumeGainNode = audioContext.createGain();
     this.fadeGainNode = audioContext.createGain();
@@ -33,7 +34,12 @@ export class VolumeNodes implements HasVolume {
     this.volumeGainNode.connect(this.fadeGainNode);
 
     // define input and output
-    this.input = this.volumeGainNode;
+    if (effectsChain) {
+      this.input = effectsChain.input;
+      effectsChain.output.connect(this.volumeGainNode);
+    } else {
+      this.input = this.volumeGainNode;
+    }
     this.output = this.fadeGainNode;
   }
 
