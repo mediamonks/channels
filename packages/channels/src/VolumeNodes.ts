@@ -5,7 +5,6 @@ import EventDispatcher from 'seng-event';
 
 export type VolumeOptions = {
   initialVolume?: number; // todo: rename
-  initialMuted?: boolean; // todo: remove
 };
 
 /**
@@ -24,17 +23,13 @@ export class VolumeNodes implements HasVolume {
     readonly audioContext: AudioContext,
     private readonly eventDispatcher: EventDispatcher,
     private readonly volumeTarget: HasVolume,
-    { initialVolume = 1, initialMuted = false }: VolumeOptions = {},
+    { initialVolume = 1 }: VolumeOptions = {},
     initialFadeVolume = 1 // todo: shouldn't this be part of VolumeOptions?
   ) {
     this.volumeGainNode = audioContext.createGain();
     this.fadeGainNode = audioContext.createGain();
 
     this.setVolume(initialVolume);
-
-    if (initialMuted) {
-      this.mute(); // todo: this dispatches an event, probably not what we want
-    }
 
     this.fadeGainNode.gain.value = initialFadeVolume;
 

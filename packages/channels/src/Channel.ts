@@ -17,11 +17,7 @@ export class Channel implements HasVolume {
   constructor(
     public readonly name: string,
     public readonly channelsInstance: Channels,
-    {
-      initialVolume,
-      initialMuted,
-      type = 'polyphonic',
-    }: CreateChannelOptions = {},
+    { initialVolume, type = 'polyphonic' }: CreateChannelOptions = {},
     public defaultPlayStopOptions?: PlayStopOptions
   ) {
     this.type = type;
@@ -32,7 +28,6 @@ export class Channel implements HasVolume {
       this,
       {
         initialVolume,
-        initialMuted,
       }
     );
 
