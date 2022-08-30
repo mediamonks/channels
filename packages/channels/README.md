@@ -362,3 +362,29 @@ myChannel.getVolume();
 > Volume values should be `0` or higher. Keep in mind that going beyond `1` *might* result in [digital clipping](https://en.wikipedia.org/wiki/Clipping_(audio)).
 
 > When calling `mute()` the `volume` will be set to `0`, with the additional effect that the previous volume value will be stored and used when calling `unmute()` 
+
+## Audio effects
+
+An effect is defined as an object with an `input` and an `output`, both of type `AudioNode`. They can contain either a single node (with `input` and `output` pointing to the same `AudioNode`), or a long chain or multiple nodes - as long there is an `input` and an `output` (which obviously need to be connected in some way). 
+
+Effects can be placed on either a **channel** or the **main output**. The are placed **before the volume node**.
+
+```javascript
+const filter = audioContext.createBiquadFilter();
+const myEffect = {
+    input: filter,
+    output: filter,
+}
+// setting an effect on the main output 
+const channelsInstance = new Channels({
+    soundsExtension,
+    soundsPath,
+    mainEffects: myEffect,
+});
+
+// setting it on a channel
+channelsInstance.createChannel('effect-channel', { effects: myEffect })
+
+```
+
+
