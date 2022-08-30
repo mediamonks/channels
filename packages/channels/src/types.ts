@@ -1,6 +1,5 @@
 import { ICreateSample, ISample } from 'sample-manager';
 import { Channel } from './Channel';
-import { VolumeOptions } from './VolumeNodes';
 
 export type Sound = ISample;
 export type CreateSound = ICreateSample;
@@ -24,7 +23,8 @@ export type PlayStopOptions = PlaySoundOptions & StopSoundOptions;
 export type PlaySoundOptions = {
   loop?: boolean;
   fadeInTime?: number;
-} & VolumeOptions;
+  volume?: number;
+};
 
 export type StopSoundOptions = {
   fadeOutTime?: number;

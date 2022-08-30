@@ -175,7 +175,7 @@ describe('Channels instance', () => {
       });
       it('creates channel with initial volume', () => {
         const channel = channelsInstance.createChannel('channel', {
-          initialVolume: 0.5,
+          volume: 0.5,
         });
         const destinationNode = getAudioGraph(channelsInstance);
         const mainFadeNode = destinationNode.inputs[0];
