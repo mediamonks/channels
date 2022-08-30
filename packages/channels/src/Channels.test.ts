@@ -170,6 +170,20 @@ describe('Channels instance', () => {
         expect(channelFadeNode2.gain.value).toBe(1);
         expect(channelsInstance.getChannel('ch').getVolume()).toBe(0.25);
       });
+      it('Has default volume', () => {
+        const channel = channelsInstance.createChannel('ch');
+
+        const destinationNode = getAudioGraph(channelsInstance);
+        const fadeNode = destinationNode.inputs[0];
+        const gainNode = fadeNode.inputs[0];
+        const channelFadeNode = gainNode.inputs[0];
+        const channelGainNode = channelFadeNode.inputs[0];
+
+        expect(channelGainNode.gain.value).toBe(1);
+        expect(channelFadeNode.gain.value).toBe(1);
+        expect(channel.getVolume()).toBe(1);
+        expect(channel.getFadeVolume()).toBe(1);
+      });
       it("dispatches an event when setting a channel's volume", () => {
         const listener = jest.fn();
         channelsInstance.addEventListener(
