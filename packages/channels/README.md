@@ -392,7 +392,7 @@ channelsInstance.createChannel('effect-channel', { effects: myEffect })
 
 ## Use &#60;audio&#62; or &#60;video&#62; output
 
-It is possible to route the audio from a `<audio>` or `<video>` element into `Channels`, for example to apply effects or to control their volume along with other sounds.
+It is possible to route the audio from an `<audio>` or `<video>` element into `Channels`, for example to apply effects or to control their volume along with other sounds.
 
 To do so, use the `connectMediaElement()` method on either a channel or the main instance:
 ```javascript
