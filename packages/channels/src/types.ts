@@ -18,6 +18,10 @@ export interface HasVolume {
   fadeIn: (duration: number, onComplete?: () => void) => void;
 }
 
+export interface CanConnectMediaElement extends HasVolume {
+  connectMediaElement: (element: HTMLMediaElement) => void;
+}
+
 export type PlayStopOptions = PlaySoundOptions & StopSoundOptions;
 
 export type PlaySoundOptions = {

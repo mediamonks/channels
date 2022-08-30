@@ -1,6 +1,6 @@
 import { Channels } from './Channels';
 import { VolumeNodes } from './VolumeNodes';
-import { EffectsChain, HasVolume, PlayStopOptions } from './types';
+import { CanConnectMediaElement, EffectsChain, PlayStopOptions } from './types';
 
 export type ChannelType = 'monophonic' | 'polyphonic';
 
@@ -12,7 +12,7 @@ export type CreateChannelOptions = {
 
 type PlayParameters = Parameters<InstanceType<typeof Channels>['play']>;
 
-export class Channel implements HasVolume {
+export class Channel implements CanConnectMediaElement {
   public readonly type: ChannelType;
   public readonly volumeNodes: VolumeNodes;
 
@@ -67,4 +67,6 @@ export class Channel implements HasVolume {
   public getFadeVolume = () => this.volumeNodes.getFadeVolume();
   public getVolume = () => this.volumeNodes.getVolume();
   public setVolume = (value: number) => this.volumeNodes.setVolume(value);
+  public connectMediaElement = (element: HTMLMediaElement) =>
+    this.volumeNodes.connectMediaElement(element);
 }
