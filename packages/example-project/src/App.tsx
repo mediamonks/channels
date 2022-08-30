@@ -1,26 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import { ChannelsList } from './components/channels/ChannelsList';
 import { SoundsList } from './components/sounds/SoundsList';
-import { PlayingSoundsList } from './components/playingsounds/PlayingSoundsList';
 import { VolumeControls } from './components/ui-elements/VolumeControls';
 import { useChannels } from '@mediamonks/use-channels';
+import { FilterControls } from './components/ui-elements/FilterControls';
+import { ChannelsList } from './components/channels/ChannelsList';
+import { PlayingSoundsList } from './components/playingsounds/PlayingSoundsList';
+
+const createFilter = (audioContext: AudioContext) => {
+  const filter = audioContext.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 300;
+  filter.Q.value = 10;
+  return filter;
+};
 
 function App() {
   const [isLoadComplete, setIsLoadComplete] = useState(false);
+  const [filter, setFilter] = useState<BiquadFilterNode>();
   const channelsInstance = useChannels();
 
   useEffect(() => {
     channelsInstance.createChannel(
       'main',
-      { initialVolume: 0.5, type: 'monophonic' },
+      { volume: 0.5, type: 'monophonic' },
       {
-        initialVolume: 0.3,
+        volume: 0.3,
         fadeInTime: 2,
         fadeOutTime: 2,
         loop: true,
       }
     );
+
+    const filterInst = createFilter(channelsInstance.audioContext);
     channelsInstance.createChannel('music');
+    channelsInstance.createChannel('effect', {
+      effects: { input: filterInst, output: filterInst },
+    });
+    setFilter(filterInst);
 
     const loadSamples = async () => {
       await channelsInstance.loadSounds();
@@ -41,7 +57,7 @@ function App() {
               <VolumeControls entity={channelsInstance} showFade={false} />
             </li>
           </ul>
-
+          {filter && <FilterControls filter={filter} />}
           <div style={{ display: 'flex' }}>
             <div style={{ width: '33%', padding: 5 }}>
               <SoundsList />

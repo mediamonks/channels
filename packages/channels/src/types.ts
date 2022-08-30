@@ -29,3 +29,8 @@ export type PlaySoundOptions = {
 export type StopSoundOptions = {
   fadeOutTime?: number;
 };
+
+export type EffectsChain = {
+  input: AudioNode;
+  output: AudioNode;
+};
