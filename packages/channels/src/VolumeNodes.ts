@@ -2,6 +2,7 @@ import { tweenAudioParamToValue } from './util/fadeGain';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 import { EffectsChain, HasVolume } from './types';
 import EventDispatcher from 'seng-event';
+import { validateEffectsChain } from './util/validateEffectsChain';
 
 /**
  * Class that creates two gainNodes, one for the user to freely set,
@@ -35,6 +36,7 @@ export class VolumeNodes implements HasVolume {
 
     // define input and output
     if (effectsChain) {
+      validateEffectsChain(effectsChain);
       this.input = effectsChain.input;
       effectsChain.output.connect(this.volumeGainNode);
     } else {
