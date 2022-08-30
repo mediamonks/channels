@@ -124,7 +124,9 @@ channelsInstance.sampleManager.addSamples(soundFiles);
 await channelsInstance.loadSounds();
 
 // optionally, keep track of progress
-await channelsInstance.loadSounds((progress) => {...});
+await channelsInstance.loadSounds((progress) => {
+    // ...
+});
 ```
 > The `loadSounds` method is an alias for `sampleManager.loadAllSamples`
 
@@ -184,6 +186,31 @@ The only thing needed to create a channel is a **unique** name:
 channelsInstance.createChannel('my-channel');
 ```
 
+Second parameter can be used for some optional properties.
+```javascript
+channelsInstance.createChannel('my-channel',{
+    type: 'monophonic',
+    volume: 0.5,
+});
+```
+
+
+### Monophonic vs polyphonic
+A `Channel` can be either **polyphonic** or **monophonic**, which defines how many sounds can be played simultaneously on a channel:
+
+- A `monophonic` channel can play one sound at a time. When playing a sound on such a channel, **all other sounds on that channel will be stopped**
+- A `polyphonic` channel has no restrictions
+
+> The term `monophonic` is used loosely. Since sounds can fade in and out, even on a monophonic channel multiple sounds may be audible at the same time.
+
+This `type` can be set during creation. When no `type` is given, the default `polyphonic` is used.
+```javascript
+channelsInstance.createChannel('monophonic-channel', {type: "monophonic"});
+channelsInstance.createChannel('polyphonic-channel');
+```
+Using a monophonic channel can be very helpful when creating a background music layer where the music loop needs to be changed now and then.
+
+
 ### Playing a sound on a channel
 There are two ways to play a sound on a channel. First of all, directly on the `channelsInstance`:
 
@@ -222,30 +249,38 @@ sound.stop({
 })
 
 // all above props combined (except channel) can be used
-myChannel.defaultStartStopProps = {
+const defaultStartStopProps = {
     loop: true,
     fadeInTime: 1,
     volume: 0.5,
     fadeOutTime: 1,
 };
+myChannel.defaultStartStopProps = defaultStartStopProps;
+
+// can also be set on creation as the 3rd argument
+channelsInstance.createChannel('my-channel', null, defaultStartStopProps);
 ```
+
+
 
 > Passing props to`play()` or `stop()` will **always** override the defaultStartStopProps of a channel.  
 
-### Monophonic vs polyphonic
-A `Channel` can be either **polyphonic** or **monophonic**, which defines how many sounds can be played simultaneously on a channel:
+Default props (in combination with a `monophonic` channel) can be very helpful when creating a background music layer with music loops that need to change now and then:
 
-- A `monophonic` channel can play one sound at a time. When playing a sound on such a channel, **all other sounds on that channel will be stopped**
-- A `polyphonic` channel has no restrictions
-
-> The term `monophonic` is used loosely. Since sounds can fade in and out, even on a monophonic channel multiple sounds may be audible at the same time. 
-
-This `type` can be set during creation. When no `type` is given, the default `polyphonic` is used.
 ```javascript
-channelsInstance.createChannel('monophonic-channel', {type: "monophonic"});
-channelsInstance.createChannel('polyphonic-channel');
+const channel = channelsInstance.createChannel(
+    'background-music',
+    null, 
+    { fadeInTime: 2, fadeOutTime: 2, loop: true }
+);
+// start a loop
+channel.play('loop1');
+
+// starting 2nd loop some time later, loop1 will fade out, loop2 will fade in 
+channel.play('loop2');
+
 ```
-Using a monophonic channel can be very helpful when creating a background music layer where the music loop needs to be changed now and then.
+
 
 
 ### Methods operating on a channel
