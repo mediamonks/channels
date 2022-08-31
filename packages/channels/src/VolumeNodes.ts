@@ -1,6 +1,6 @@
 import { tweenAudioParamToValue } from './util/fadeGain';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
-import { EffectsChain, HasVolume } from './types';
+import { CanConnectMediaElement, EffectsChain, HasVolume } from './types';
 import EventDispatcher from 'seng-event';
 import { validateEffectsChain } from './util/validateEffectsChain';
 
@@ -8,7 +8,7 @@ import { validateEffectsChain } from './util/validateEffectsChain';
  * Class that creates two gainNodes, one for the user to freely set,
  * one for applying fades.
  */
-export class VolumeNodes implements HasVolume {
+export class VolumeNodes implements CanConnectMediaElement {
   private readonly volumeGainNode: GainNode;
   private readonly fadeGainNode: GainNode;
   public readonly input: AudioNode; // todo should be private?
@@ -112,5 +112,11 @@ export class VolumeNodes implements HasVolume {
 
   public fadeIn = (duration: number, onComplete?: () => void) => {
     this.fadeTo(1, duration, onComplete);
+  };
+
+  public connectMediaElement = (element: HTMLMediaElement) => {
+    const mediaElementSource =
+      this.audioContext.createMediaElementSource(element);
+    mediaElementSource.connect(this.input);
   };
 }

@@ -17,6 +17,7 @@ const createFilter = (audioContext: AudioContext) => {
 function App() {
   const [isLoadComplete, setIsLoadComplete] = useState(false);
   const [filter, setFilter] = useState<BiquadFilterNode>();
+  const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>();
   const channelsInstance = useChannels();
 
   useEffect(() => {
@@ -46,6 +47,13 @@ function App() {
     loadSamples();
   }, [channelsInstance]);
 
+  useEffect(() => {
+    if (videoElement) {
+      const effectChannel = channelsInstance.getChannel('effect');
+      effectChannel.connectMediaElement(videoElement);
+    }
+  }, [channelsInstance, videoElement]);
+
   return (
     <div style={{ margin: 20 }}>
       <h1>Channels testing ground</h1>
@@ -69,6 +77,13 @@ function App() {
               <PlayingSoundsList />
             </div>
           </div>
+          <video
+            ref={element => {
+              setVideoElement(element);
+            }}
+            src={`${process.env.PUBLIC_URL}/example-vid.mp4`}
+            controls
+          />
         </>
       )}
     </div>

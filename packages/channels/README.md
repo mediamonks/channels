@@ -390,3 +390,15 @@ channelsInstance.createChannel('effect-channel', { effects: myEffect })
 > Both input and output use the in/out with index `0` to connect, which will work for nearly all cases. If for some reason you need to use a different index, you can add a `GainNode` before/after your effects as a solution. 
 
 
+## Use &#60;audio&#62; or &#60;video&#62; output
+
+It is possible to route the audio from an `<audio>` or `<video>` element into `Channels`, for example to apply effects or to control their volume along with other sounds.
+
+To do so, use the `connectMediaElement()` method on either a channel or the main instance:
+```javascript
+// connect output to a channel
+myChannel.connectMediaElement(myVideoElement);
+
+// or to the main output
+channelsInstance.connectMediaElement(myVideoElement);
+```
