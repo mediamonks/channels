@@ -28,7 +28,7 @@ export const ChannelsProvider = ({
 }: Props) => {
   const channelsInstance = useMemo(
     () => new Channels({ soundsPath, soundsExtension, sounds, audioContext }),
-    []
+    [audioContext, sounds, soundsExtension, soundsPath]
   );
 
   return (
