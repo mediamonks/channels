@@ -1,4 +1,8 @@
-### Channels
+<p align="center">
+<img src="https://github.com/mediamonks/channels/blob/develop/assets/channels-logo.png?raw=true" width="200" />
+</p>
+
+# Channels
 
 This repository contains three npm workspaces: 
 
