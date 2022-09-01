@@ -363,6 +363,32 @@ myChannel.getVolume();
 
 > When calling `mute()` the `volume` will be set to `0`, with the additional effect that the previous volume value will be stored and used when calling `unmute()` 
 
+### Listening to volume changes
+To keep track of volume changes, you can listen to events on the `Channels` instance. The `event` in the callback contains info about where the volume change happened. 
+
+```javascript
+channelsInstance.addEventListener("VOLUME_CHANGE", (event) => {
+    // event.data.target is either an instance of a channel, 
+    // a playing sound or the main Channels instance.
+})
+```
+
+#### React hook
+
+For react, you can use the `useVolumeChange` hook to subscribe to changes.
+
+```javascript
+import { useVolumeChange } from '@mediamonks/use-channels';
+
+useVolumeChange({
+    target: myChannel, // can also be a playing sound, or left blank to reference the main output 
+    onChange: (value: number) => {
+        // ...
+    },
+});
+```
+
+
 ## Audio effects
 
 An effect is defined as an object with an `input` and an `output`, both of type `AudioNode`. They can contain either a single node (with `input` and `output` pointing to the same `AudioNode`), or a long chain or multiple nodes - as long there is an `input` and an `output` (which obviously need to be connected in some way). 
