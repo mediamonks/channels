@@ -16,7 +16,7 @@ export const useChannels = () => {
 };
 
 type Props = {
-  children: ReactNode;
+  children: ReactNode | ((channelsInstance: Channels) => ReactNode);
 } & ConstructorParameters<typeof Channels>[0];
 
 export const ChannelsProvider = ({
@@ -33,7 +33,7 @@ export const ChannelsProvider = ({
 
   return (
     <channelsContext.Provider value={channelsInstance}>
-      {children}
+      {typeof children === 'function' ? children(channelsInstance) : children}
     </channelsContext.Provider>
   );
 };
