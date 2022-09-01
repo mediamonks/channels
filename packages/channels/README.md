@@ -312,16 +312,16 @@ Everything in `Channels` connects to one main volume node, which is the final st
 
 Sounds can be played either on a channel, or directly on the main output.
 
-<div align="center"><img src="https://github.com/petervdn/channels/blob/develop/assets/overview-diagram.png?raw=true" /></div>
+<div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/overview-diagram.png?raw=true" /></div>
 
 #### Volume structure
 The volume instances each contain two gain nodes: one for applying volume, and a separate one for fading. They can also contain an optional chain of audio effects.
 
-<div align="center"><img src="https://github.com/petervdn/channels/blob/develop/assets/volume-diagram.png?raw=true"/></div>
+<div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/volume-diagram.png?raw=true"/></div>
 
 #### Sound structure
 Finally, sounds also have an internal volume instance:
-<div align="center"><img src="https://github.com/petervdn/channels/blob/develop/assets/sound-diagram.png?raw=true"/></div>
+<div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/sound-diagram.png?raw=true"/></div>
 
 
 ### Changing volume

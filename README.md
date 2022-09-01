@@ -6,9 +6,9 @@
 
 This repository contains three npm workspaces: 
 
-* [`packages/channels`](https://github.com/petervdn/channels/tree/main/packages/channels): The `Channels` library
-* [`packages/use-channels`](https://github.com/petervdn/channels/tree/main/packages/use-channels): A set of hooks to use `Channels` in a React project
-* [`packages/example-project`](https://github.com/petervdn/channels/tree/main/packages/example-project): A React example project
+* [`packages/channels`](https://github.com/mediamonks/channels/tree/main/packages/channels): The `Channels` library
+* [`packages/use-channels`](https://github.com/mediamonks/channels/tree/main/packages/use-channels): A set of hooks to use `Channels` in a React project
+* [`packages/example-project`](https://github.com/mediamonks/channels/tree/main/packages/example-project): A React example project
 
 First, install dependencies for all workspaces by running `npm install` in the root folder.
 

@@ -22,7 +22,7 @@
     "sample-manager": "^2.1.4",
     "seng-event": "^2.0.2"
   },
-  "homepage": "https://github.com/petervdn/channels/",
+  "homepage": "https://github.com/mediamonks/channels/",
   "devDependencies": {
     "@types/jest": "^28.1.8",
     "jest": "^28.1.3",
