@@ -2,7 +2,13 @@ import { tweenAudioParamToValue } from './util/fadeGain';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 import { CanConnectMediaElement, EffectsChain, HasVolume } from './types';
 import EventDispatcher from 'seng-event';
-import { validateEffectsChain } from './util/validateEffectsChain';
+import { createVolumeNodesGraph } from './util/createVolumeNodesGraph';
+
+type VolumeNodeOptions = {
+  volume?: number;
+  fadeVolume?: number;
+  effectsChain?: EffectsChain;
+};
 
 /**
  * Class that creates two gainNodes, one for the user to freely set,
@@ -11,7 +17,7 @@ import { validateEffectsChain } from './util/validateEffectsChain';
 export class VolumeNodes implements CanConnectMediaElement {
   private readonly volumeGainNode: GainNode;
   private readonly fadeGainNode: GainNode;
-  public readonly input: AudioNode; // todo should be private?
+  public readonly input: AudioNode;
   public readonly output: AudioNode;
 
   private volumeValueBeforeMute: number | undefined;
@@ -20,29 +26,22 @@ export class VolumeNodes implements CanConnectMediaElement {
     readonly audioContext: AudioContext,
     private readonly eventDispatcher: EventDispatcher,
     private readonly volumeTarget: HasVolume,
-    volume = 1,
-    fadeVolume = 1,
-    effectsChain?: EffectsChain
+    { volume = 1, fadeVolume = 1, effectsChain }: VolumeNodeOptions
   ) {
-    this.volumeGainNode = audioContext.createGain();
-    this.fadeGainNode = audioContext.createGain();
+    const { fadeGainNode, volumeGainNode, input, output } =
+      createVolumeNodesGraph({
+        audioContext,
+        effectsChain,
+      });
+
+    this.volumeGainNode = volumeGainNode;
+    this.fadeGainNode = fadeGainNode;
+    this.input = input;
+    this.output = output;
 
     this.setVolume(volume);
 
     this.fadeGainNode.gain.value = fadeVolume;
-
-    // set up the graph: volume -> fade -> mute
-    this.volumeGainNode.connect(this.fadeGainNode);
-
-    // define input and output
-    if (effectsChain) {
-      validateEffectsChain(effectsChain);
-      this.input = effectsChain.input;
-      effectsChain.output.connect(this.volumeGainNode);
-    } else {
-      this.input = this.volumeGainNode;
-    }
-    this.output = this.fadeGainNode;
   }
 
   public fadeTo = (
