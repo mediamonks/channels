@@ -39,8 +39,10 @@ export class PlayingSound implements HasVolume {
       channelsInstance.audioContext,
       channelsInstance,
       this,
-      volume,
-      fadeInTime > 0 ? 0 : 1 // when fading in, initial fade volume is 0
+      {
+        volume,
+        fadeVolume: fadeInTime > 0 ? 0 : 1, // when fading in, initial fade volume is 0
+      }
     );
 
     if (fadeInTime) {
@@ -103,4 +105,5 @@ export class PlayingSound implements HasVolume {
   public getFadeVolume = () => this.volumeNodes.getFadeVolume();
   public getVolume = () => this.volumeNodes.getVolume();
   public setVolume = (value: number) => this.volumeNodes.setVolume(value);
+  public getAnalyser = () => this.volumeNodes.getAnalyser();
 }

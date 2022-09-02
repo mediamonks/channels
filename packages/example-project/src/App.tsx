@@ -33,7 +33,7 @@ function App() {
     );
 
     const filterInst = createFilter(channelsInstance.audioContext);
-    channelsInstance.createChannel('music');
+    channelsInstance.createChannel('music', { analyseMode: 'pre-volume' });
     channelsInstance.createChannel('effect', {
       effects: { input: filterInst, output: filterInst },
     });

@@ -3,11 +3,15 @@ import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 import { CanConnectMediaElement, EffectsChain, HasVolume } from './types';
 import EventDispatcher from 'seng-event';
 import { createVolumeNodesGraph } from './util/createVolumeNodesGraph';
+import { Analyser } from './Analyser';
+
+export type AnalyseMode = 'pre-volume' | 'post-volume';
 
 type VolumeNodeOptions = {
   volume?: number;
   fadeVolume?: number;
   effectsChain?: EffectsChain;
+  analyseMode?: AnalyseMode;
 };
 
 /**
@@ -21,18 +25,24 @@ export class VolumeNodes implements CanConnectMediaElement {
   public readonly output: AudioNode;
 
   private volumeValueBeforeMute: number | undefined;
+  private readonly analyser: Analyser | undefined;
 
   constructor(
     readonly audioContext: AudioContext,
     private readonly eventDispatcher: EventDispatcher,
     private readonly volumeTarget: HasVolume,
-    { volume = 1, fadeVolume = 1, effectsChain }: VolumeNodeOptions
+    { volume = 1, fadeVolume = 1, effectsChain, analyseMode }: VolumeNodeOptions
   ) {
-    const { fadeGainNode, volumeGainNode, input, output } =
+    const { fadeGainNode, volumeGainNode, input, output, analyserNode } =
       createVolumeNodesGraph({
         audioContext,
         effectsChain,
+        analyseMode,
       });
+
+    if (analyserNode) {
+      this.analyser = new Analyser(analyserNode);
+    }
 
     this.volumeGainNode = volumeGainNode;
     this.fadeGainNode = fadeGainNode;
@@ -118,4 +128,6 @@ export class VolumeNodes implements CanConnectMediaElement {
       this.audioContext.createMediaElementSource(element);
     mediaElementSource.connect(this.input);
   };
+
+  public getAnalyser = () => this.analyser;
 }
