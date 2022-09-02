@@ -45,7 +45,7 @@ export const WaveView = ({ width, height, analyser }: Props) => {
     if (!contextRef.current) {
       return;
     }
-    draw(contextRef.current, width, height, analyser.getWaveData());
+    draw(contextRef.current, width, height, analyser.getFrequencySpectrum());
   }, 10);
 
   return (
