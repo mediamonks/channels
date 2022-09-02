@@ -1,6 +1,11 @@
 import { Channels } from './Channels';
-import { AnalyseMode, VolumeNodes } from './VolumeNodes';
-import { CanConnectMediaElement, EffectsChain, PlayStopOptions } from './types';
+import { VolumeNodes } from './VolumeNodes';
+import {
+  AnalyserSettings,
+  CanConnectMediaElement,
+  EffectsChain,
+  PlayStopOptions,
+} from './types';
 
 export type ChannelType = 'monophonic' | 'polyphonic';
 
@@ -8,7 +13,7 @@ export type CreateChannelOptions = {
   type?: ChannelType;
   volume?: number;
   effects?: EffectsChain;
-  analyseMode?: AnalyseMode;
+  analyserSettings?: AnalyserSettings;
 };
 
 type PlayParameters = Parameters<InstanceType<typeof Channels>['play']>;
@@ -24,7 +29,7 @@ export class Channel implements CanConnectMediaElement {
       volume,
       type = 'polyphonic',
       effects,
-      analyseMode,
+      analyserSettings,
     }: CreateChannelOptions = {},
     public defaultPlayStopOptions?: PlayStopOptions // todo: move these into CreateChannelOptions?
   ) {
@@ -37,7 +42,7 @@ export class Channel implements CanConnectMediaElement {
       {
         volume,
         effectsChain: effects,
-        analyseMode,
+        analyserSettings,
       }
     );
 

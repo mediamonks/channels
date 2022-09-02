@@ -40,3 +40,9 @@ export type EffectsChain = {
   input: AudioNode;
   output: AudioNode;
 };
+
+export type AnalyserMode = 'pre-volume' | 'post-volume';
+export type AnalyserSettings = {
+  fftSize?: number;
+  mode: AnalyserMode;
+};

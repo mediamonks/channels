@@ -1,16 +1,16 @@
 import { validateEffectsChain } from './validateEffectsChain';
-import { EffectsChain } from '../types';
+import { AnalyserSettings, EffectsChain } from '../types';
 
 type Props = {
   audioContext: AudioContext;
   effectsChain?: EffectsChain;
-  analyseMode?: 'pre-volume' | 'post-volume';
+  analyserSettings?: AnalyserSettings;
 };
 
 export const createVolumeNodesGraph = ({
   audioContext,
   effectsChain,
-  analyseMode,
+  analyserSettings,
 }: Props) => {
   if (effectsChain) {
     validateEffectsChain(effectsChain);
@@ -18,15 +18,16 @@ export const createVolumeNodesGraph = ({
 
   const volumeGainNode = audioContext.createGain();
   const fadeGainNode = audioContext.createGain();
-  const analyserNode =
-    analyseMode !== undefined ? audioContext.createAnalyser() : undefined;
+  const analyserNode = analyserSettings
+    ? audioContext.createAnalyser()
+    : undefined;
 
   const nodesChain: Array<AudioNode> = [
     effectsChain?.output,
-    analyseMode === 'pre-volume' ? analyserNode : undefined,
+    analyserSettings?.mode === 'pre-volume' ? analyserNode : undefined,
     volumeGainNode,
     fadeGainNode,
-    analyseMode === 'post-volume' ? analyserNode : undefined,
+    analyserSettings?.mode === 'post-volume' ? analyserNode : undefined,
   ].filter((node): node is AudioNode => node !== undefined);
 
   // connect each node to the next
