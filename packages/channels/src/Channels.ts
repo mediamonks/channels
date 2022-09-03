@@ -221,23 +221,6 @@ export class Channels extends EventDispatcher implements HasVolume {
   };
 
   /**
-   * Gets the volume for a channel.
-   * @param channelName
-   */
-  public getChannelVolume = (channelName: string) => {
-    return this.getChannel(channelName).getVolume();
-  };
-
-  /**
-   * Sets the volume for a channel.
-   * @param channelName
-   * @param value
-   */
-  public setChannelVolume = (channelName: string, value: number) => {
-    this.getChannel(channelName).setVolume(value);
-  };
-
-  /**
    * Mutes a channel or the main output.
    * @param value
    * @param options
@@ -254,7 +237,6 @@ export class Channels extends EventDispatcher implements HasVolume {
    * Play a sound. When no channel is supplied, it will be played directly
    * on the main output.
    * @param name
-   * @param channel
    * @param playSoundOptions
    */
   public play = (
