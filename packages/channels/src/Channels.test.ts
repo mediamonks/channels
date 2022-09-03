@@ -157,18 +157,6 @@ describe('Channels instance', () => {
         expect(channelGainNode.gain.value).toBe(0.5);
         expect(channelGainNode.gain.value).toBe(0.5);
         expect(channelsInstance.getChannel('ch').getVolume()).toBe(0.5);
-
-        // set through method on main channels instance
-        channelsInstance.setChannelVolume('ch', 0.25);
-        const destinationNode2 = getAudioGraph(channelsInstance);
-        const mainFadeNode2 = destinationNode2.inputs[0];
-        const mainGainNode2 = mainFadeNode2.inputs[0];
-        const channelFadeNode2 = mainGainNode2.inputs[0];
-        const channelGainNode2 = channelFadeNode2.inputs[0];
-
-        expect(channelGainNode2.gain.value).toBe(0.25);
-        expect(channelFadeNode2.gain.value).toBe(1);
-        expect(channelsInstance.getChannel('ch').getVolume()).toBe(0.25);
       });
       it('Has default volume', () => {
         const channel = channelsInstance.createChannel('ch');
