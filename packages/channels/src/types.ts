@@ -28,7 +28,9 @@ export type PlaySoundOptions = {
   loop?: boolean;
   fadeInTime?: number;
   volume?: number;
-};
+} & OptionalChannel;
+
+// export type PlaySoundOptionsWithChannel = PlaySoundOptions & OptionalChannel;
 
 export type StopSoundOptions = {
   fadeOutTime?: number;

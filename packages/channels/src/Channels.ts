@@ -259,15 +259,17 @@ export class Channels extends EventDispatcher implements HasVolume {
    */
   public play = (
     name: string,
-    { channel, ...playSoundOptions }: PlaySoundOptions & OptionalChannel = {}
+    playSoundOptions: PlaySoundOptions = {}
   ): PlayingSound => {
     const sound = this.sampleManager.getSampleByName(name);
+    const { channel } = playSoundOptions;
     if (!sound) {
       throw new Error(`Cannot find sound: '${name}`);
     }
     const channelForSound = this.getOptionalChannelByNameOrInstance(channel);
 
-    const resultingPlayStopOptions = Object.assign(
+    // if there is a channel with defaultPlayStopOptions, merge them
+    const mergedPlaySoundOptions = Object.assign(
       channelForSound?.defaultPlayStopOptions || {},
       playSoundOptions
     );
@@ -277,7 +279,7 @@ export class Channels extends EventDispatcher implements HasVolume {
       sound,
       (channelForSound?.volumeNodes || this.volumeNodes).input,
       channelForSound,
-      resultingPlayStopOptions
+      mergedPlaySoundOptions
     );
 
     if (channelForSound?.type === 'monophonic') {
