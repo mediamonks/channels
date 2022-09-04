@@ -204,31 +204,6 @@ export class Channels extends EventDispatcher implements HasVolume {
   };
 
   /**
-   * Gets the VolumeNodes instance for a channel or, when no channelName
-   * is supplied, the one for the main output.
-   * @param channel
-   * @private
-   */
-  private getVolumeNodes = ({ channel }: OptionalChannel = {}): VolumeNodes => {
-    const optionalChannel = this.getOptionalChannelByNameOrInstance(channel);
-
-    return optionalChannel?.volumeNodes || this.volumeNodes;
-  };
-
-  /**
-   * Mutes a channel or the main output.
-   * @param value
-   * @param options
-   */
-  public setMute = (value: boolean, { channel }: OptionalChannel = {}) => {
-    if (value) {
-      this.getVolumeNodes({ channel }).mute();
-    } else {
-      this.getVolumeNodes({ channel }).unmute();
-    }
-  };
-
-  /**
    * Play a sound. When no channel is supplied, it will be played directly
    * on the main output.
    * @param name
