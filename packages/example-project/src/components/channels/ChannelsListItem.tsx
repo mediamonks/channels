@@ -38,7 +38,7 @@ export const ChannelsListItem = ({ channel }: Props) => {
             </small>
           )}
       </p>
-      <button onClick={() => channelsInstance.stopAll({ channel })}>
+      <button onClick={() => channelsInstance.stopAll(channel.name)}>
         stop all sounds on this channel
       </button>
       <button onClick={fadeOut}>fade out</button>
