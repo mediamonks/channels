@@ -56,14 +56,9 @@ export class Channels extends EventDispatcher implements HasVolume {
     }
 
     // everything connect to the main volume controls
-    this.volumeNodes = new VolumeNodes(
-      this.audioContext,
-      this,
-      this,
-      1,
-      1,
-      mainEffects
-    );
+    this.volumeNodes = new VolumeNodes(this.audioContext, this, this, {
+      effectsChain: mainEffects,
+    });
     this.volumeNodes.output.connect(this.audioContext.destination);
   }
 
@@ -291,4 +286,5 @@ export class Channels extends EventDispatcher implements HasVolume {
   public setVolume = (value: number) => this.volumeNodes.setVolume(value);
   public connectMediaElement = (element: HTMLMediaElement) =>
     this.volumeNodes.connectMediaElement(element);
+  public getAnalyser = () => this.volumeNodes.getAnalyser();
 }

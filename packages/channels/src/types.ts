@@ -1,5 +1,6 @@
 import { ICreateSample, ISample } from 'sample-manager';
 import { Channel } from './Channel';
+import { Analyser } from './Analyser';
 
 export type Sound = ISample;
 export type CreateSound = ICreateSample;
@@ -16,6 +17,7 @@ export interface HasVolume {
   unmute: () => void;
   fadeOut: (duration: number, onComplete?: () => void) => void;
   fadeIn: (duration: number, onComplete?: () => void) => void;
+  getAnalyser: () => Analyser | undefined;
 }
 
 export interface CanConnectMediaElement extends HasVolume {
@@ -38,4 +40,10 @@ export type StopSoundOptions = {
 export type EffectsChain = {
   input: AudioNode;
   output: AudioNode;
+};
+
+export type AnalyserMode = 'pre-volume' | 'post-volume';
+export type AnalyserSettings = {
+  fftSize?: number;
+  mode: AnalyserMode;
 };
