@@ -348,17 +348,6 @@ playingSound.setVolume(0.5);
 channelsInstance.setVolume(0.5);
 ```
 
-Additionally, the `channelsInstance` also has a method to set/get the volume for a channel:
-```javascript
-// accepts both a name or the instance
-channelsInstance.setChannelVolume('my-channel', 0.5);
-channelsInstance.getChannelVolume(myChannel);
-
-// although, if you already have a reference, it's easier to do
-myChannel.getVolume();
-```
-
-
 > Volume values should be `0` or higher. Keep in mind that going beyond `1` *might* result in [digital clipping](https://en.wikipedia.org/wiki/Clipping_(audio)).
 
 > When calling `mute()` the `volume` will be set to `0`, with the additional effect that the previous volume value will be stored and used when calling `unmute()` 
