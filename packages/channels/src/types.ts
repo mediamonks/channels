@@ -43,7 +43,21 @@ export type EffectsChain = {
 };
 
 export type AnalyserMode = 'pre-volume' | 'post-volume';
+
+export type FFTSize =
+  | 32
+  | 64
+  | 128
+  | 256
+  | 512
+  | 1024
+  | 2048
+  | 4096
+  | 8192
+  | 16384
+  | 32768;
+
 export type AnalyserSettings = {
-  fftSize?: number;
+  fftSize?: FFTSize;
   mode: AnalyserMode;
 };
