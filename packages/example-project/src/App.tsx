@@ -33,7 +33,9 @@ function App() {
     );
 
     const filterInst = createFilter(channelsInstance.audioContext);
-    channelsInstance.createChannel('music');
+    channelsInstance.createChannel('music', {
+      analyserSettings: { mode: 'post-volume' },
+    });
     channelsInstance.createChannel('effect', {
       effects: { input: filterInst, output: filterInst },
     });
