@@ -2,7 +2,6 @@ import {
   CreateSound,
   EffectsChain,
   HasVolume,
-  OptionalChannel,
   PlaySoundOptions,
   PlayStopOptions,
 } from './types';
@@ -70,20 +69,6 @@ export class Channels extends EventDispatcher implements HasVolume {
       ? this.audioContext.resume()
       : Promise.resolve();
   };
-
-  /**
-   * Utility function to handle often used optional channel parameters,
-   * which can be either the channel's name or a channel instance
-   * @param channel
-   */
-  private getOptionalChannelByNameOrInstance(
-    channel: OptionalChannel['channel']
-  ): Channel | undefined {
-    if (typeof channel === 'string' && !this.channelsByName[channel]) {
-      throw new Error(`Channel '${channel}' does not exist`);
-    }
-    return typeof channel === 'string' ? this.channelsByName[channel] : channel;
-  }
 
   /**
    * Check if the context is in the suspended state.
@@ -177,10 +162,10 @@ export class Channels extends EventDispatcher implements HasVolume {
   /**
    * Stop either all sounds or, when a channel name is supplied, all
    * sounds that are playing on a channel.
-   * @param channelName
+   * @param channel
    */
-  public stopAll = ({ channel }: OptionalChannel = {}) => {
-    const channelToStop = this.getOptionalChannelByNameOrInstance(channel);
+  public stopAll = (channel?: string) => {
+    const channelToStop = channel ? this.getChannel(channel) : null;
 
     this.playingSounds
       .filter(({ channel }) =>
@@ -218,7 +203,7 @@ export class Channels extends EventDispatcher implements HasVolume {
     if (!sound) {
       throw new Error(`Cannot find sound: '${name}`);
     }
-    const channelForSound = this.getOptionalChannelByNameOrInstance(channel);
+    const channelForSound = channel ? this.getChannel(channel) : undefined;
 
     // if there is a channel with defaultPlayStopOptions, merge them
     const mergedPlaySoundOptions = Object.assign(
@@ -235,7 +220,7 @@ export class Channels extends EventDispatcher implements HasVolume {
     );
 
     if (channelForSound?.type === 'monophonic') {
-      this.stopAll({ channel });
+      this.stopAll(channel);
     }
 
     this.playingSounds.push(playingSound);

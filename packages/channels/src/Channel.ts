@@ -65,7 +65,7 @@ export class Channel implements CanConnectMediaElement {
    * Stop all playing sounds on the channel
    */
   public stopAll = () => {
-    this.channelsInstance.stopAll({ channel: this.name });
+    this.channelsInstance.stopAll(this.name);
   };
 
   /*
