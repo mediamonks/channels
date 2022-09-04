@@ -405,11 +405,11 @@ const myEffect = {
 const channelsInstance = new Channels({
     soundsExtension,
     soundsPath,
-    mainEffects: myEffect,
+    effectsChain: myEffect,
 });
 
 // setting it on a channel
-channelsInstance.createChannel('effect-channel', { effects: myEffect })
+channelsInstance.createChannel('effect-channel', { effectsChain: myEffect })
 ```
 > The effects chain is always placed **before** the volume gain node.
 

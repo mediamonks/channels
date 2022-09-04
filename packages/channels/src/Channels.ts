@@ -19,7 +19,7 @@ type ConstructorProps = {
   soundsExtension: string;
   audioContext?: AudioContext;
   sounds?: Array<CreateSound>;
-  mainEffectsChain?: EffectsChain;
+  effectsChain?: EffectsChain;
 };
 
 export class Channels extends EventDispatcher implements HasVolume {
@@ -34,7 +34,7 @@ export class Channels extends EventDispatcher implements HasVolume {
     soundsExtension,
     soundsPath,
     sounds,
-    mainEffectsChain,
+    effectsChain,
   }: ConstructorProps) {
     super();
     this.audioContext =
@@ -57,7 +57,7 @@ export class Channels extends EventDispatcher implements HasVolume {
 
     // everything connect to the main volume controls
     this.volumeNodes = new VolumeNodes(this.audioContext, this, this, {
-      effectsChain: mainEffectsChain,
+      effectsChain: effectsChain,
     });
     this.volumeNodes.output.connect(this.audioContext.destination);
   }

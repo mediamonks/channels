@@ -12,7 +12,7 @@ export type ChannelType = 'monophonic' | 'polyphonic';
 export type CreateChannelOptions = {
   type?: ChannelType;
   volume?: number;
-  effects?: EffectsChain;
+  effectsChain?: EffectsChain;
   analyserSettings?: AnalyserSettings;
 };
 
@@ -28,7 +28,7 @@ export class Channel implements CanConnectMediaElement {
     {
       volume,
       type = 'polyphonic',
-      effects,
+      effectsChain,
       analyserSettings,
     }: CreateChannelOptions = {},
     public defaultPlayStopOptions?: PlayStopOptions // todo: move these into CreateChannelOptions?
@@ -41,7 +41,7 @@ export class Channel implements CanConnectMediaElement {
       this,
       {
         volume,
-        effectsChain: effects,
+        effectsChain,
         analyserSettings,
       }
     );
