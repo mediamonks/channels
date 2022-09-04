@@ -79,7 +79,7 @@ new Channels({
 
 ### React
 
-For React projects, there is a [useChannels hook](https://www.npmjs.com/package/@mediamonks/use-channels) to create and provide a `Channels` instance.
+For React projects, you can install [useChannels](https://www.npmjs.com/package/@mediamonks/use-channels) to (amongst other things) easily create and provide a `Channels` instance.
 
 ### Suspended state
 
