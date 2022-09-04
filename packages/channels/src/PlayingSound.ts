@@ -18,7 +18,12 @@ export class PlayingSound implements HasVolume {
     public readonly channel?: Channel,
     playSoundOptions: PlaySoundOptions = {}
   ) {
-    const { loop = false, fadeInTime = 0, volume = 1 } = playSoundOptions;
+    const {
+      loop = false,
+      fadeInTime = 0,
+      volume = 1,
+      effectsChain,
+    } = playSoundOptions;
 
     if (!sound.audioBuffer) {
       // todo: check how/if this works, audioBuffer seems to always exist on Sound/ISample
@@ -42,12 +47,9 @@ export class PlayingSound implements HasVolume {
       {
         volume,
         fadeVolume: fadeInTime > 0 ? 0 : 1, // when fading in, initial fade volume is 0
+        effectsChain,
       }
     );
-
-    if (fadeInTime) {
-      this.volumeNodes.fadeIn(fadeInTime);
-    }
 
     this.volumeNodes.output.connect(destination);
     this.bufferSourceNode.connect(this.volumeNodes.input);
@@ -58,6 +60,10 @@ export class PlayingSound implements HasVolume {
 
     this.startedAt = this.channelsInstance.audioContext.currentTime;
     this.bufferSourceNode.start(0);
+
+    if (fadeInTime) {
+      this.volumeNodes.fadeIn(fadeInTime);
+    }
   }
 
   private removePlayingSound = () => {

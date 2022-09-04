@@ -5,6 +5,7 @@ import { useChannels } from '@mediamonks/use-channels';
 import { FilterControls } from './components/ui-elements/FilterControls';
 import { ChannelsList } from './components/channels/ChannelsList';
 import { PlayingSoundsList } from './components/playingsounds/PlayingSoundsList';
+import { EffectsChain } from '@mediamonks/channels';
 
 const createFilter = (audioContext: AudioContext) => {
   const filter = audioContext.createBiquadFilter();
@@ -16,7 +17,8 @@ const createFilter = (audioContext: AudioContext) => {
 
 function App() {
   const [isLoadComplete, setIsLoadComplete] = useState(false);
-  const [filter, setFilter] = useState<BiquadFilterNode>();
+  const [effectsChain, setEffectsChain] =
+    useState<EffectsChain<BiquadFilterNode, BiquadFilterNode>>();
   const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>();
   const channelsInstance = useChannels();
 
@@ -33,13 +35,14 @@ function App() {
     );
 
     const filterInst = createFilter(channelsInstance.audioContext);
+    setEffectsChain({ input: filterInst, output: filterInst });
+
     channelsInstance.createChannel('music', {
-      analyserSettings: { mode: 'post-volume' },
+      analyserSettings: { mode: 'post-volume', fftSize: 128 },
     });
     channelsInstance.createChannel('effect', {
-      effects: { input: filterInst, output: filterInst },
+      // effects: { input: filterInst, output: filterInst },
     });
-    setFilter(filterInst);
 
     const loadSamples = async () => {
       await channelsInstance.loadSounds();
@@ -67,10 +70,10 @@ function App() {
               <VolumeControls entity={channelsInstance} showFade={false} />
             </li>
           </ul>
-          {filter && <FilterControls filter={filter} />}
+          {effectsChain && <FilterControls filter={effectsChain.input} />}
           <div style={{ display: 'flex' }}>
             <div style={{ width: '33%', padding: 5 }}>
-              <SoundsList />
+              <SoundsList effectsChain={effectsChain} />
             </div>
             <div style={{ width: '33%', padding: 5 }}>
               <ChannelsList />

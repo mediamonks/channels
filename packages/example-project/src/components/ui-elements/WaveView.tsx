@@ -12,7 +12,6 @@ const draw = (
   context: CanvasRenderingContext2D,
   width: number,
   height: number,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   data: Float32Array
 ) => {
   context.fillStyle = 'black';
@@ -45,7 +44,7 @@ export const WaveView = ({ width, height, analyser }: Props) => {
     if (!contextRef.current) {
       return;
     }
-    draw(contextRef.current, width, height, analyser.getFrequencySpectrum());
+    draw(contextRef.current, width, height, analyser.getWaveData());
   }, 10);
 
   return (

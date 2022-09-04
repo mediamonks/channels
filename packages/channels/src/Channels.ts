@@ -19,7 +19,7 @@ type ConstructorProps = {
   soundsExtension: string;
   audioContext?: AudioContext;
   sounds?: Array<CreateSound>;
-  mainEffects?: EffectsChain;
+  effectsChain?: EffectsChain;
 };
 
 export class Channels extends EventDispatcher implements HasVolume {
@@ -34,7 +34,7 @@ export class Channels extends EventDispatcher implements HasVolume {
     soundsExtension,
     soundsPath,
     sounds,
-    mainEffects,
+    effectsChain,
   }: ConstructorProps) {
     super();
     this.audioContext =
@@ -57,7 +57,7 @@ export class Channels extends EventDispatcher implements HasVolume {
 
     // everything connect to the main volume controls
     this.volumeNodes = new VolumeNodes(this.audioContext, this, this, {
-      effectsChain: mainEffects,
+      effectsChain,
     });
     this.volumeNodes.output.connect(this.audioContext.destination);
   }
@@ -204,65 +204,24 @@ export class Channels extends EventDispatcher implements HasVolume {
   };
 
   /**
-   * Gets the VolumeNodes instance for a channel or, when no channelName
-   * is supplied, the one for the main output.
-   * @param channel
-   * @private
-   */
-  private getVolumeNodes = ({ channel }: OptionalChannel = {}): VolumeNodes => {
-    const optionalChannel = this.getOptionalChannelByNameOrInstance(channel);
-
-    return optionalChannel?.volumeNodes || this.volumeNodes;
-  };
-
-  /**
-   * Gets the volume for a channel.
-   * @param channelName
-   */
-  public getChannelVolume = (channelName: string) => {
-    return this.getChannel(channelName).getVolume();
-  };
-
-  /**
-   * Sets the volume for a channel.
-   * @param channelName
-   * @param value
-   */
-  public setChannelVolume = (channelName: string, value: number) => {
-    this.getChannel(channelName).setVolume(value);
-  };
-
-  /**
-   * Mutes a channel or the main output.
-   * @param value
-   * @param options
-   */
-  public setMute = (value: boolean, { channel }: OptionalChannel = {}) => {
-    if (value) {
-      this.getVolumeNodes({ channel }).mute();
-    } else {
-      this.getVolumeNodes({ channel }).unmute();
-    }
-  };
-
-  /**
    * Play a sound. When no channel is supplied, it will be played directly
    * on the main output.
    * @param name
-   * @param channel
    * @param playSoundOptions
    */
   public play = (
     name: string,
-    { channel, ...playSoundOptions }: PlaySoundOptions & OptionalChannel = {}
+    playSoundOptions: PlaySoundOptions = {}
   ): PlayingSound => {
     const sound = this.sampleManager.getSampleByName(name);
+    const { channel } = playSoundOptions;
     if (!sound) {
       throw new Error(`Cannot find sound: '${name}`);
     }
     const channelForSound = this.getOptionalChannelByNameOrInstance(channel);
 
-    const resultingPlayStopOptions = Object.assign(
+    // if there is a channel with defaultPlayStopOptions, merge them
+    const mergedPlaySoundOptions = Object.assign(
       channelForSound?.defaultPlayStopOptions || {},
       playSoundOptions
     );
@@ -272,7 +231,7 @@ export class Channels extends EventDispatcher implements HasVolume {
       sound,
       (channelForSound?.volumeNodes || this.volumeNodes).input,
       channelForSound,
-      resultingPlayStopOptions
+      mergedPlaySoundOptions
     );
 
     if (channelForSound?.type === 'monophonic') {
