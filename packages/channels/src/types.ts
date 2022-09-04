@@ -37,9 +37,12 @@ export type StopSoundOptions = {
   fadeOutTime?: number;
 };
 
-export type EffectsChain = {
-  input: AudioNode;
-  output: AudioNode;
+export type EffectsChain<
+  I extends AudioNode = AudioNode,
+  O extends AudioNode = AudioNode
+> = {
+  input: I;
+  output: O;
 };
 
 export type AnalyserMode = 'pre-volume' | 'post-volume';

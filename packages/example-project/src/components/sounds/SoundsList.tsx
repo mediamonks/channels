@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import { useChannels } from '@mediamonks/use-channels';
 import { SoundsListItem } from './SoundsListItem';
+import { EffectsChain } from '@mediamonks/channels';
 
-export const SoundsList = () => {
+type Props = {
+  effectsChain?: EffectsChain;
+};
+
+export const SoundsList = ({ effectsChain }: Props) => {
   const channelsInstance = useChannels();
   const [loopIsChecked, setLoopIsChecked] = useState(false);
   const [fadeInTime, setFadeInTime] = useState(0);
+  const [applyEffect, setApplyEffect] = useState(false);
 
   const playSound = (
     soundName: string,
@@ -16,6 +22,7 @@ export const SoundsList = () => {
     if (usePlayOptions) {
       options.loop = loopIsChecked;
       options.fadeInTime = fadeInTime;
+      options.effectsChain = effectsChain;
     }
     channelsInstance.play(soundName, options);
   };
@@ -32,6 +39,16 @@ export const SoundsList = () => {
             onChange={() => setLoopIsChecked(value => !value)}
           />
         </label>
+        {effectsChain && (
+          <label>
+            effects
+            <input
+              type="checkbox"
+              checked={applyEffect}
+              onChange={() => setApplyEffect(value => !value)}
+            />
+          </label>
+        )}
         <label>
           fade in time
           <input
