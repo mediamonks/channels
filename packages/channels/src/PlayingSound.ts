@@ -16,7 +16,7 @@ export class PlayingSound implements HasVolume {
     public readonly sound: Sound,
     private readonly destination: AudioNode,
     public readonly channel?: Channel,
-    playSoundOptions: PlaySoundOptions = {}
+    playSoundOptions: Omit<PlaySoundOptions, 'channel'> = {}
   ) {
     const {
       loop = false,
