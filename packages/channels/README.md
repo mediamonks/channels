@@ -79,7 +79,7 @@ new Channels({
 
 ### React
 
-For React projects, there is a [useChannels hook](https://www.npmjs.com/package/@mediamonks/use-channels) to create and provide a `Channels` instance.
+For React projects, you can install [useChannels](https://www.npmjs.com/package/@mediamonks/use-channels) to (amongst other things) easily create and provide a `Channels` instance.
 
 ### Suspended state
 
@@ -347,17 +347,6 @@ playingSound.setVolume(0.5);
 // and on the library instance (to target the main output)
 channelsInstance.setVolume(0.5);
 ```
-
-Additionally, the `channelsInstance` also has a method to set/get the volume for a channel:
-```javascript
-// accepts both a name or the instance
-channelsInstance.setChannelVolume('my-channel', 0.5);
-channelsInstance.getChannelVolume(myChannel);
-
-// although, if you already have a reference, it's easier to do
-myChannel.getVolume();
-```
-
 
 > Volume values should be `0` or higher. Keep in mind that going beyond `1` *might* result in [digital clipping](https://en.wikipedia.org/wiki/Clipping_(audio)).
 

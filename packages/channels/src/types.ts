@@ -1,13 +1,8 @@
 import { ICreateSample, ISample } from 'sample-manager';
-import { Channel } from './Channel';
 import { Analyser } from './Analyser';
 
 export type Sound = ISample;
 export type CreateSound = ICreateSample;
-
-export type OptionalChannel = {
-  channel?: string | Channel;
-};
 
 export interface HasVolume {
   getFadeVolume(): number;
@@ -31,7 +26,8 @@ export type PlaySoundOptions = {
   fadeInTime?: number;
   volume?: number;
   effectsChain?: EffectsChain;
-} & OptionalChannel;
+  channel?: string;
+};
 
 export type StopSoundOptions = {
   fadeOutTime?: number;
