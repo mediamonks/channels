@@ -22,7 +22,7 @@ export class PlayingSound implements HasVolume {
       loop = false,
       fadeInTime = 0,
       volume = 1,
-      effectsChain,
+      effects,
     } = playSoundOptions;
 
     if (!sound.audioBuffer) {
@@ -47,7 +47,7 @@ export class PlayingSound implements HasVolume {
       {
         volume,
         fadeVolume: fadeInTime > 0 ? 0 : 1, // when fading in, initial fade volume is 0
-        effectsChain,
+        effects,
       }
     );
 

@@ -1,13 +1,13 @@
 import { Channels } from './Channels';
 import { VolumeNodes } from './VolumeNodes';
-import { CanConnectMediaElement, EffectsChain, PlayStopOptions } from './types';
+import { CanConnectMediaElement, Effects, PlayStopOptions } from './types';
 
 export type ChannelType = 'monophonic' | 'polyphonic';
 
 export type CreateChannelOptions = {
   type?: ChannelType;
   volume?: number;
-  effectsChain?: EffectsChain;
+  effects?: Effects;
 };
 
 type PlayParameters = Parameters<InstanceType<typeof Channels>['play']>;
@@ -19,7 +19,7 @@ export class Channel implements CanConnectMediaElement {
   constructor(
     public readonly name: string,
     public readonly channelsInstance: Channels,
-    { volume, type = 'polyphonic', effectsChain }: CreateChannelOptions = {},
+    { volume, type = 'polyphonic', effects }: CreateChannelOptions = {},
     public defaultPlayStopOptions?: PlayStopOptions // todo: move these into CreateChannelOptions?
   ) {
     this.type = type;
@@ -30,7 +30,7 @@ export class Channel implements CanConnectMediaElement {
       this,
       {
         volume,
-        effectsChain,
+        effects,
       }
     );
 

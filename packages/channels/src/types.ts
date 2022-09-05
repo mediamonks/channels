@@ -23,7 +23,7 @@ export type PlaySoundOptions = {
   loop?: boolean;
   fadeInTime?: number;
   volume?: number;
-  effectsChain?: EffectsChain;
+  effects?: Effects;
   channel?: string;
 };
 
@@ -37,4 +37,9 @@ export type EffectsChain<
 > = {
   input: I;
   output: O;
+};
+
+export type Effects = {
+  mode: 'pre-volume' | 'post-volume';
+  nodes: EffectsChain;
 };
