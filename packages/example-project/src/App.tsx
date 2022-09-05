@@ -39,7 +39,10 @@ function App() {
 
     channelsInstance.createChannel('music');
     channelsInstance.createChannel('effect', {
-      // effects: { input: filterInst, output: filterInst },
+      effects: {
+        mode: 'pre-volume',
+        nodes: { input: filterInst, output: filterInst },
+      },
     });
 
     const loadSamples = async () => {
