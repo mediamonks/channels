@@ -1,49 +1,68 @@
 import { tweenAudioParamToValue } from './util/fadeGain';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
-import { HasVolume } from './types';
+import {
+  AnalyserSettings,
+  CanConnectMediaElement,
+  EffectsChain,
+  HasVolume,
+} from './types';
 import EventDispatcher from 'seng-event';
+import { createVolumeNodesGraph } from './util/createVolumeNodesGraph';
+import { Analyser } from './Analyser';
 
-export type VolumeOptions = {
-  initialVolume?: number;
-  initialMuted?: boolean;
+type VolumeNodeOptions = {
+  volume?: number;
+  fadeVolume?: number;
+  effectsChain?: EffectsChain;
+  analyserSettings?: AnalyserSettings;
 };
 
 /**
  * Class that creates two gainNodes, one for the user to freely set,
  * one for applying fades.
  */
-export class VolumeNodes implements HasVolume {
+export class VolumeNodes implements CanConnectMediaElement {
   private readonly volumeGainNode: GainNode;
   private readonly fadeGainNode: GainNode;
-  public readonly input: GainNode; // todo should be private?
-  public readonly output: GainNode;
+  public readonly input: AudioNode;
+  public readonly output: AudioNode;
 
   private volumeValueBeforeMute: number | undefined;
+  private readonly analyser: Analyser | undefined;
 
   constructor(
     readonly audioContext: AudioContext,
     private readonly eventDispatcher: EventDispatcher,
     private readonly volumeTarget: HasVolume,
-    { initialVolume = 1, initialMuted = false }: VolumeOptions = {},
-    initialFadeVolume = 1 // todo: shouldn't this be part of VolumeOptions?
+    {
+      volume = 1,
+      fadeVolume = 1,
+      effectsChain,
+      analyserSettings,
+    }: VolumeNodeOptions
   ) {
-    this.volumeGainNode = audioContext.createGain();
-    this.fadeGainNode = audioContext.createGain();
+    const { fadeGainNode, volumeGainNode, input, output, analyserNode } =
+      createVolumeNodesGraph({
+        audioContext,
+        effectsChain,
+        analyserSettings,
+      });
 
-    this.setVolume(initialVolume);
-
-    if (initialMuted) {
-      this.mute(); // todo: this dispatches an event, probably not what we want
+    if (analyserNode) {
+      this.analyser = new Analyser(
+        analyserNode,
+        analyserSettings?.fftSize || 1024
+      );
     }
 
-    this.fadeGainNode.gain.value = initialFadeVolume;
+    this.volumeGainNode = volumeGainNode;
+    this.fadeGainNode = fadeGainNode;
+    this.input = input;
+    this.output = output;
 
-    // set up the graph: volume -> fade -> mute
-    this.volumeGainNode.connect(this.fadeGainNode);
+    this.setVolume(volume);
 
-    // define input and output
-    this.input = this.volumeGainNode;
-    this.output = this.fadeGainNode;
+    this.fadeGainNode.gain.value = fadeVolume;
   }
 
   public fadeTo = (
@@ -114,4 +133,12 @@ export class VolumeNodes implements HasVolume {
   public fadeIn = (duration: number, onComplete?: () => void) => {
     this.fadeTo(1, duration, onComplete);
   };
+
+  public connectMediaElement = (element: HTMLMediaElement) => {
+    const mediaElementSource =
+      this.audioContext.createMediaElementSource(element);
+    mediaElementSource.connect(this.input);
+  };
+
+  public getAnalyser = () => this.analyser;
 }

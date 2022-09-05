@@ -16,7 +16,7 @@ export const useChannels = () => {
 };
 
 type Props = {
-  children: ReactNode;
+  children: ReactNode | ((channelsInstance: Channels) => ReactNode);
 } & ConstructorParameters<typeof Channels>[0];
 
 export const ChannelsProvider = ({
@@ -28,12 +28,12 @@ export const ChannelsProvider = ({
 }: Props) => {
   const channelsInstance = useMemo(
     () => new Channels({ soundsPath, soundsExtension, sounds, audioContext }),
-    []
+    [audioContext, sounds, soundsExtension, soundsPath]
   );
 
   return (
     <channelsContext.Provider value={channelsInstance}>
-      {children}
+      {typeof children === 'function' ? children(channelsInstance) : children}
     </channelsContext.Provider>
   );
 };

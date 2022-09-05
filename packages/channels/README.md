@@ -1,5 +1,5 @@
 # Channels
-Channel based sound player, intended to provide a minimal and clear api for simple use cases.
+`Channels` is a channel based sound player for the web.
 
 
 ## Installation
@@ -54,9 +54,9 @@ channelsInstance.setVolume(0.5);
 myChannel.setVolume(0.5);
 ```
 
-## Creating a Channels instance
+## Getting started
 
-When creating a `Channels` object, two parameters are required: the location of the sound files, and the extension to use:
+Before we can do anything, an instance of `Channels` has to be created. Two parameters are required: the **location of the sound files**, and the **file extension** to use:
 
 ```javascript
 new Channels({
@@ -77,6 +77,10 @@ new Channels({
 })
 ```
 
+### React
+
+For React projects, you can install [useChannels](https://www.npmjs.com/package/@mediamonks/use-channels) to (amongst other things) easily create and provide a `Channels` instance.
+
 ### Suspended state
 
 An `AudioContext` created without user interaction (for example a click) will be in the `suspended` state, in which no sound can be produced. This can happen for example if a `Channels` instance is created on page landing without supplying a (non-suspended) `audioContext`, since one will be created then automatically.
@@ -92,10 +96,6 @@ TLDR: The `audioContext` that is used must have been created or resumed on user 
 
 > To check whether the context is suspended: `channelsInstance.contextIsSuspended`
 
-### React
-
-For React projects, there is a [hook](https://www.npmjs.com/package/use-channels) to create and provide a `Channels` instance.
-
 ## Loading files
 `Channels` uses the [sample-manager](https://www.npmjs.com/package/sample-manager) for dealing with files, and creates an instance of it named `sampleManager`. 
 
@@ -106,14 +106,14 @@ channelsInstance.sampleManager
 The easiest way to load files is to supply a list of objects with a `name` property, matching the filenames *without extension*. The file extension has to be set when creating the `Channels` object (which allows for an easy switch to different filetypes on certain clients).  
 
 ```javascript
-// - sound1.mp3
-// - sound2.mp3
+// - soundfiles/sound1.mp3
+// - soundfiles/sound2.mp3
 const soundFiles = [{name: 'sound1'}, {name: 'sound2'}];
 
 // list can be used when instantiating Channels 
 const channelsInstance = new Channels({
-    soundsPath,
-    soundsExtension,
+    soundsPath: 'soundfiles/',
+    soundsExtension: 'mp3',
     sounds: soundFiles,
 })
 
@@ -124,7 +124,9 @@ channelsInstance.sampleManager.addSamples(soundFiles);
 await channelsInstance.loadSounds();
 
 // optionally, keep track of progress
-await channelsInstance.loadSounds((progress) => {...});
+await channelsInstance.loadSounds((progress) => {
+    // ...
+});
 ```
 > The `loadSounds` method is an alias for `sampleManager.loadAllSamples`
 
@@ -153,28 +155,50 @@ The play function returns a reference to the playing sound, containing various m
 ```javascript
 const sound = channelsInstance.play('sound');
 sound.setVolume(0.5);
-sound.stop();
+```
+
+## Stopping a sound
+Stopping a sound can be done by calling `stop()` on the playing sound reference.
+
+```javascript
+const playingSound = channelsInstance.play('sound');
+playingSound.stop();
+```
+
+Sounds can be faded out before stopping by providing a `fadeOutTime` 
+```javascript
+playingSound.stop({ fadeOutTime: 2 });
 ```
 
 ## Channels
-Channels are a way of grouping sounds that are played. They have their audio bus with volume and optional effects, and their output connects to the main output of a `Channels` instance. They are, however, completely optional and might not be needed at all, since sounds can also be played without a channel.
+Channels are a way of grouping sounds that are played. They have their own volume and optional effects, and their output connects to the main output. They are **completely optional** and might not be needed at all, since **sounds can also be played without a channel**.
 
-The reason to create a channel is to easily do things with a group of sounds, for example:
+The reason to create a channel is to easily manage a group of sounds, for example to:
 - change their volume
 - apply effects
+- fade out
 - stop all of them
 
 ### Creating a channel
-The only thing needed to create a channel is a name:
+The only thing needed to create a channel is a **unique** name:
 
+```javascript
+channelsInstance.createChannel('my-channel');
+```
+
+Second parameter can be used for some optional properties.
+```javascript
+channelsInstance.createChannel('my-channel',{
+    type: 'monophonic',
+    volume: 0.5,
+});
+```
+
+A reference to a channel is returned when creating it, or can be retrieved afterwards.
 ```javascript
 const myChannel = channelsInstance.createChannel('my-channel');
-```
-> All channel names must be unique.
 
-### Playing a sound on a channel
-```javascript
-myChannel.play('my-sound');
+const myChannel = channelsInstance.getChannel('my-channel');
 ```
 
 ### Monophonic vs polyphonic
@@ -183,46 +207,92 @@ A `Channel` can be either **polyphonic** or **monophonic**, which defines how ma
 - A `monophonic` channel can play one sound at a time. When playing a sound on such a channel, **all other sounds on that channel will be stopped**
 - A `polyphonic` channel has no restrictions
 
+> The term `monophonic` is used loosely. Since sounds can fade in and out, even on a monophonic channel multiple sounds may be audible at the same time.
+
 This `type` can be set during creation. When no `type` is given, the default `polyphonic` is used.
 ```javascript
 channelsInstance.createChannel('monophonic-channel', {type: "monophonic"});
 channelsInstance.createChannel('polyphonic-channel');
 ```
-Using a monophonic channel can be extremely helpful when creating a background music layer where the music loop needs to be changed now and then.
+Using a monophonic channel can be very helpful when creating a background music layer where the music loop needs to be changed now and then.
 
-> The term `monophonic` is used loosely. Since sounds can fade in and out, even on a monophonic channel multiple sounds can be heard at the same time. 
 
-### Methods operating on a channel
-Various methods on the `Channels` instance that take an optional `channel` property are duplicated on a `Channel` object, for which the `channel` no longer needs to be supplied. 
+### Playing a sound on a channel
+There are two ways to play a sound on a channel. First of all, directly on the `channelsInstance`:
+
 ```javascript
-// get a channel reference somehow
-const myChannel = channelsInstance.createChannel('channel-name');
-const myChannel = channelsInstance.getChannel('channel-name'); // obviously has to be created first
+channelsInstance.play('mysound', { channel: 'mychannel'});
+```
 
-// use the prefered approach
-channelsInstance.play('sound1', {channel: 'channel-name'});
-myChannel.play('sound1')
+Or, if you happen to have a reference to an actual channel:
+```javascript
+myChannel.play('my-sound');
+```
+All options for the `play()` method can still be used, except for the (in this context useless) `channel` prop.
 
+```javascript
+myChannel.play('sound', {
+    volume: 0.5,
+    loop: true,
+    fadeInTime: 2,
+});
+```
+
+### Stopping all sounds on a channel
+```javascript
 channelsInstance.stopAll({channel: 'channel-name'});
+// or:
 myChannel.stopAll();
 ```
 
-Only the `channel` property for the options is removed, any remaining properties stay the same:
+### Default play/stop options
+Channels can have default options to use when calling `play()` or `stop()` for sounds playing on that channel. This can be used for example to create a channel on which every sound automatically always loops when played. 
+
+These default options are the combination of the options for `play()` and `stop()`, **without the channel**.
 ```javascript
-channelsInstance.play('sound1', {channel: 'channel-name', volume: 0.5});
-myChannel.play('sound1', {volume: 0.5})
+// options for play
+const sound = channelsInstance.play({
+    loop: true,
+    fadeInTime: 1,
+    volume: 0.5,
+    channel: 'my-channel'
+});
+
+// options for stop
+sound.stop({
+    fadeOutTime: 1,
+})
+
+// all above props combined (except channel) can be used
+const defaultStartStopProps = {
+    loop: true,
+    fadeInTime: 1,
+    volume: 0.5,
+    fadeOutTime: 1,
+};
+myChannel.defaultStartStopProps = defaultStartStopProps;
+
+// can also be set on creation as the 3rd argument
+channelsInstance.createChannel('my-channel', null, defaultStartStopProps);
 ```
 
-Note that for functions that accept a `channel` property, both the channel's **name** or the **instance** are allowed.
+
+
+> Passing props to`play()` or `stop()` will **always** override the defaultStartStopProps of a channel.  
+
+Default props (in combination with a `monophonic` channel) can be very helpful when creating a background music layer with music loops that need to change now and then:
+
 ```javascript
-const myChannel = channelsInstance.getChannel('my-channel');
+const channel = channelsInstance.createChannel(
+    'background-music',
+    null, 
+    { fadeInTime: 2, fadeOutTime: 2, loop: true }
+);
+// start a loop
+channel.play('loop1');
 
-// both are valid:
-channelsInstance.stopAll({ channel: 'my-channel'});
-channelsInstance.stopAll({ channel: myChannel});
-
-// although the latter is easier like this:
-myChannel.stopAll();
+// starting 2nd loop some time later, loop1 will fade out, loop2 will fade in 
+channel.play('loop2');
 ```
 
 
@@ -236,14 +306,33 @@ There are three places where volume is applied:
 
 These are all separate modifiers to the signal, and they stack up: when a sound is played at volume `0.5`, on a channel with volume `0.5`, while the main volume has been set to `0.5`, then the resulting volume will be `0.5 * 0.5 * 0.5 = 0.125`. 
 
+
+### Structure
+Everything in `Channels` connects to one main volume node, which is the final step before going to the actual sound output. A channel has its own volume instance, which connects to the main volume.
+
+Sounds can be played either on a channel, or directly on the main output.
+
+<div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/overview-diagram.png?raw=true" /></div>
+
+#### Volume structure
+The volume instances each contain two gain nodes: one for applying volume, and a separate one for fading. They can also contain an optional chain of audio effects.
+
+<div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/volume-diagram.png?raw=true"/></div>
+
+#### Sound structure
+Finally, sounds also have an internal volume instance:
+<div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/sound-diagram.png?raw=true"/></div>
+
+
 ### Changing volume
 
-To change the volume, the three cases listed above all have a set of related methods implemented:
+To change the volume, the three places that apply volume (sound, channel or main output) all have a set of methods implemented:
 
 ```javascript
 const channelsInstance = new Channels({...});
 const myChannel = channelsInstance.getChannel('my-channel');
 
+// on a channel
 myChannel.setVolume(0.5);
 myChannel.getVolume();
 myChannel.mute();
@@ -259,17 +348,72 @@ playingSound.setVolume(0.5);
 channelsInstance.setVolume(0.5);
 ```
 
-Additionally, the `channelsInstance` also has a method to set/get the volume for a channel:
-```javascript
-// accepts both a name or the instance
-channelsInstance.setChannelVolume('my-channel', 0.5);
-channelsInstance.getChannelVolume(myChannel);
-
-// although, if you already have a reference, it's easier to do
-myChannel.getVolume();
-```
-
-
 > Volume values should be `0` or higher. Keep in mind that going beyond `1` *might* result in [digital clipping](https://en.wikipedia.org/wiki/Clipping_(audio)).
 
 > When calling `mute()` the `volume` will be set to `0`, with the additional effect that the previous volume value will be stored and used when calling `unmute()` 
+
+### Listening to volume changes
+To keep track of volume changes, you can listen to events on the `Channels` instance. The `event` in the callback contains info about where the volume change happened. 
+
+```javascript
+channelsInstance.addEventListener("VOLUME_CHANGE", (event) => {
+    // event.data.target is either an instance of a channel, 
+    // a playing sound or the main Channels instance.
+})
+```
+
+#### React hook
+
+For react, you can use the `useVolumeChange` hook to subscribe to changes.
+
+```javascript
+import { useVolumeChange } from '@mediamonks/use-channels';
+
+useVolumeChange({
+    target: myChannel, // can also be a playing sound, or left blank to reference the main output 
+    onChange: (value: number) => {
+        // ...
+    },
+});
+```
+
+
+## Audio effects
+
+An effect is defined as an object with an `input` and an `output`, both of type `AudioNode`. They can contain either a single node (with `input` and `output` pointing to the same `AudioNode`), or a long chain or multiple nodes - as long there is an `input` and an `output` (which obviously need to be connected in some way). 
+
+Effects can be placed on either a **channel** or the **main output**.
+
+```javascript
+const filter = audioContext.createBiquadFilter();
+const myEffect = {
+    input: filter,
+    output: filter,
+}
+// setting an effect on the main output 
+const channelsInstance = new Channels({
+    soundsExtension,
+    soundsPath,
+    effectsChain: myEffect,
+});
+
+// setting it on a channel
+channelsInstance.createChannel('effect-channel', { effectsChain: myEffect })
+```
+> The effects chain is always placed **before** the volume gain node.
+
+> Both input and output use the in/out with index `0` to connect, which will work for nearly all cases. If for some reason you need to use a different index, you can add a `GainNode` before/after your effects as a solution. 
+
+
+## Use &#60;audio&#62; or &#60;video&#62; output
+
+It is possible to route the audio from an `<audio>` or `<video>` element into `Channels`, for example to apply effects or to control their volume along with other sounds.
+
+To do so, use the `connectMediaElement()` method on either a channel or the main instance:
+```javascript
+// connect output to a channel
+myChannel.connectMediaElement(myVideoElement);
+
+// or to the main output
+channelsInstance.connectMediaElement(myVideoElement);
+```

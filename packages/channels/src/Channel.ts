@@ -1,16 +1,24 @@
 import { Channels } from './Channels';
-import { VolumeNodes, VolumeOptions } from './VolumeNodes';
-import { HasVolume, PlayStopOptions } from './types';
+import { VolumeNodes } from './VolumeNodes';
+import {
+  AnalyserSettings,
+  CanConnectMediaElement,
+  EffectsChain,
+  PlayStopOptions,
+} from './types';
 
 export type ChannelType = 'monophonic' | 'polyphonic';
 
 export type CreateChannelOptions = {
   type?: ChannelType;
-} & VolumeOptions;
+  volume?: number;
+  effectsChain?: EffectsChain;
+  analyserSettings?: AnalyserSettings;
+};
 
 type PlayParameters = Parameters<InstanceType<typeof Channels>['play']>;
 
-export class Channel implements HasVolume {
+export class Channel implements CanConnectMediaElement {
   public readonly type: ChannelType;
   public readonly volumeNodes: VolumeNodes;
 
@@ -18,11 +26,12 @@ export class Channel implements HasVolume {
     public readonly name: string,
     public readonly channelsInstance: Channels,
     {
-      initialVolume,
-      initialMuted,
+      volume,
       type = 'polyphonic',
+      effectsChain,
+      analyserSettings,
     }: CreateChannelOptions = {},
-    public readonly defaultPlayStopOptions?: PlayStopOptions
+    public defaultPlayStopOptions?: PlayStopOptions // todo: move these into CreateChannelOptions?
   ) {
     this.type = type;
 
@@ -31,8 +40,9 @@ export class Channel implements HasVolume {
       channelsInstance,
       this,
       {
-        initialVolume,
-        initialMuted,
+        volume,
+        effectsChain,
+        analyserSettings,
       }
     );
 
@@ -55,7 +65,7 @@ export class Channel implements HasVolume {
    * Stop all playing sounds on the channel
    */
   public stopAll = () => {
-    this.channelsInstance.stopAll({ channel: this.name });
+    this.channelsInstance.stopAll(this.name);
   };
 
   /*
@@ -70,4 +80,7 @@ export class Channel implements HasVolume {
   public getFadeVolume = () => this.volumeNodes.getFadeVolume();
   public getVolume = () => this.volumeNodes.getVolume();
   public setVolume = (value: number) => this.volumeNodes.setVolume(value);
+  public connectMediaElement = (element: HTMLMediaElement) =>
+    this.volumeNodes.connectMediaElement(element);
+  public getAnalyser = () => this.volumeNodes.getAnalyser();
 }

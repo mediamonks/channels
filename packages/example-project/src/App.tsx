@@ -1,26 +1,48 @@
 import React, { useEffect, useState } from 'react';
-import { ChannelsList } from './components/channels/ChannelsList';
 import { SoundsList } from './components/sounds/SoundsList';
-import { PlayingSoundsList } from './components/playingsounds/PlayingSoundsList';
 import { VolumeControls } from './components/ui-elements/VolumeControls';
 import { useChannels } from '@mediamonks/use-channels';
+import { FilterControls } from './components/ui-elements/FilterControls';
+import { ChannelsList } from './components/channels/ChannelsList';
+import { PlayingSoundsList } from './components/playingsounds/PlayingSoundsList';
+import { EffectsChain } from '@mediamonks/channels';
+
+const createFilter = (audioContext: AudioContext) => {
+  const filter = audioContext.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 300;
+  filter.Q.value = 10;
+  return filter;
+};
 
 function App() {
   const [isLoadComplete, setIsLoadComplete] = useState(false);
+  const [effectsChain, setEffectsChain] =
+    useState<EffectsChain<BiquadFilterNode, BiquadFilterNode>>();
+  const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>();
   const channelsInstance = useChannels();
 
   useEffect(() => {
     channelsInstance.createChannel(
       'main',
-      { initialVolume: 0.5, type: 'monophonic' },
+      { volume: 0.5, type: 'monophonic' },
       {
-        initialVolume: 0.3,
+        volume: 0.3,
         fadeInTime: 2,
         fadeOutTime: 2,
         loop: true,
       }
     );
-    channelsInstance.createChannel('music');
+
+    const filterInst = createFilter(channelsInstance.audioContext);
+    setEffectsChain({ input: filterInst, output: filterInst });
+
+    channelsInstance.createChannel('music', {
+      analyserSettings: { mode: 'post-volume', fftSize: 128 },
+    });
+    channelsInstance.createChannel('effect', {
+      // effects: { input: filterInst, output: filterInst },
+    });
 
     const loadSamples = async () => {
       await channelsInstance.loadSounds();
@@ -29,6 +51,13 @@ function App() {
 
     loadSamples();
   }, [channelsInstance]);
+
+  useEffect(() => {
+    if (videoElement) {
+      const effectChannel = channelsInstance.getChannel('effect');
+      effectChannel.connectMediaElement(videoElement);
+    }
+  }, [channelsInstance, videoElement]);
 
   return (
     <div style={{ margin: 20 }}>
@@ -41,10 +70,10 @@ function App() {
               <VolumeControls entity={channelsInstance} showFade={false} />
             </li>
           </ul>
-
+          {effectsChain && <FilterControls filter={effectsChain.input} />}
           <div style={{ display: 'flex' }}>
             <div style={{ width: '33%', padding: 5 }}>
-              <SoundsList />
+              <SoundsList effectsChain={effectsChain} />
             </div>
             <div style={{ width: '33%', padding: 5 }}>
               <ChannelsList />
@@ -53,6 +82,13 @@ function App() {
               <PlayingSoundsList />
             </div>
           </div>
+          <video
+            ref={element => {
+              setVideoElement(element);
+            }}
+            src={`${process.env.PUBLIC_URL}/example-vid.mp4`}
+            controls
+          />
         </>
       )}
     </div>

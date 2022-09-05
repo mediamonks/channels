@@ -9,20 +9,21 @@ npm install @mediamonks/use-channels
 
 ## Overview
 
-Available hooks: 
-- `useChannels`: provides a `Channels` instance
+- `ChannelsProvider`: component that creates a `Channels` instance 
+- `useChannels`: returns the `Channels` instance 
 - `useVolumeChange`: adds listeners for volume changes
 - `usePlayingSounds`: keeps track of sounds that are being played
 
-### useChannels
-Before being able to use `useChannels`, somewhere in your React application (probably at the root of the app tree), a `<ChannelsProvider>` must be present. This will create a `Channels` instance and provide it through React Context to the component's children. 
+### ChannelsProvider
+
+Before being able to use `useChannels`, somewhere in your React application (probably at the root of the app tree), a `<ChannelsProvider>` component must be present. This will create a `Channels` instance and provide it through React Context to the component's children.
 
 ```javascript
 import { ChannelsProvider } from '@mediamonks/use-channels';
 
 export const ParentComponent = () => {
    return <ChannelsProvider
-        soundsExtension="wav"
+        soundsExtension="mp3"
         soundsPath={'path/to/files'}
     >
         <App />
@@ -30,9 +31,32 @@ export const ParentComponent = () => {
 }
 ```
 
+
 > The available props for the `ChannelProvider` are taken directly from the `Channels` constructor (of whichever version you have installed), so check the [Channels package](https://www.npmjs.com/package/@mediamonks/channels) for more information.
 
-The `Channels` instance is then available in all child components by using the `useChannels` hook:
+The `children` of the `ChannelsProvider` can either be a `ReactNode` (as shown in the example above), or a function that returns a `ReactNode`. In the latter, the created `Channels` instance is provided as the first parameter: 
+
+```javascript
+export const ParentComponent = () => {
+    const [isLoadComplete, setIsLoadComplete] = useState(false);
+    
+    return <ChannelsProvider
+        soundsExtension="mp3"
+        soundsPath={'path/to/files'}
+    >
+       {(channelsInstance) => {
+           channelsInstance.loadSounds().then(() => setIsLoadComplete(true))
+           return isLoadComplete ?  <App /> : <Spinner />;
+       }}
+    </ChannelsProvider>
+}
+```
+
+```
+
+### useChannels
+
+The `Channels` instance from the `ChannelsProvider` available in all child components by using the `useChannels` hook:
 
 ```javascript
 import { useChannels } from '@mediamonks/use-channels';
@@ -52,7 +76,7 @@ export const ChildComponent = () => {
 
 ### useVolumeChange
 
-`useVolumeChange` is a hook that makes listening to volume changes a bit easier. It has an optional `target` prop, which can either be a `Channel` or a `PlayingSound`. When omitted, changes refer to the main volume. 
+`useVolumeChange` makes listening to volume changes a bit easier. It has an optional `target` prop, which can either be a `Channel` or a `PlayingSound`. When omitted, changes refer to the main volume. 
 
 ```javascript
 import { useVolumeChange } from '@mediamonks/use-channels';
