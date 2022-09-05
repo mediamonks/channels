@@ -33,6 +33,10 @@ jobs:
         run: |
           cd packages/${{ github.event.inputs.package }}
           npm ci
+      - name: Run tests
+        run: |
+          cd packages/${{ github.event.inputs.package }}
+          npm run test
       - name: Setup Git
         run: |
           git config user.name github-actions
@@ -54,12 +58,3 @@ jobs:
           echo "5. git tag $(npm pkg get name | tr -d '"')@$(npm pkg get version | tr -d '"')"
           git tag $(npm pkg get name | tr -d '"')@$(npm pkg get version | tr -d '"')
 
-      - name: publish
-        run: |
-          cd ${{ github.event.inputs.package }}
-          npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
-          npm publish
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Push latest version
-        run: git push origin main --follow-tags
