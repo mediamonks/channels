@@ -32,11 +32,8 @@ jobs:
           node-version-file: '.nvmrc'
       - name: Install npm packages
         run: |
-          cd ${{ github.event.inputs.package }}
+          cd packages/${{ github.event.inputs.package }}
           npm ci
-      - name: fail cd
-        run: |
-          echo "1. cd Xpackages/${{ github.event.inputs.package }}"
       - name: bump version
         run: |
           echo "1. cd packages/${{ github.event.inputs.package }}"
