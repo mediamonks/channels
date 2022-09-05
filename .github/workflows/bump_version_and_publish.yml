@@ -1,0 +1,29 @@
+name: Bump version & Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Select package'
+        required: true
+        type: choice
+        options:
+          - 'channels'
+          - 'use-channels'
+      version:
+        description: 'Semver type of new version'
+        required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+          - prerelease
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: bump version
+        run: |
+          echo "1. cd ${{ github.event.inputs.package }}"
