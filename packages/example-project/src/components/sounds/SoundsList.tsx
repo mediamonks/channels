@@ -22,7 +22,7 @@ export const SoundsList = ({ effectsChain }: Props) => {
     if (usePlayOptions) {
       options.loop = loopIsChecked;
       options.fadeInTime = fadeInTime;
-      options.effectsChain = effectsChain;
+      options.effectsChain = applyEffect ? effectsChain : undefined;
     }
     channelsInstance.play(soundName, options);
   };
