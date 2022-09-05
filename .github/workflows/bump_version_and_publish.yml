@@ -1,4 +1,4 @@
-name: Bump version & Publish
+name: Bump version & publish
 
 on:
   workflow_dispatch:
@@ -24,6 +24,12 @@ jobs:
   bump-version:
     runs-on: ubuntu-latest
     steps:
+      - name: Check out source
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
       - name: bump version
         run: |
-          echo "1. cd ${{ github.event.inputs.package }}"
+          echo "1. cd packages/${{ github.event.inputs.package }}"
