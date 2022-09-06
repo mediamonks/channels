@@ -273,7 +273,7 @@ const defaultStartStopProps = {
 // can be set on creation as part of channel options
 channelsInstance.createChannel('my-channel', { defaultStartStopProps });
 
-// or cab be set directly on a channel
+// or can be set directly on a channel
 myChannel.defaultStartStopProps = defaultStartStopProps;
 
 ```
