@@ -42,12 +42,20 @@ describe('Channel', () => {
     it('creates and connects volume nodes for channel', () => {
       channelsInstance?.createChannel('name');
 
-      const [mainFadeNode, mainGainNode, channelFadeNode, channelGainNode] =
-        getNodeChain(getAudioGraph(channelsInstance));
+      const [
+        mainFadeNode,
+        mainPannerNode,
+        mainGainNode,
+        channelFadeNode,
+        channelPannerNode,
+        channelGainNode,
+      ] = getNodeChain(getAudioGraph(channelsInstance));
       expect(mainGainNode.name).toBe('GainNode');
       expect(mainFadeNode.name).toBe('GainNode');
+      expect(mainPannerNode.name).toBe('StereoPannerNode');
       expect(channelFadeNode.name).toBe('GainNode');
       expect(channelGainNode.name).toBe('GainNode');
+      expect(channelPannerNode.name).toBe('StereoPannerNode');
       expect(mainGainNode.gain?.value).toBe(1);
       expect(mainFadeNode.gain?.value).toBe(1);
       expect(channelFadeNode.gain?.value).toBe(1);
@@ -55,7 +63,9 @@ describe('Channel', () => {
 
       expect(mainFadeNode.inputs.length).toBe(1);
       expect(mainGainNode.inputs.length).toBe(1);
+      expect(mainPannerNode.inputs.length).toBe(1);
       expect(channelFadeNode.inputs.length).toBe(1);
+      expect(channelPannerNode.inputs.length).toBe(1);
       expect(channelGainNode.inputs.length).toBe(0);
     });
 
@@ -64,9 +74,11 @@ describe('Channel', () => {
       channelsInstance?.createChannel('ch2');
       const destinationNode = getAudioGraph(channelsInstance);
       const mainFadeNode = destinationNode.inputs[0];
-      const mainGainNode = mainFadeNode.inputs[0];
+      const mainPannerNode = mainFadeNode.inputs[0];
+      const mainGainNode = mainPannerNode.inputs[0];
 
       expect(mainFadeNode.inputs.length).toBe(1);
+      expect(mainPannerNode.inputs.length).toBe(1);
       expect(mainGainNode.inputs.length).toBe(2);
     });
   });
@@ -76,7 +88,7 @@ describe('Channel', () => {
       const channel = channelsInstance.createChannel('ch');
 
       channel.setVolume(0.5);
-      const [, , , channelGainNode] = getNodeChain(
+      const [, , , , , channelGainNode] = getNodeChain(
         getAudioGraph(channelsInstance)
       );
 
@@ -114,7 +126,7 @@ describe('Channel', () => {
       const channel = channelsInstance.createChannel('channel', {
         volume: 0.5,
       });
-      const [, , , channelGainNode] = getNodeChain(
+      const [, , , , , channelGainNode] = getNodeChain(
         getAudioGraph(channelsInstance)
       );
       expect(channelGainNode.gain?.value).toBe(0.5);
@@ -127,10 +139,22 @@ describe('Channel', () => {
         effects: { preVolume: { input: filter, output: filter } },
       });
 
-      const [, , , , filterNode] = getNodeChain(
-        getAudioGraph(channelsInstance)
-      );
+      const [
+        mainFade,
+        mainPanner,
+        mainVolume,
+        channelFade,
+        channelPanner,
+        channelVolume,
+        filterNode,
+      ] = getNodeChain(getAudioGraph(channelsInstance));
 
+      expect(mainFade.name).toBe('GainNode');
+      expect(mainVolume.name).toBe('GainNode');
+      expect(mainPanner.name).toBe('StereoPannerNode');
+      expect(channelFade.name).toBe('GainNode');
+      expect(channelVolume.name).toBe('GainNode');
+      expect(channelPanner.name).toBe('StereoPannerNode');
       expect(filterNode.name).toBe('BiquadFilterNode');
     });
     it('adds postVolume effect', () => {
@@ -140,8 +164,22 @@ describe('Channel', () => {
         effects: { postVolume: { input: filter, output: filter } },
       });
 
-      const [, , filterNode] = getNodeChain(getAudioGraph(channelsInstance));
+      const [
+        mainFade,
+        mainPanner,
+        mainVolume,
+        filterNode,
+        channelFade,
+        channelPanner,
+        channelVolume,
+      ] = getNodeChain(getAudioGraph(channelsInstance));
 
+      expect(mainFade.name).toBe('GainNode');
+      expect(mainVolume.name).toBe('GainNode');
+      expect(mainPanner.name).toBe('StereoPannerNode');
+      expect(channelFade.name).toBe('GainNode');
+      expect(channelVolume.name).toBe('GainNode');
+      expect(channelPanner.name).toBe('StereoPannerNode');
       expect(filterNode.name).toBe('BiquadFilterNode');
     });
     it('adds effect pre and post volume', () => {
@@ -155,10 +193,23 @@ describe('Channel', () => {
         },
       });
 
-      const [, , filterNode, , , convolverNode] = getNodeChain(
-        getAudioGraph(channelsInstance)
-      );
+      const [
+        mainFade,
+        mainPanner,
+        mainVolume,
+        filterNode,
+        channelFade,
+        channelPanner,
+        channelVolume,
+        convolverNode,
+      ] = getNodeChain(getAudioGraph(channelsInstance));
 
+      expect(mainFade.name).toBe('GainNode');
+      expect(mainVolume.name).toBe('GainNode');
+      expect(mainPanner.name).toBe('StereoPannerNode');
+      expect(channelFade.name).toBe('GainNode');
+      expect(channelVolume.name).toBe('GainNode');
+      expect(channelPanner.name).toBe('StereoPannerNode');
       expect(filterNode.name).toBe('BiquadFilterNode');
       expect(convolverNode.name).toBe('ConvolverNode');
     });

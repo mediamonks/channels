@@ -9,7 +9,7 @@ import 'web-audio-test-api';
 
 mockXMLHttpRequest();
 
-describe('Channels instance', () => {
+describe('Playing Sound', () => {
   let channelsInstance: Channels;
 
   beforeEach(async () => {
@@ -22,16 +22,20 @@ describe('Channels instance', () => {
     channelsInstance.play('sound');
     const [
       fadeGain,
+      pannerNode,
       volumeGain,
       soundFadeGain,
+      soundPannerNode,
       soundVolumeGain,
       bufferSourceNode,
     ] = getNodeChain(getAudioGraph(channelsInstance));
 
     expect(fadeGain.name).toBe('GainNode');
     expect(volumeGain.name).toBe('GainNode');
+    expect(pannerNode.name).toBe('StereoPannerNode');
     expect(soundFadeGain.name).toBe('GainNode');
     expect(soundVolumeGain.name).toBe('GainNode');
+    expect(soundPannerNode.name).toBe('StereoPannerNode');
     expect(bufferSourceNode.name).toBe('AudioBufferSourceNode');
   });
   it('adds pre-volume effects for a playing sound', () => {
@@ -41,8 +45,10 @@ describe('Channels instance', () => {
     });
     const [
       fadeGain,
+      pannerNode,
       volumeGain,
       soundFadeGain,
+      soundPannerNode,
       soundVolumeGain,
       filterNode,
       bufferSourceNode,
@@ -50,8 +56,10 @@ describe('Channels instance', () => {
 
     expect(fadeGain.name).toBe('GainNode');
     expect(volumeGain.name).toBe('GainNode');
+    expect(pannerNode.name).toBe('StereoPannerNode');
     expect(soundFadeGain.name).toBe('GainNode');
     expect(soundVolumeGain.name).toBe('GainNode');
+    expect(soundPannerNode.name).toBe('StereoPannerNode');
     expect(filterNode.name).toBe('BiquadFilterNode');
     expect(bufferSourceNode.name).toBe('AudioBufferSourceNode');
   });
@@ -62,17 +70,21 @@ describe('Channels instance', () => {
     });
     const [
       fadeGain,
+      pannerNode,
       volumeGain,
       filterNode,
       soundFadeGain,
+      soundPannerNode,
       soundVolumeGain,
       bufferSourceNode,
     ] = getNodeChain(getAudioGraph(channelsInstance));
 
     expect(fadeGain.name).toBe('GainNode');
     expect(volumeGain.name).toBe('GainNode');
+    expect(pannerNode.name).toBe('StereoPannerNode');
     expect(soundFadeGain.name).toBe('GainNode');
     expect(soundVolumeGain.name).toBe('GainNode');
+    expect(soundPannerNode.name).toBe('StereoPannerNode');
     expect(filterNode.name).toBe('BiquadFilterNode');
     expect(bufferSourceNode.name).toBe('AudioBufferSourceNode');
   });
@@ -87,9 +99,11 @@ describe('Channels instance', () => {
     });
     const [
       fadeGain,
+      pannerNode,
       volumeGain,
       filterNode,
       soundFadeGain,
+      soundPannerNode,
       soundVolumeGain,
       convolverNode,
       bufferSourceNode,
@@ -97,9 +111,11 @@ describe('Channels instance', () => {
 
     expect(fadeGain.name).toBe('GainNode');
     expect(volumeGain.name).toBe('GainNode');
+    expect(pannerNode.name).toBe('StereoPannerNode');
+    expect(filterNode.name).toBe('BiquadFilterNode');
     expect(soundFadeGain.name).toBe('GainNode');
     expect(soundVolumeGain.name).toBe('GainNode');
-    expect(filterNode.name).toBe('BiquadFilterNode');
+    expect(soundPannerNode.name).toBe('StereoPannerNode');
     expect(convolverNode.name).toBe('ConvolverNode');
     expect(bufferSourceNode.name).toBe('AudioBufferSourceNode');
   });
