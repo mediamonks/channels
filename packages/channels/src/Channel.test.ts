@@ -125,5 +125,57 @@ describe('Channel', () => {
       expect(channelGainNode.gain.value).toBe(0.5);
       expect(channel.getVolume()).toBe(0.5);
     });
+    it('adds preVolume effect', () => {
+      const filter = channelsInstance.audioContext.createBiquadFilter();
+
+      channelsInstance.createChannel('channel', {
+        effects: { preVolume: { input: filter, output: filter } },
+      });
+
+      const destinationNode = getAudioGraph(channelsInstance);
+      const mainFadeNode = destinationNode.inputs[0];
+      const mainGainNode = mainFadeNode.inputs[0];
+      const channelFadeNode = mainGainNode.inputs[0];
+      const channelGainNode = channelFadeNode.inputs[0];
+      const filterNode = channelGainNode.inputs[0];
+
+      expect(filterNode.name).toBe('BiquadFilterNode');
+    });
+    it('adds postVolume effect', () => {
+      const filter = channelsInstance.audioContext.createBiquadFilter();
+
+      channelsInstance.createChannel('channel', {
+        effects: { postVolume: { input: filter, output: filter } },
+      });
+
+      const destinationNode = getAudioGraph(channelsInstance);
+      const mainFadeNode = destinationNode.inputs[0];
+      const mainGainNode = mainFadeNode.inputs[0];
+      const filterNode = mainGainNode.inputs[0];
+
+      expect(filterNode.name).toBe('BiquadFilterNode');
+    });
+    it('adds effect pre and post volume', () => {
+      const filter = channelsInstance.audioContext.createBiquadFilter();
+      const convolver = channelsInstance.audioContext.createConvolver();
+
+      channelsInstance.createChannel('channel', {
+        effects: {
+          postVolume: { input: filter, output: filter },
+          preVolume: { input: convolver, output: convolver },
+        },
+      });
+
+      const destinationNode = getAudioGraph(channelsInstance);
+      const mainFadeNode = destinationNode.inputs[0];
+      const mainGainNode = mainFadeNode.inputs[0];
+      const filterNode = mainGainNode.inputs[0];
+      const channelFadeNode = filterNode.inputs[0];
+      const channelGainNode = channelFadeNode.inputs[0];
+      const convolverNode = channelGainNode.inputs[0];
+
+      expect(filterNode.name).toBe('BiquadFilterNode');
+      expect(convolverNode.name).toBe('ConvolverNode');
+    });
   });
 });
