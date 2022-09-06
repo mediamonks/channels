@@ -3,7 +3,6 @@ import {
   Effects,
   HasVolume,
   PlaySoundOptions,
-  PlayStopOptions,
   StopAllOptions,
 } from './types';
 import { AudioContext } from './util/audioContext';
@@ -104,12 +103,10 @@ export class Channels extends EventDispatcher implements HasVolume {
    * Creates a new channel.
    * @param name
    * @param createChannelOptions
-   * @param defaultPlayStopOptions
    */
   public createChannel = (
     name: string,
-    createChannelOptions: CreateChannelOptions = {},
-    defaultPlayStopOptions: PlayStopOptions = {}
+    createChannelOptions: CreateChannelOptions = {}
   ): Channel => {
     if (name === '') {
       throw new Error('Channel name cannot be blank');
@@ -118,12 +115,7 @@ export class Channels extends EventDispatcher implements HasVolume {
       throw new Error(`Channel with name '${name}' already exists`);
     }
 
-    const channel = new Channel(
-      name,
-      this,
-      createChannelOptions,
-      defaultPlayStopOptions
-    );
+    const channel = new Channel(name, this, createChannelOptions);
 
     this.channelsByName[name] = channel;
 

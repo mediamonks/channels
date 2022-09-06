@@ -13,6 +13,7 @@ export type CreateChannelOptions = {
   type?: ChannelType;
   volume?: number;
   effects?: Effects;
+  defaultPlayStopOptions?: PlayStopOptions;
 };
 
 type PlayParameters = Parameters<InstanceType<typeof Channels>['play']>;
@@ -20,14 +21,20 @@ type PlayParameters = Parameters<InstanceType<typeof Channels>['play']>;
 export class Channel implements CanConnectMediaElement {
   public readonly type: ChannelType;
   public readonly volumeNodes: VolumeNodes;
+  public readonly defaultPlayStopOptions: PlayStopOptions | undefined;
 
   constructor(
     public readonly name: string,
     public readonly channelsInstance: Channels,
-    { volume, type = 'polyphonic', effects }: CreateChannelOptions = {},
-    public defaultPlayStopOptions?: PlayStopOptions // todo: move these into CreateChannelOptions?
+    {
+      volume,
+      type = 'polyphonic',
+      effects,
+      defaultPlayStopOptions,
+    }: CreateChannelOptions = {}
   ) {
     this.type = type;
+    this.defaultPlayStopOptions = defaultPlayStopOptions;
 
     this.volumeNodes = new VolumeNodes(
       channelsInstance.audioContext,
