@@ -44,9 +44,20 @@ describe('Channels instance', () => {
       channelsInstanceWithSounds.sampleManager.getAllSamples()[0].name
     ).toBe('sound1');
   });
+  it('Throws error when playing an unknown sound', () => {
+    expect(() => {
+      channelsInstance.play('sound');
+    }).toThrowError("Cannot find sound: 'sound'");
+  });
+  it('Throws error when playing a sound that has not been loaded', () => {
+    channelsInstance.sampleManager.addSamples([{ name: 'sound' }]);
+    expect(() => {
+      channelsInstance.play('sound');
+    }).toThrowError("Sound 'sound' is not loaded");
+  });
 
   describe('Loading sounds', () => {
-    it('loads a sample', async () => {
+    it('loads a sample that has been set after creation', async () => {
       channelsInstance.sampleManager.addSample({ name: 'sound' });
       await channelsInstance.loadSounds();
       expect(

@@ -201,7 +201,7 @@ export class Channels extends EventDispatcher implements HasVolume {
     const sound = this.sampleManager.getSampleByName(name);
     const { channel } = playSoundOptions;
     if (!sound) {
-      throw new Error(`Cannot find sound: '${name}`);
+      throw new Error(`Cannot find sound: '${name}'`);
     }
     const channelForSound = channel ? this.getChannel(channel) : undefined;
 

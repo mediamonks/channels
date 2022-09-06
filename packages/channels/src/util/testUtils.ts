@@ -1,5 +1,6 @@
 import { newServer } from 'mock-xmlhttprequest';
 import { Channels } from '../Channels';
+import { CreateSound } from '../types';
 
 export const mockXMLHttpRequest = () => {
   const server = newServer({
@@ -14,10 +15,11 @@ export const mockXMLHttpRequest = () => {
   server.install();
 };
 
-export const createMockChannelsInstance = () => {
+export const createMockChannelsInstance = (sounds?: Array<CreateSound>) => {
   const channelsInstance = new Channels({
     soundsPath: 'path',
     soundsExtension: 'mp3',
+    sounds,
   });
 
   // sets a default audiobuffer for loaded sounds
