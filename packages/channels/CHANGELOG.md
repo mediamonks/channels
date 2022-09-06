@@ -6,5 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 - Effects can be set pre or post volume (on a sound, a channel or main output)
+- Fix stopAllSounds() not immediately stopping sounds when fadeOutTime is set
 
 ## [0.5.0] - 2022-09-06
