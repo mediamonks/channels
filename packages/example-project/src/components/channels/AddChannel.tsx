@@ -20,13 +20,13 @@ export const AddChannel = () => {
   };
 
   const onAddChannelClick = () => {
-    channelInstance.createChannel(
-      channelName,
-      {
-        type: channelType as ChannelType,
+    channelInstance.createChannel(channelName, {
+      type: channelType as ChannelType,
+      defaultPlayStopOptions: {
+        fadeInTime: parseInt(fadeInTime),
+        fadeOutTime: parseInt(fadeOutTime),
       },
-      { fadeInTime: parseInt(fadeInTime), fadeOutTime: parseInt(fadeOutTime) }
-    );
+    });
     clear();
   };
 

@@ -23,16 +23,16 @@ function App() {
   const channelsInstance = useChannels();
 
   useEffect(() => {
-    channelsInstance.createChannel(
-      'main',
-      { volume: 0.5, type: 'monophonic' },
-      {
+    channelsInstance.createChannel('main', {
+      volume: 0.5,
+      type: 'monophonic',
+      defaultPlayStopOptions: {
         volume: 0.3,
         fadeInTime: 2,
         fadeOutTime: 2,
         loop: true,
-      }
-    );
+      },
+    });
 
     const filterInst = createFilter(channelsInstance.audioContext);
     setEffectsChain({ input: filterInst, output: filterInst });
