@@ -2,10 +2,14 @@ import { Channel } from './Channel';
 import { VolumeNodes } from './VolumeNodes';
 import { ChannelsEvent } from './event/ChannelsEvent';
 import { Channels } from './Channels';
-import { mockChannelsInstance } from './test/mockChannelsInstance';
-import { mockXMLHttpRequest } from './test/mockXMLHttpRequest';
-import { getAudioGraph } from './test/getAudioGraph';
+import 'web-audio-test-api';
+
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
+import {
+  createMockChannelsInstance,
+  getAudioGraph,
+  mockXMLHttpRequest,
+} from './util/testUtils';
 
 mockXMLHttpRequest();
 
@@ -13,7 +17,7 @@ describe('Channel', () => {
   let channelsInstance: Channels;
 
   beforeEach(() => {
-    channelsInstance = mockChannelsInstance();
+    channelsInstance = createMockChannelsInstance();
   });
 
   describe('Channel creation', () => {
