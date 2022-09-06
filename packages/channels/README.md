@@ -270,10 +270,12 @@ const defaultStartStopProps = {
     volume: 0.5,
     fadeOutTime: 1,
 };
+// can be set on creation as part of channel options
+channelsInstance.createChannel('my-channel', { defaultStartStopProps });
+
+// or cab be set directly on a channel
 myChannel.defaultStartStopProps = defaultStartStopProps;
 
-// can also be set on creation as the 3rd argument
-channelsInstance.createChannel('my-channel', null, defaultStartStopProps);
 ```
 
 
@@ -283,11 +285,10 @@ channelsInstance.createChannel('my-channel', null, defaultStartStopProps);
 Default props (in combination with a `monophonic` channel) can be very helpful when creating a background music layer with music loops that need to change now and then:
 
 ```javascript
-const channel = channelsInstance.createChannel(
-    'background-music',
-    null, 
-    { fadeInTime: 2, fadeOutTime: 2, loop: true }
-);
+const channel = channelsInstance.createChannel('background-music', {
+    type: 'monophonic',
+    defaultStartStopProps: { fadeInTime: 2, fadeOutTime: 2, loop: true },
+});
 // start a loop
 channel.play('loop1');
 
