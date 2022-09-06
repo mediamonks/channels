@@ -2,7 +2,11 @@ import { Channels } from './Channels';
 import 'web-audio-test-api';
 import SampleManager from 'sample-manager';
 import { AudioContext } from './util/audioContext';
-import { getAudioGraph, mockXMLHttpRequest } from './util/testUtils';
+import {
+  getAudioGraph,
+  getNodeChain,
+  mockXMLHttpRequest,
+} from './util/testUtils';
 import { createMockChannelsInstance } from './util/testUtils';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 
@@ -52,36 +56,36 @@ describe('Channels instance', () => {
   });
   describe('Main Volume', function () {
     it('creates main volume nodes', () => {
-      const destinationNode = getAudioGraph(channelsInstance);
-      const fadeNode = destinationNode.inputs[0];
-      const gainNode = fadeNode.inputs[0];
+      const [fadeNode, gainNode] = getNodeChain(
+        getAudioGraph(channelsInstance)
+      );
 
       expect(gainNode.name).toBe('GainNode');
       expect(fadeNode.name).toBe('GainNode');
-      expect(gainNode.gain.value).toBe(1);
-      expect(fadeNode.gain.value).toBe(1);
-      expect(destinationNode.inputs.length).toBe(1);
+      expect(gainNode.gain?.value).toBe(1);
+      expect(fadeNode.gain?.value).toBe(1);
+
       expect(fadeNode.inputs.length).toBe(1);
       expect(gainNode.inputs.length).toBe(0);
     });
     it('Has default volume', () => {
-      const destinationNode = getAudioGraph(channelsInstance);
-      const fadeNode = destinationNode.inputs[0];
-      const gainNode = fadeNode.inputs[0];
+      const [gainNode, fadeNode] = getNodeChain(
+        getAudioGraph(channelsInstance)
+      );
 
-      expect(gainNode.gain.value).toBe(1);
-      expect(fadeNode.gain.value).toBe(1);
+      expect(gainNode.gain?.value).toBe(1);
+      expect(fadeNode.gain?.value).toBe(1);
       expect(channelsInstance.getVolume()).toBe(1);
       expect(channelsInstance.getFadeVolume()).toBe(1);
     });
     it('Sets volume', () => {
       channelsInstance.setVolume(0.5);
-      const destinationNode = getAudioGraph(channelsInstance);
-      const fadeNode = destinationNode.inputs[0];
-      const gainNode = fadeNode.inputs[0];
+      const [fadeNode, gainNode] = getNodeChain(
+        getAudioGraph(channelsInstance)
+      );
 
-      expect(gainNode.gain.value).toBe(0.5);
-      expect(fadeNode.gain.value).toBe(1);
+      expect(gainNode.gain?.value).toBe(0.5);
+      expect(fadeNode.gain?.value).toBe(1);
       expect(channelsInstance.getVolume()).toBe(0.5);
       expect(channelsInstance.getFadeVolume()).toBe(1);
     });
@@ -100,25 +104,25 @@ describe('Channels instance', () => {
     });
     it('mutes main volume', () => {
       channelsInstance.mute();
-      const destinationNode = getAudioGraph(channelsInstance);
-      const fadeNode = destinationNode.inputs[0];
-      const gainNode = fadeNode.inputs[0];
+      const [fadeNode, gainNode] = getNodeChain(
+        getAudioGraph(channelsInstance)
+      );
 
       expect(channelsInstance.getVolume()).toBe(0);
-      expect(gainNode.gain.value).toBe(0);
-      expect(fadeNode.gain.value).toBe(1);
+      expect(gainNode.gain?.value).toBe(0);
+      expect(fadeNode.gain?.value).toBe(1);
     });
     it('restores volume after unmuting', () => {
       channelsInstance.setVolume(0.5);
       channelsInstance.mute();
       channelsInstance.unmute();
-      const destinationNode = getAudioGraph(channelsInstance);
-      const fadeNode = destinationNode.inputs[0];
-      const gainNode = fadeNode.inputs[0];
+      const [fadeNode, gainNode] = getNodeChain(
+        getAudioGraph(channelsInstance)
+      );
 
       expect(channelsInstance.getVolume()).toBe(0.5);
-      expect(gainNode.gain.value).toBe(0.5);
-      expect(fadeNode.gain.value).toBe(1);
+      expect(gainNode.gain?.value).toBe(0.5);
+      expect(fadeNode.gain?.value).toBe(1);
     });
   });
   describe('Effect on main output', () => {
@@ -136,16 +140,19 @@ describe('Channels instance', () => {
 
       channelsInstance.createChannel('channel');
 
-      const destinationNode = getAudioGraph(channelsInstance);
-      const mainFadeNode = destinationNode.inputs[0];
-      const mainGainNode = mainFadeNode.inputs[0];
-      const filterNode = mainGainNode.inputs[0];
-      const channelFadeNode = filterNode.inputs[0];
-      const channelGainNode = channelFadeNode.inputs[0];
+      const [
+        mainFadeNode,
+        mainGainNode,
+        filterNode,
+        channelFadeNode,
+        channelGainNode,
+      ] = getNodeChain(getAudioGraph(channelsInstance));
 
       expect(filterNode.name).toBe('BiquadFilterNode');
       expect(channelFadeNode.name).toBe('GainNode');
       expect(channelGainNode.name).toBe('GainNode');
+      expect(mainGainNode.name).toBe('GainNode');
+      expect(mainFadeNode.name).toBe('GainNode');
     });
     it('adds postVolume effect', () => {
       const context = new AudioContext();
@@ -159,10 +166,9 @@ describe('Channels instance', () => {
         },
       });
 
-      const destinationNode = getAudioGraph(channelsInstance);
-      const filterNode = destinationNode.inputs[0];
-      const mainFadeNode = filterNode.inputs[0];
-      const mainGainNode = mainFadeNode.inputs[0];
+      const [filterNode, mainFadeNode, mainGainNode] = getNodeChain(
+        getAudioGraph(channelsInstance)
+      );
 
       expect(filterNode.name).toBe('BiquadFilterNode');
       expect(mainFadeNode.name).toBe('GainNode');
@@ -182,11 +188,8 @@ describe('Channels instance', () => {
         },
       });
 
-      const destinationNode = getAudioGraph(channelsInstance);
-      const filterNode = destinationNode.inputs[0];
-      const mainFadeNode = filterNode.inputs[0];
-      const mainGainNode = mainFadeNode.inputs[0];
-      const convolverNode = mainGainNode.inputs[0];
+      const [filterNode, mainFadeNode, mainGainNode, convolverNode] =
+        getNodeChain(getAudioGraph(channelsInstance));
 
       expect(filterNode.name).toBe('BiquadFilterNode');
       expect(mainFadeNode.name).toBe('GainNode');
