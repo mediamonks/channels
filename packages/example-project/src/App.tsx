@@ -37,11 +37,12 @@ function App() {
     const filterInst = createFilter(channelsInstance.audioContext);
     setEffectsChain({ input: filterInst, output: filterInst });
 
-    channelsInstance.createChannel('music', {
-      analyserSettings: { mode: 'post-volume', fftSize: 128 },
-    });
+    channelsInstance.createChannel('music');
     channelsInstance.createChannel('effect', {
-      // effects: { input: filterInst, output: filterInst },
+      effects: {
+        mode: 'pre-volume',
+        nodes: { input: filterInst, output: filterInst },
+      },
     });
 
     const loadSamples = async () => {
