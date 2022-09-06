@@ -40,6 +40,6 @@ export type EffectsChain<
 };
 
 export type Effects = {
-  mode: 'pre-volume' | 'post-volume';
-  nodes: EffectsChain;
+  preVolume?: EffectsChain;
+  postVolume?: EffectsChain;
 };
