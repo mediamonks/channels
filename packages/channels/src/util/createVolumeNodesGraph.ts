@@ -13,9 +13,11 @@ export const createVolumeNodesGraph = ({ audioContext, effects }: Props) => {
 
   const volumeGainNode = audioContext.createGain();
   const fadeGainNode = audioContext.createGain();
+  const stereoPannerNode = audioContext.createStereoPanner();
 
   const nodesChain: Array<AudioNode> = [
     effects?.preVolume?.output,
+    stereoPannerNode,
     volumeGainNode,
     fadeGainNode,
     effects?.postVolume?.input,
@@ -36,5 +38,6 @@ export const createVolumeNodesGraph = ({ audioContext, effects }: Props) => {
     volumeGainNode,
     input,
     output,
+    stereoPannerNode,
   };
 };

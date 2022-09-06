@@ -4,13 +4,15 @@ export type Sound = ISample;
 export type CreateSound = ICreateSample;
 
 export interface HasVolume {
-  getFadeVolume(): number;
-  getVolume(): number;
-  setVolume(value: number): void;
+  getFadeVolume: () => number;
+  getVolume: () => number;
+  setVolume: (value: number) => void;
   mute: () => void;
   unmute: () => void;
   fadeOut: (duration: number, onComplete?: () => void) => void;
   fadeIn: (duration: number, onComplete?: () => void) => void;
+  setPan: (value: number) => void;
+  getPan: () => number;
 }
 
 export interface CanConnectMediaElement extends HasVolume {

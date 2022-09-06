@@ -17,6 +17,7 @@ type VolumeNodeOptions = {
 export class VolumeNodes implements CanConnectMediaElement {
   private readonly volumeGainNode: GainNode;
   private readonly fadeGainNode: GainNode;
+  private readonly stereoPannerNode: StereoPannerNode;
   public readonly input: AudioNode;
   public readonly output: AudioNode;
 
@@ -28,7 +29,7 @@ export class VolumeNodes implements CanConnectMediaElement {
     private readonly volumeTarget: HasVolume,
     { volume = 1, fadeVolume = 1, effects }: VolumeNodeOptions
   ) {
-    const { fadeGainNode, volumeGainNode, input, output } =
+    const { fadeGainNode, volumeGainNode, input, output, stereoPannerNode } =
       createVolumeNodesGraph({
         audioContext,
         effects,
@@ -36,6 +37,7 @@ export class VolumeNodes implements CanConnectMediaElement {
 
     this.volumeGainNode = volumeGainNode;
     this.fadeGainNode = fadeGainNode;
+    this.stereoPannerNode = stereoPannerNode;
     this.input = input;
     this.output = output;
 
@@ -118,4 +120,10 @@ export class VolumeNodes implements CanConnectMediaElement {
       this.audioContext.createMediaElementSource(element);
     mediaElementSource.connect(this.input);
   };
+
+  public setPan = (value: number) => {
+    this.stereoPannerNode.pan.value = value;
+  };
+
+  public getPan = () => this.stereoPannerNode.pan.value;
 }
