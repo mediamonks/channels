@@ -40,8 +40,7 @@ function App() {
     channelsInstance.createChannel('music');
     channelsInstance.createChannel('effect', {
       effects: {
-        mode: 'pre-volume',
-        nodes: { input: filterInst, output: filterInst },
+        preVolume: { input: filterInst, output: filterInst },
       },
     });
 

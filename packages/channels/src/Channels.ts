@@ -4,6 +4,7 @@ import {
   HasVolume,
   PlaySoundOptions,
   PlayStopOptions,
+  StopAllOptions,
 } from './types';
 import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
@@ -163,15 +164,19 @@ export class Channels extends EventDispatcher implements HasVolume {
    * Stop either all sounds or, when a channel name is supplied, all
    * sounds that are playing on a channel.
    * @param channel
+   * @param immediate
    */
-  public stopAll = (channel?: string) => {
+  public stopAll = ({ channel, immediate = true }: StopAllOptions = {}) => {
     const channelToStop = channel ? this.getChannel(channel) : null;
 
+    const stopProps = immediate ? { fadeOutTime: undefined } : undefined;
     this.playingSounds
       .filter(({ channel }) =>
         channelToStop ? channel === channelToStop : true
       )
-      .forEach(playingSound => playingSound.stop());
+      .forEach(playingSound => {
+        playingSound.stop(stopProps);
+      });
   };
 
   /**
@@ -220,7 +225,7 @@ export class Channels extends EventDispatcher implements HasVolume {
     );
 
     if (channelForSound?.type === 'monophonic') {
-      this.stopAll(channel);
+      this.stopAll({ channel });
     }
 
     this.playingSounds.push(playingSound);

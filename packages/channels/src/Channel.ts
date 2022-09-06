@@ -1,6 +1,11 @@
 import { Channels } from './Channels';
 import { VolumeNodes } from './VolumeNodes';
-import { CanConnectMediaElement, Effects, PlayStopOptions } from './types';
+import {
+  CanConnectMediaElement,
+  Effects,
+  PlayStopOptions,
+  StopAllOptions,
+} from './types';
 
 export type ChannelType = 'monophonic' | 'polyphonic';
 
@@ -52,8 +57,8 @@ export class Channel implements CanConnectMediaElement {
   /**
    * Stop all playing sounds on the channel
    */
-  public stopAll = () => {
-    this.channelsInstance.stopAll(this.name);
+  public stopAll = ({ immediate }: Omit<StopAllOptions, 'channel'>) => {
+    this.channelsInstance.stopAll({ channel: this.name, immediate });
   };
 
   /*

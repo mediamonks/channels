@@ -31,6 +31,11 @@ export type StopSoundOptions = {
   fadeOutTime?: number;
 };
 
+export type StopAllOptions = {
+  channel?: string;
+  immediate?: boolean;
+};
+
 export type EffectsChain<
   I extends AudioNode = AudioNode,
   O extends AudioNode = AudioNode
