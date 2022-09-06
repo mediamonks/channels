@@ -217,7 +217,7 @@ export class Channels extends EventDispatcher implements HasVolume {
     );
 
     if (channelForSound?.type === 'monophonic') {
-      this.stopAll({ channel });
+      this.stopAll({ channel, immediate: false });
     }
 
     this.playingSounds.push(playingSound);
