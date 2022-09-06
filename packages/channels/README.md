@@ -243,6 +243,12 @@ myChannel.play('sound', {
 channelsInstance.stopAll({channel: 'channel-name'});
 // or:
 myChannel.stopAll();
+
+// examples above will override any fade outs.
+// if you do want those, set 'immediate' to false:
+channelsInstance.stopAll({ channel: 'channel-name', immediate: false });
+myChannel.stopAll({ immediate: false });
+
 ```
 
 ### Default play/stop options
