@@ -6,7 +6,7 @@ type Props = {
   effects?: Effects;
 };
 
-export const createVolumeNodesGraph = ({ audioContext, effects }: Props) => {
+export const createSignalModifierGraph = ({ audioContext, effects }: Props) => {
   if (effects) {
     validateEffects(effects);
   }

@@ -1,17 +1,15 @@
 import { Slider } from './Slider';
 import { useState } from 'react';
-import { HasVolume } from '@mediamonks/channels';
-import { usePanningChange } from '@mediamonks/use-channels/dist/usePanningChange';
+import { HasSignalModifier } from '@mediamonks/channels';
+import { usePanningChange } from '@mediamonks/use-channels';
 
 type Props = {
-  entity: HasVolume;
+  entity: HasSignalModifier;
   enabled?: boolean;
 };
 
 export const PanningSlider = ({ entity }: Props) => {
-  const [panningSliderValue, setPanningSliderValue] = useState(
-    entity.getPanning()
-  );
+  const [panningSliderValue, setPanningSliderValue] = useState(entity.getPan());
   usePanningChange({
     onChange: value => setPanningSliderValue(value),
     target: entity,
@@ -23,7 +21,7 @@ export const PanningSlider = ({ entity }: Props) => {
       max={1}
       value={panningSliderValue}
       onChange={value => {
-        entity.setPanning(value);
+        entity.setPan(value);
       }}
     />
   );

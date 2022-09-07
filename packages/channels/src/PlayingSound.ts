@@ -1,15 +1,20 @@
-import { HasVolume, PlaySoundOptions, Sound, StopSoundOptions } from './types';
+import {
+  HasSignalModifier,
+  PlaySoundOptions,
+  Sound,
+  StopSoundOptions,
+} from './types';
 import { Channels } from './Channels';
 import { Channel } from './Channel';
-import { VolumeNodes } from './VolumeNodes';
+import { SignalModifier } from './SignalModifier';
 
 /**
  * Represents a playing sound.
  */
-export class PlayingSound implements HasVolume {
+export class PlayingSound implements HasSignalModifier {
   private readonly bufferSourceNode: AudioBufferSourceNode;
   private readonly startedAt: number;
-  public readonly volumeNodes: VolumeNodes;
+  public readonly signalModifier: SignalModifier;
 
   constructor(
     private readonly channelsInstance: Channels,
@@ -41,7 +46,7 @@ export class PlayingSound implements HasVolume {
     this.bufferSourceNode.loop = loop;
 
     // create and connect volume nodes
-    this.volumeNodes = new VolumeNodes(
+    this.signalModifier = new SignalModifier(
       channelsInstance.audioContext,
       channelsInstance,
       this,
@@ -53,8 +58,8 @@ export class PlayingSound implements HasVolume {
       }
     );
 
-    this.volumeNodes.output.connect(destination);
-    this.bufferSourceNode.connect(this.volumeNodes.input);
+    this.signalModifier.output.connect(destination);
+    this.bufferSourceNode.connect(this.signalModifier.input);
 
     this.bufferSourceNode.onended = () => {
       this.removePlayingSound();
@@ -64,7 +69,7 @@ export class PlayingSound implements HasVolume {
     this.bufferSourceNode.start(0);
 
     if (fadeInTime) {
-      this.volumeNodes.fadeIn(fadeInTime);
+      this.signalModifier.fadeIn(fadeInTime);
     }
   }
 
@@ -82,7 +87,7 @@ export class PlayingSound implements HasVolume {
 
     if (fadeOutTime !== undefined && fadeOutTime > 0) {
       // todo: add isStopping param that prevents further actions?
-      this.volumeNodes.fadeOut(fadeOutTime, () => {
+      this.signalModifier.fadeOut(fadeOutTime, () => {
         this.bufferSourceNode.stop(0);
       });
     } else {
@@ -102,17 +107,17 @@ export class PlayingSound implements HasVolume {
   };
 
   /*
-  HasVolume implementations
+  HasSignalModifier implementations
    */
   public fadeIn = (duration: number, onComplete?: () => void): void =>
-    this.volumeNodes.fadeIn(duration, onComplete);
+    this.signalModifier.fadeIn(duration, onComplete);
   public fadeOut = (duration: number, onComplete?: () => void): void =>
-    this.volumeNodes.fadeOut(duration, onComplete);
-  public mute = () => this.volumeNodes.mute();
-  public unmute = () => this.volumeNodes.unmute();
-  public getFadeVolume = () => this.volumeNodes.getFadeVolume();
-  public getVolume = () => this.volumeNodes.getVolume();
-  public setVolume = (value: number) => this.volumeNodes.setVolume(value);
-  public getPan = () => this.volumeNodes.getPan();
-  public setPan = (value: number) => this.volumeNodes.setPan(value);
+    this.signalModifier.fadeOut(duration, onComplete);
+  public mute = () => this.signalModifier.mute();
+  public unmute = () => this.signalModifier.unmute();
+  public getFadeVolume = () => this.signalModifier.getFadeVolume();
+  public getVolume = () => this.signalModifier.getVolume();
+  public setVolume = (value: number) => this.signalModifier.setVolume(value);
+  public getPan = () => this.signalModifier.getPan();
+  public setPan = (value: number) => this.signalModifier.setPan(value);
 }

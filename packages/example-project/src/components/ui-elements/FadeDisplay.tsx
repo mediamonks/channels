@@ -1,10 +1,10 @@
 import { Slider } from './Slider';
 import { useState } from 'react';
 import { useInterval } from '../../hooks/useInterval';
-import { HasVolume } from '@mediamonks/channels';
+import { HasSignalModifier } from '@mediamonks/channels';
 
 type Props = {
-  entity: HasVolume;
+  entity: HasSignalModifier;
 };
 
 export const FadeDisplay = ({ entity }: Props) => {
