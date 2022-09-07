@@ -1,9 +1,9 @@
-import { HasVolume, PanningChangeEvent } from '@mediamonks/channels';
 import { useChannels } from './useChannels';
 import { useEffect } from 'react';
+import { HasSignalModifier, PanChangeEvent } from '@mediamonks/channels';
 
 type Props = {
-  target?: HasVolume;
+  target?: HasSignalModifier;
   onChange: (value: number) => void;
 };
 
@@ -12,20 +12,20 @@ export const usePanningChange = ({ onChange, target }: Props) => {
 
   useEffect(() => {
     const targetToUse = target || channelsInstance;
-    const listener = (event: PanningChangeEvent) => {
+    const listener = (event: PanChangeEvent) => {
       if (event.data.target === targetToUse) {
-        onChange(targetToUse.getPanning());
+        onChange(targetToUse.getPan());
       }
     };
 
     channelsInstance.addEventListener(
-      PanningChangeEvent.types.PANNING_CHANGE,
+      PanChangeEvent.types.PAN_CHANGE,
       listener
     );
 
     return () =>
       channelsInstance.removeEventListener(
-        PanningChangeEvent.types.PANNING_CHANGE,
+        PanChangeEvent.types.PAN_CHANGE,
         listener
       );
   }, [channelsInstance, onChange, target]);

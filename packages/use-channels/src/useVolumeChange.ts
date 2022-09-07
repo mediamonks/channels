@@ -1,9 +1,9 @@
-import { HasVolume, VolumeChangeEvent } from '@mediamonks/channels';
+import { HasSignalModifier, VolumeChangeEvent } from '@mediamonks/channels';
 import { useChannels } from './useChannels';
 import { useEffect } from 'react';
 
 type Props = {
-  target?: HasVolume;
+  target?: HasSignalModifier;
   onChange: (value: number) => void;
 };
 

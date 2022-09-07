@@ -1,11 +1,11 @@
-import { HasVolume } from '@mediamonks/channels';
 import { VolumeSlider } from './VolumeSlider';
 import { MuteButtons } from './MuteButtons';
 import { FadeDisplay } from './FadeDisplay';
 import { PanningSlider } from './PanningSlider';
+import { HasSignalModifier } from '@mediamonks/channels';
 
 type Props = {
-  entity: HasVolume;
+  entity: HasSignalModifier;
   showFade?: boolean;
 };
 
