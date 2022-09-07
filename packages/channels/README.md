@@ -360,7 +360,7 @@ Optionally, custom effects chains can be added before or after these nodes.
 
 ### Modifying the signal
 
-To modify the volume, the three places that have a `SignalModifier` (sound, channel or main output) all have a set of methods implemented:
+The three places that have a `SignalModifier` (sound, channel or main output) all have a set of methods implemented:
 
 ```javascript
 const myChannel = channelsInstance.getChannel('my-channel');
