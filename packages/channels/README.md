@@ -361,14 +361,24 @@ channelsInstance.setVolume(0.5);
 
 > When calling `mute()` the `volume` will be set to `0`, with the additional effect that the previous volume value will be stored and used when calling `unmute()` 
 
-### Listening to volume changes
-To keep track of volume changes, you can listen to events on the `Channels` instance. The `event` in the callback contains info about where the volume change happened. 
+### Listening to volume/panning changes
+To keep track of volume or panning changes, you can listen to events on the `Channels` instance. The `event` in the callback contains info about where the volume change happened.
 
 ```javascript
+const myChannel;
 channelsInstance.addEventListener("VOLUME_CHANGE", (event) => {
     // event.data.target is either an instance of a channel, 
     // a playing sound or the main Channels instance.
+    if(event.data.target === myChannel) {
+        console.log(myChannel.getVolume())
+    }
 })
+
+channelsInstance.addEventListener("PANNING_CHANGE", (event) => {
+    if(event.data.target === myChannel) {
+        console.log(myChannel.getPanning())
+    }
+});
 ```
 
 #### React hook
