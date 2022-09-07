@@ -12,8 +12,8 @@ export interface HasVolume {
   unmute: () => void;
   fadeOut: (duration: number, onComplete?: () => void) => void;
   fadeIn: (duration: number, onComplete?: () => void) => void;
-  setPan: (value: number) => void;
-  getPan: () => number;
+  setPanning: (value: number) => void;
+  getPanning: () => number;
 }
 
 export interface CanConnectMediaElement extends HasVolume {

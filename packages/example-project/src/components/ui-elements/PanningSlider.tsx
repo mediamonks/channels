@@ -11,12 +11,14 @@ type Props = {
 
 export const PanningSlider = ({ entity }: Props) => {
   const channels = useChannels();
-  const [panningSliderValue, setPanningSliderValue] = useState(entity.getPan());
+  const [panningSliderValue, setPanningSliderValue] = useState(
+    entity.getPanning()
+  );
 
   useEffect(() => {
     const listener = ({ data }: PanningChangeEvent) => {
       if (data.target === entity) {
-        setPanningSliderValue(data.target.getPan());
+        setPanningSliderValue(data.target.getPanning());
       }
     };
     channels.addEventListener(
@@ -29,7 +31,7 @@ export const PanningSlider = ({ entity }: Props) => {
         PanningChangeEvent.types.PANNING_CHANGE,
         listener
       );
-  }, [channels]);
+  }, [entity, channels]);
 
   return (
     <Slider
@@ -37,7 +39,7 @@ export const PanningSlider = ({ entity }: Props) => {
       max={1}
       value={panningSliderValue}
       onChange={value => {
-        entity.setPan(value);
+        entity.setPanning(value);
       }}
     />
   );

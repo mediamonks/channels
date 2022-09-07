@@ -243,6 +243,6 @@ export class Channels extends EventDispatcher implements HasVolume {
   public setVolume = (value: number) => this.volumeNodes.setVolume(value);
   public connectMediaElement = (element: HTMLMediaElement) =>
     this.volumeNodes.connectMediaElement(element);
-  public getPan = () => this.volumeNodes.getPan();
-  public setPan = (value: number) => this.volumeNodes.setPan(value);
+  public getPanning = () => this.volumeNodes.getPanning();
+  public setPanning = (value: number) => this.volumeNodes.setPanning(value);
 }

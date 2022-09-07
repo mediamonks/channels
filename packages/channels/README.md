@@ -346,8 +346,8 @@ myChannel.mute();
 myChannel.unmute();
 myChannel.fadeOut(1); // time in seconds
 myChannel.fadeIn(1);
-myChannel.setPan(1); // value between -1 and 1
-myChannel.getPan();
+myChannel.setPanning(1); // value between -1 and 1
+myChannel.getPanning();
 
 // all these also exist on a playing sound
 const playingSound = channelsInstance.play('my-sound');

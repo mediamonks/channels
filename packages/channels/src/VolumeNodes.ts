@@ -122,7 +122,7 @@ export class VolumeNodes implements CanConnectMediaElement {
     mediaElementSource.connect(this.input);
   };
 
-  public setPan = (value: number) => {
+  public setPanning = (value: number) => {
     this.stereoPannerNode.pan.value = value;
     this.eventDispatcher.dispatchEvent(
       new PanningChangeEvent(PanningChangeEvent.types.PANNING_CHANGE, {
@@ -131,5 +131,5 @@ export class VolumeNodes implements CanConnectMediaElement {
     );
   };
 
-  public getPan = () => this.stereoPannerNode.pan.value;
+  public getPanning = () => this.stereoPannerNode.pan.value;
 }
