@@ -97,9 +97,13 @@ useVolumeChange({
 });
 ```
 
+### usePanningChange
+
+`usePanningChange` is nearly identical to `useVolumeChange` but listens to changes in panning values.
+
 ### usePlayingSounds
 
-The `usePlayingSounds` hook returns a list of all the currently playing sounds.
+The `usePlayingSounds` hook keeps track of a list of all the currently playing sounds.
 
 ```javascript
 import { usePlayingSounds } from '@mediamonks/use-channels';
