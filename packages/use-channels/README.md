@@ -52,11 +52,9 @@ export const ParentComponent = () => {
 }
 ```
 
-```
-
 ### useChannels
 
-The `Channels` instance from the `ChannelsProvider` available in all child components by using the `useChannels` hook:
+The `Channels` instance from the `ChannelsProvider` is available in all child components by using the `useChannels` hook:
 
 ```javascript
 import { useChannels } from '@mediamonks/use-channels';
