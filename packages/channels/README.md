@@ -322,40 +322,47 @@ channel.play('loop2');
 ```
 
 
-## Volume
+## Signal modifiers
 
-There are three places where volume is applied:
+A `SignalModifier` is something that allows the audio signal to be changed, for example to **set the volume**. These `SignalModifiers` exist three places:
 
 1. On a **sound**
 2. On a **channel**
 3. On the **main output**
 
-These are all separate modifiers to the signal, and they stack up: when a sound is played at volume `0.5`, on a channel with volume `0.5`, while the main volume has been set to `0.5`, then the resulting volume will be `0.5 * 0.5 * 0.5 = 0.125`. 
+### Overall structure
 
-
-### Structure
-Everything in `Channels` connects to one main volume node, which is the final step before going to the actual sound output. A channel has its own volume instance, which connects to the main volume.
-
-Sounds can be played either on a channel, or directly on the main output.
+Everything in `Channels` connects to the main output `SignalModifier`, which is the final step before going to the actual output. A channel has its own `SignalModifer`, which connects to the main `SignalModifier`. In the following image, the `SignalModifiers` are the blue blocks:
 
 <div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/overview-diagram.png?raw=true" /></div>
 
-#### Volume structure
-The volume instances each contain two gain nodes: one for applying volume, and a separate one for fading. They can also contain an optional chain of audio effects.
+> Sounds can be played either on a channel, or directly on the main output.
 
-<div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/volume-diagram.png?raw=true"/></div>
-
-#### Sound structure
-Finally, sounds also have an internal volume instance:
+### Sound structure
+Sounds themselves also have a `SignalModifier`:
 <div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/sound-diagram.png?raw=true"/></div>
 
 
-### Changing volume
 
-To change the volume, the three places that apply volume (sound, channel or main output) all have a set of methods implemented:
+
+### SignalModifier structure
+
+A `SignalModifier` always contains the following nodes:
+- a `GainNode` for setting volume
+- a separate `GainNode` for applying fades
+- a `StereoPannerNode` to pan the sound left or right
+
+Optionally, custom effects chains can be added before or after these nodes. 
+
+<div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/volume-diagram.png?raw=true"/></div>
+
+
+
+### Modifying the signal
+
+To modify the volume, the three places that have a `SignalModifier` (sound, channel or main output) all have a set of methods implemented:
 
 ```javascript
-const channelsInstance = new Channels({...});
 const myChannel = channelsInstance.getChannel('my-channel');
 
 // on a channel
@@ -380,7 +387,9 @@ channelsInstance.setVolume(0.5);
 
 > When calling `mute()` the `volume` will be set to `0`, with the additional effect that the previous volume value will be stored and used when calling `unmute()` 
 
-### Listening to volume/pan  changes
+> Pan values should be between `-1` and `1`.
+
+### Listening to volume/pan changes
 To keep track of volume or panning changes, you can listen to events on the `Channels` instance. The `event` in the callback contains info about where the volume change happened.
 
 ```javascript
