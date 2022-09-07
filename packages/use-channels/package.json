@@ -12,7 +12,7 @@
   },
   "scripts": {
     "build": "tsc --project ./tsconfig.build.json",
-    "test": "jest --config ./jest.config.js",
+    "test": "",
     "lint": "eslint --ignore-path ../../.gitignore --ext .ts .",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
