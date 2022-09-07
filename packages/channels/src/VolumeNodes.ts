@@ -3,6 +3,7 @@ import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 import { CanConnectMediaElement, Effects, HasVolume } from './types';
 import EventDispatcher from 'seng-event';
 import { createVolumeNodesGraph } from './util/createVolumeNodesGraph';
+import { PanningChangeEvent } from './event/PanningChangeEvent';
 
 type VolumeNodeOptions = {
   volume?: number;
@@ -26,7 +27,7 @@ export class VolumeNodes implements CanConnectMediaElement {
   constructor(
     readonly audioContext: AudioContext,
     private readonly eventDispatcher: EventDispatcher,
-    private readonly volumeTarget: HasVolume,
+    private readonly changeEventTarget: HasVolume, // todo: better name for var and type?
     { volume = 1, fadeVolume = 1, effects }: VolumeNodeOptions
   ) {
     const { fadeGainNode, volumeGainNode, input, output, stereoPannerNode } =
@@ -65,7 +66,7 @@ export class VolumeNodes implements CanConnectMediaElement {
   private dispatchVolumeChange() {
     this.eventDispatcher.dispatchEvent(
       new VolumeChangeEvent(VolumeChangeEvent.types.VOLUME_CHANGE, {
-        target: this.volumeTarget,
+        target: this.changeEventTarget,
       })
     );
   }
@@ -123,6 +124,11 @@ export class VolumeNodes implements CanConnectMediaElement {
 
   public setPan = (value: number) => {
     this.stereoPannerNode.pan.value = value;
+    this.eventDispatcher.dispatchEvent(
+      new PanningChangeEvent(PanningChangeEvent.types.PANNING_CHANGE, {
+        target: this.changeEventTarget,
+      })
+    );
   };
 
   public getPan = () => this.stereoPannerNode.pan.value;

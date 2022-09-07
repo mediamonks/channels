@@ -4,6 +4,7 @@ export type Sound = ISample;
 export type CreateSound = ICreateSample;
 
 export interface HasVolume {
+  // todo: rename to HasVolumeNodes? although volumenodes isnt covering everything in there anymore (has a lot more now)
   getFadeVolume: () => number;
   getVolume: () => number;
   setVolume: (value: number) => void;
