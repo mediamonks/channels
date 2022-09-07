@@ -1,10 +1,10 @@
 import { createEventClass } from 'seng-event';
 import { HasSignalModifier } from '../types';
 
-export type VolumeChangeData = {
+export type PanChangeData = {
   target: HasSignalModifier;
 };
 
-export class VolumeChangeEvent extends createEventClass<VolumeChangeData>()(
-  'VOLUME_CHANGE'
+export class PanChangeEvent extends createEventClass<PanChangeData>()(
+  'PAN_CHANGE'
 ) {}

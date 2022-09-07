@@ -3,5 +3,4 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
   modulePathIgnorePatterns: ['dist'],
-  verbose: true,
 };

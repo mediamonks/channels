@@ -23,25 +23,25 @@ function App() {
   const channelsInstance = useChannels();
 
   useEffect(() => {
-    channelsInstance.createChannel(
-      'main',
-      { volume: 0.5, type: 'monophonic' },
-      {
+    channelsInstance.createChannel('main', {
+      volume: 0.5,
+      type: 'monophonic',
+      defaultPlayStopOptions: {
         volume: 0.3,
         fadeInTime: 2,
         fadeOutTime: 2,
         loop: true,
-      }
-    );
+      },
+    });
 
     const filterInst = createFilter(channelsInstance.audioContext);
     setEffectsChain({ input: filterInst, output: filterInst });
 
-    channelsInstance.createChannel('music', {
-      analyserSettings: { mode: 'post-volume', fftSize: 128 },
-    });
+    channelsInstance.createChannel('music');
     channelsInstance.createChannel('effect', {
-      // effects: { input: filterInst, output: filterInst },
+      effects: {
+        preVolume: { input: filterInst, output: filterInst },
+      },
     });
 
     const loadSamples = async () => {

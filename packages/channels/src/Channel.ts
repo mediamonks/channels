@@ -1,26 +1,19 @@
 import { Channels } from './Channels';
-import { VolumeNodes } from './VolumeNodes';
 import {
-  AnalyserSettings,
   CanConnectMediaElement,
-  EffectsChain,
+  ChannelType,
+  CreateChannelOptions,
   PlayStopOptions,
+  StopAllOptions,
 } from './types';
-
-export type ChannelType = 'monophonic' | 'polyphonic';
-
-export type CreateChannelOptions = {
-  type?: ChannelType;
-  volume?: number;
-  effectsChain?: EffectsChain;
-  analyserSettings?: AnalyserSettings;
-};
+import { SignalModifier } from './SignalModifier';
 
 type PlayParameters = Parameters<InstanceType<typeof Channels>['play']>;
 
 export class Channel implements CanConnectMediaElement {
   public readonly type: ChannelType;
-  public readonly volumeNodes: VolumeNodes;
+  public readonly signalModifier: SignalModifier;
+  public readonly defaultPlayStopOptions: PlayStopOptions | undefined;
 
   constructor(
     public readonly name: string,
@@ -28,25 +21,28 @@ export class Channel implements CanConnectMediaElement {
     {
       volume,
       type = 'polyphonic',
-      effectsChain,
-      analyserSettings,
-    }: CreateChannelOptions = {},
-    public defaultPlayStopOptions?: PlayStopOptions // todo: move these into CreateChannelOptions?
+      effects,
+      pan,
+      defaultPlayStopOptions,
+    }: CreateChannelOptions = {}
   ) {
     this.type = type;
+    this.defaultPlayStopOptions = defaultPlayStopOptions;
 
-    this.volumeNodes = new VolumeNodes(
+    this.signalModifier = new SignalModifier(
       channelsInstance.audioContext,
       channelsInstance,
       this,
       {
         volume,
-        effectsChain,
-        analyserSettings,
+        pan,
+        effects,
       }
     );
 
-    this.volumeNodes.output.connect(this.channelsInstance.volumeNodes.input);
+    this.signalModifier.output.connect(
+      this.channelsInstance.signalModifier.input
+    );
   }
 
   /**
@@ -64,23 +60,24 @@ export class Channel implements CanConnectMediaElement {
   /**
    * Stop all playing sounds on the channel
    */
-  public stopAll = () => {
-    this.channelsInstance.stopAll(this.name);
+  public stopAll = ({ immediate }: Omit<StopAllOptions, 'channel'>) => {
+    this.channelsInstance.stopAll({ channel: this.name, immediate });
   };
 
   /*
-  HasVolume implementations
+  HasSignalModifier implementations
    */
   public fadeIn = (duration: number, onComplete?: () => void): void =>
-    this.volumeNodes.fadeIn(duration, onComplete);
+    this.signalModifier.fadeIn(duration, onComplete);
   public fadeOut = (duration: number, onComplete?: () => void): void =>
-    this.volumeNodes.fadeOut(duration, onComplete);
-  public mute = () => this.volumeNodes.mute();
-  public unmute = () => this.volumeNodes.unmute();
-  public getFadeVolume = () => this.volumeNodes.getFadeVolume();
-  public getVolume = () => this.volumeNodes.getVolume();
-  public setVolume = (value: number) => this.volumeNodes.setVolume(value);
+    this.signalModifier.fadeOut(duration, onComplete);
+  public mute = () => this.signalModifier.mute();
+  public unmute = () => this.signalModifier.unmute();
+  public getFadeVolume = () => this.signalModifier.getFadeVolume();
+  public getVolume = () => this.signalModifier.getVolume();
+  public setVolume = (value: number) => this.signalModifier.setVolume(value);
   public connectMediaElement = (element: HTMLMediaElement) =>
-    this.volumeNodes.connectMediaElement(element);
-  public getAnalyser = () => this.volumeNodes.getAnalyser();
+    this.signalModifier.connectMediaElement(element);
+  public getPan = () => this.signalModifier.getPan();
+  public setPan = (value: number) => this.signalModifier.setPan(value);
 }

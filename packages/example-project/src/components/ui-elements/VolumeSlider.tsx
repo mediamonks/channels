@@ -1,10 +1,10 @@
 import { Slider } from './Slider';
 import { useState } from 'react';
-import { HasVolume } from '@mediamonks/channels';
 import { useVolumeChange } from '@mediamonks/use-channels';
+import { HasSignalModifier } from '@mediamonks/channels';
 
 type Props = {
-  entity: HasVolume;
+  entity: HasSignalModifier;
   enabled?: boolean;
 };
 

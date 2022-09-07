@@ -1,39 +1,40 @@
 import {
+  CreateChannelOptions,
   CreateSound,
-  EffectsChain,
-  HasVolume,
+  Effects,
+  HasSignalModifier,
   PlaySoundOptions,
-  PlayStopOptions,
+  StopAllOptions,
 } from './types';
 import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
-import { VolumeNodes } from './VolumeNodes';
-import { CreateChannelOptions, Channel } from './Channel';
+import { Channel } from './Channel';
 import { PlayingSound } from './PlayingSound';
 import EventDispatcher from 'seng-event';
 import { ChannelsEvent } from './event/ChannelsEvent';
+import { SignalModifier } from './SignalModifier';
 
 type ConstructorProps = {
   soundsPath: string;
   soundsExtension: string;
   audioContext?: AudioContext;
   sounds?: Array<CreateSound>;
-  effectsChain?: EffectsChain;
+  effects?: Effects;
 };
 
-export class Channels extends EventDispatcher implements HasVolume {
+export class Channels extends EventDispatcher implements HasSignalModifier {
   public readonly audioContext: AudioContext;
   private readonly channelsByName: Record<string, Channel> = {};
   private readonly playingSounds: Array<PlayingSound> = [];
   public readonly sampleManager: SampleManager;
-  public readonly volumeNodes: VolumeNodes;
+  public readonly signalModifier: SignalModifier;
 
   constructor({
     audioContext,
     soundsExtension,
     soundsPath,
     sounds,
-    effectsChain,
+    effects,
   }: ConstructorProps) {
     super();
     this.audioContext =
@@ -54,11 +55,11 @@ export class Channels extends EventDispatcher implements HasVolume {
       this.sampleManager.addSamples(sounds);
     }
 
-    // everything connect to the main volume controls
-    this.volumeNodes = new VolumeNodes(this.audioContext, this, this, {
-      effectsChain,
+    // everything connect to the main volume controls.
+    this.signalModifier = new SignalModifier(this.audioContext, this, this, {
+      effects,
     });
-    this.volumeNodes.output.connect(this.audioContext.destination);
+    this.signalModifier.output.connect(this.audioContext.destination);
   }
 
   /**
@@ -103,12 +104,10 @@ export class Channels extends EventDispatcher implements HasVolume {
    * Creates a new channel.
    * @param name
    * @param createChannelOptions
-   * @param defaultPlayStopOptions
    */
   public createChannel = (
     name: string,
-    createChannelOptions: CreateChannelOptions = {},
-    defaultPlayStopOptions: PlayStopOptions = {}
+    createChannelOptions: CreateChannelOptions = {}
   ): Channel => {
     if (name === '') {
       throw new Error('Channel name cannot be blank');
@@ -117,12 +116,7 @@ export class Channels extends EventDispatcher implements HasVolume {
       throw new Error(`Channel with name '${name}' already exists`);
     }
 
-    const channel = new Channel(
-      name,
-      this,
-      createChannelOptions,
-      defaultPlayStopOptions
-    );
+    const channel = new Channel(name, this, createChannelOptions);
 
     this.channelsByName[name] = channel;
 
@@ -163,15 +157,19 @@ export class Channels extends EventDispatcher implements HasVolume {
    * Stop either all sounds or, when a channel name is supplied, all
    * sounds that are playing on a channel.
    * @param channel
+   * @param immediate
    */
-  public stopAll = (channel?: string) => {
+  public stopAll = ({ channel, immediate = true }: StopAllOptions = {}) => {
     const channelToStop = channel ? this.getChannel(channel) : null;
 
+    const stopProps = immediate ? { fadeOutTime: undefined } : undefined;
     this.playingSounds
       .filter(({ channel }) =>
         channelToStop ? channel === channelToStop : true
       )
-      .forEach(playingSound => playingSound.stop());
+      .forEach(playingSound => {
+        playingSound.stop(stopProps);
+      });
   };
 
   /**
@@ -201,7 +199,7 @@ export class Channels extends EventDispatcher implements HasVolume {
     const sound = this.sampleManager.getSampleByName(name);
     const { channel } = playSoundOptions;
     if (!sound) {
-      throw new Error(`Cannot find sound: '${name}`);
+      throw new Error(`Cannot find sound: '${name}'`);
     }
     const channelForSound = channel ? this.getChannel(channel) : undefined;
 
@@ -214,13 +212,13 @@ export class Channels extends EventDispatcher implements HasVolume {
     const playingSound = new PlayingSound(
       this,
       sound,
-      (channelForSound?.volumeNodes || this.volumeNodes).input,
+      (channelForSound?.signalModifier || this.signalModifier).input,
       channelForSound,
       mergedPlaySoundOptions
     );
 
     if (channelForSound?.type === 'monophonic') {
-      this.stopAll(channel);
+      this.stopAll({ channel, immediate: false });
     }
 
     this.playingSounds.push(playingSound);
@@ -233,18 +231,19 @@ export class Channels extends EventDispatcher implements HasVolume {
   };
 
   /*
-  HasVolume implementations
+  HasSignalModifier implementations
    */
   public fadeIn = (duration: number, onComplete?: () => void): void =>
-    this.volumeNodes.fadeIn(duration, onComplete);
+    this.signalModifier.fadeIn(duration, onComplete);
   public fadeOut = (duration: number, onComplete?: () => void): void =>
-    this.volumeNodes.fadeOut(duration, onComplete);
-  public mute = () => this.volumeNodes.mute();
-  public unmute = () => this.volumeNodes.unmute();
-  public getFadeVolume = () => this.volumeNodes.getFadeVolume();
-  public getVolume = () => this.volumeNodes.getVolume();
-  public setVolume = (value: number) => this.volumeNodes.setVolume(value);
+    this.signalModifier.fadeOut(duration, onComplete);
+  public mute = () => this.signalModifier.mute();
+  public unmute = () => this.signalModifier.unmute();
+  public getFadeVolume = () => this.signalModifier.getFadeVolume();
+  public getVolume = () => this.signalModifier.getVolume();
+  public setVolume = (value: number) => this.signalModifier.setVolume(value);
   public connectMediaElement = (element: HTMLMediaElement) =>
-    this.volumeNodes.connectMediaElement(element);
-  public getAnalyser = () => this.volumeNodes.getAnalyser();
+    this.signalModifier.connectMediaElement(element);
+  public getPan = () => this.signalModifier.getPan();
+  public setPan = (value: number) => this.signalModifier.setPan(value);
 }

@@ -148,6 +148,10 @@ channelsInstance.play('sound', {
     channel: 'channel1',
     loop: true,
     fadeInTime: 2,
+    pan: 1, // between -1 and 1
+    effects: {
+        preVolume: myEffectsChain,
+    }
 });
 ```
 
@@ -191,8 +195,14 @@ Second parameter can be used for some optional properties.
 channelsInstance.createChannel('my-channel',{
     type: 'monophonic',
     volume: 0.5,
+    pan: 1,
+    effects: {
+        preVolume: myEffectsChain,
+    }
 });
 ```
+> Check the Audio Effects section for more information about the `effects` option.
+
 
 A reference to a channel is returned when creating it, or can be retrieved afterwards.
 ```javascript
@@ -235,6 +245,10 @@ myChannel.play('sound', {
     volume: 0.5,
     loop: true,
     fadeInTime: 2,
+    pan: 1,
+    effects: {
+        preVolume: myEffectsChain,
+    }
 });
 ```
 
@@ -243,6 +257,12 @@ myChannel.play('sound', {
 channelsInstance.stopAll({channel: 'channel-name'});
 // or:
 myChannel.stopAll();
+
+// examples above will override any fade outs.
+// if you do want those, set 'immediate' to false:
+channelsInstance.stopAll({ channel: 'channel-name', immediate: false });
+myChannel.stopAll({ immediate: false });
+
 ```
 
 ### Default play/stop options
@@ -255,7 +275,11 @@ const sound = channelsInstance.play({
     loop: true,
     fadeInTime: 1,
     volume: 0.5,
-    channel: 'my-channel'
+    channel: 'my-channel',
+    pan: -1,
+    effects: {
+        preVolume: myEffectsChain,
+    }
 });
 
 // options for stop
@@ -269,25 +293,27 @@ const defaultStartStopProps = {
     fadeInTime: 1,
     volume: 0.5,
     fadeOutTime: 1,
+    pan: -1,
+    effects: {
+        preVolume: myEffectsChain,
+    }
 };
+// can be set on creation as part of channel options
+channelsInstance.createChannel('my-channel', { defaultStartStopProps });
+
+// or can be set directly on a channel
 myChannel.defaultStartStopProps = defaultStartStopProps;
 
-// can also be set on creation as the 3rd argument
-channelsInstance.createChannel('my-channel', null, defaultStartStopProps);
 ```
-
-
-
-> Passing props to`play()` or `stop()` will **always** override the defaultStartStopProps of a channel.  
+> Passing props to`play()` or `stop()` will override the defaultStartStopProps of a channel.
 
 Default props (in combination with a `monophonic` channel) can be very helpful when creating a background music layer with music loops that need to change now and then:
 
 ```javascript
-const channel = channelsInstance.createChannel(
-    'background-music',
-    null, 
-    { fadeInTime: 2, fadeOutTime: 2, loop: true }
-);
+const channel = channelsInstance.createChannel('background-music', {
+    type: 'monophonic',
+    defaultStartStopProps: { fadeInTime: 2, fadeOutTime: 2, loop: true },
+});
 // start a loop
 channel.play('loop1');
 
@@ -296,49 +322,58 @@ channel.play('loop2');
 ```
 
 
-## Volume
+## Signal modifiers
 
-There are three places where volume is applied:
+A `SignalModifier` is something that allows the audio signal to be changed, for example to **set the volume**. These `SignalModifiers` exist three places:
 
 1. On a **sound**
 2. On a **channel**
 3. On the **main output**
 
-These are all separate modifiers to the signal, and they stack up: when a sound is played at volume `0.5`, on a channel with volume `0.5`, while the main volume has been set to `0.5`, then the resulting volume will be `0.5 * 0.5 * 0.5 = 0.125`. 
+### Overall structure
 
-
-### Structure
-Everything in `Channels` connects to one main volume node, which is the final step before going to the actual sound output. A channel has its own volume instance, which connects to the main volume.
-
-Sounds can be played either on a channel, or directly on the main output.
+Everything in `Channels` connects to the main output `SignalModifier`, which is the final step before going to the actual output. A channel has its own `SignalModifer`, which connects to the main `SignalModifier`. In the following image, the `SignalModifiers` are the blue blocks:
 
 <div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/overview-diagram.png?raw=true" /></div>
 
-#### Volume structure
-The volume instances each contain two gain nodes: one for applying volume, and a separate one for fading. They can also contain an optional chain of audio effects.
+> Sounds can be played either on a channel, or directly on the main output.
 
-<div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/volume-diagram.png?raw=true"/></div>
-
-#### Sound structure
-Finally, sounds also have an internal volume instance:
+### Sound structure
+Sounds themselves also have a `SignalModifier`:
 <div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/sound-diagram.png?raw=true"/></div>
 
 
-### Changing volume
 
-To change the volume, the three places that apply volume (sound, channel or main output) all have a set of methods implemented:
+
+### SignalModifier structure
+
+A `SignalModifier` always contains the following nodes:
+- a `GainNode` for setting volume
+- a separate `GainNode` for applying fades
+- a `StereoPannerNode` to pan the sound left or right
+
+Optionally, custom effects chains can be added before or after these nodes. 
+
+<div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/volume-diagram.png?raw=true"/></div>
+
+
+
+### Modifying the signal
+
+To modify the volume, the three places that have a `SignalModifier` (sound, channel or main output) all have a set of methods implemented:
 
 ```javascript
-const channelsInstance = new Channels({...});
 const myChannel = channelsInstance.getChannel('my-channel');
 
 // on a channel
-myChannel.setVolume(0.5);
+myChannel.setVolume(0.5); 
 myChannel.getVolume();
 myChannel.mute();
 myChannel.unmute();
-myChannel.fadeOut(1);
+myChannel.fadeOut(1); // time in seconds
 myChannel.fadeIn(1);
+myChannel.setPan(1); // value between -1 and 1
+myChannel.getPan();
 
 // all these also exist on a playing sound
 const playingSound = channelsInstance.play('my-sound');
@@ -352,14 +387,26 @@ channelsInstance.setVolume(0.5);
 
 > When calling `mute()` the `volume` will be set to `0`, with the additional effect that the previous volume value will be stored and used when calling `unmute()` 
 
-### Listening to volume changes
-To keep track of volume changes, you can listen to events on the `Channels` instance. The `event` in the callback contains info about where the volume change happened. 
+> Pan values should be between `-1` (left) and `1` (right).
+
+### Listening to volume/pan changes
+To keep track of volume or panning changes, you can listen to events on the `Channels` instance. The `event` in the callback contains info about where the volume change happened.
 
 ```javascript
+const myChannel;
 channelsInstance.addEventListener("VOLUME_CHANGE", (event) => {
     // event.data.target is either an instance of a channel, 
     // a playing sound or the main Channels instance.
+    if(event.data.target === myChannel) {
+        console.log(myChannel.getVolume())
+    }
 })
+
+channelsInstance.addEventListener("PAN_CHANGE", (event) => {
+    if(event.data.target === myChannel) {
+        console.log(myChannel.getPan())
+    }
+});
 ```
 
 #### React hook
@@ -380,25 +427,40 @@ useVolumeChange({
 
 ## Audio effects
 
-An effect is defined as an object with an `input` and an `output`, both of type `AudioNode`. They can contain either a single node (with `input` and `output` pointing to the same `AudioNode`), or a long chain or multiple nodes - as long there is an `input` and an `output` (which obviously need to be connected in some way). 
+An `EffectsChain` can be defined as an object with an `input` and an `output`, both of type `AudioNode`. They can be a single node (with `input` and `output` pointing to the same `AudioNode`), or a long chain or multiple nodes - as long there is an `input` (to connect to) and an `output` (to take the resulting audio from). 
 
-Effects can be placed on either a **channel** or the **main output**.
+These `EffectsChain` can be placed on a **channel**, a **playing sound** and the **main output**. In all of these cases, you can apply these **before** or **after** the volume is applied (or both).
 
 ```javascript
 const filter = audioContext.createBiquadFilter();
-const myEffect = {
+const myEffectsChain = {
     input: filter,
     output: filter,
 }
-// setting an effect on the main output 
+// setting an effect on the main output, before the volume
 const channelsInstance = new Channels({
     soundsExtension,
     soundsPath,
-    effectsChain: myEffect,
+    effects: {
+        preVolume: myEffectsChain
+    },
 });
 
-// setting it on a channel
-channelsInstance.createChannel('effect-channel', { effectsChain: myEffect })
+// setting it on a channel, after the volume
+channelsInstance.createChannel('effect-channel', {
+    effects: {
+        postVolume: myEffectsChain,
+    } 
+})
+
+// on a sound, before and after the volume
+channelsInstance.play('my-sound', {
+    effects: {
+        pretVolume: myEffectsChain,
+        postVolume: myOtherEffectsChain,
+    }
+})
+
 ```
 > The effects chain is always placed **before** the volume gain node.
 

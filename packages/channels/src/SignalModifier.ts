@@ -1,68 +1,49 @@
 import { tweenAudioParamToValue } from './util/fadeGain';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 import {
-  AnalyserSettings,
   CanConnectMediaElement,
-  EffectsChain,
-  HasVolume,
+  HasSignalModifier,
+  SignalModifierOptions,
 } from './types';
 import EventDispatcher from 'seng-event';
-import { createVolumeNodesGraph } from './util/createVolumeNodesGraph';
-import { Analyser } from './Analyser';
 
-type VolumeNodeOptions = {
-  volume?: number;
-  fadeVolume?: number;
-  effectsChain?: EffectsChain;
-  analyserSettings?: AnalyserSettings;
-};
+import { PanChangeEvent } from './event/PanChangeEvent';
+import { createSignalModifierGraph } from './util/createSignalModifierGraph';
 
 /**
- * Class that creates two gainNodes, one for the user to freely set,
- * one for applying fades.
+ * Represents a chain of nodes to apply volume changes, panning or effects.
  */
-export class VolumeNodes implements CanConnectMediaElement {
+export class SignalModifier implements CanConnectMediaElement {
   private readonly volumeGainNode: GainNode;
   private readonly fadeGainNode: GainNode;
+  private readonly stereoPannerNode: StereoPannerNode;
   public readonly input: AudioNode;
   public readonly output: AudioNode;
 
   private volumeValueBeforeMute: number | undefined;
-  private readonly analyser: Analyser | undefined;
 
   constructor(
     readonly audioContext: AudioContext,
     private readonly eventDispatcher: EventDispatcher,
-    private readonly volumeTarget: HasVolume,
-    {
-      volume = 1,
-      fadeVolume = 1,
-      effectsChain,
-      analyserSettings,
-    }: VolumeNodeOptions
+    private readonly changeEventTarget: HasSignalModifier, // todo: better name for var and type?
+    { volume = 1, fadeVolume = 1, effects, pan = 0 }: SignalModifierOptions
   ) {
-    const { fadeGainNode, volumeGainNode, input, output, analyserNode } =
-      createVolumeNodesGraph({
+    const { fadeGainNode, volumeGainNode, input, output, stereoPannerNode } =
+      createSignalModifierGraph({
         audioContext,
-        effectsChain,
-        analyserSettings,
+        effects,
       });
-
-    if (analyserNode) {
-      this.analyser = new Analyser(
-        analyserNode,
-        analyserSettings?.fftSize || 1024
-      );
-    }
 
     this.volumeGainNode = volumeGainNode;
     this.fadeGainNode = fadeGainNode;
+    this.stereoPannerNode = stereoPannerNode;
     this.input = input;
     this.output = output;
 
     this.setVolume(volume);
 
     this.fadeGainNode.gain.value = fadeVolume;
+    this.stereoPannerNode.pan.value = pan;
   }
 
   public fadeTo = (
@@ -84,7 +65,7 @@ export class VolumeNodes implements CanConnectMediaElement {
   private dispatchVolumeChange() {
     this.eventDispatcher.dispatchEvent(
       new VolumeChangeEvent(VolumeChangeEvent.types.VOLUME_CHANGE, {
-        target: this.volumeTarget,
+        target: this.changeEventTarget,
       })
     );
   }
@@ -140,5 +121,19 @@ export class VolumeNodes implements CanConnectMediaElement {
     mediaElementSource.connect(this.input);
   };
 
-  public getAnalyser = () => this.analyser;
+  public setPan = (value: number) => {
+    if (value < -1 || value > 1) {
+      throw new Error(
+        'Panning value can not be smaller than -1 or larger than 1.'
+      );
+    }
+    this.stereoPannerNode.pan.value = value;
+    this.eventDispatcher.dispatchEvent(
+      new PanChangeEvent(PanChangeEvent.types.PAN_CHANGE, {
+        target: this.changeEventTarget,
+      })
+    );
+  };
+
+  public getPan = () => this.stereoPannerNode.pan.value;
 }

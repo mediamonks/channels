@@ -1,10 +1,11 @@
-import { HasVolume } from '@mediamonks/channels';
 import { VolumeSlider } from './VolumeSlider';
 import { MuteButtons } from './MuteButtons';
 import { FadeDisplay } from './FadeDisplay';
+import { PanningSlider } from './PanningSlider';
+import { HasSignalModifier } from '@mediamonks/channels';
 
 type Props = {
-  entity: HasVolume;
+  entity: HasSignalModifier;
   showFade?: boolean;
 };
 
@@ -23,6 +24,9 @@ export const VolumeControls = ({ entity, showFade = true }: Props) => {
           <FadeDisplay entity={entity} />
         </div>
       )}
+      <div>
+        <PanningSlider entity={entity} />
+      </div>
     </div>
   );
 };

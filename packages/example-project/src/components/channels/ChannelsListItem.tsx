@@ -2,7 +2,6 @@ import { Channel } from '@mediamonks/channels';
 import { useChannels } from '@mediamonks/use-channels';
 import React from 'react';
 import { VolumeControls } from '../ui-elements/VolumeControls';
-import { WaveView } from '../ui-elements/WaveView';
 
 type Props = {
   channel: Channel;
@@ -11,13 +10,12 @@ type Props = {
 export const ChannelsListItem = ({ channel }: Props) => {
   const channelsInstance = useChannels();
   const sounds = channelsInstance.getSounds();
-  const analyser = channel.getAnalyser();
 
   const fadeOut = () => {
-    channel.volumeNodes.fadeOut(2);
+    channel.fadeOut(2);
   };
   const fadeIn = () => {
-    channel.volumeNodes.fadeIn(2);
+    channel.fadeIn(2);
   };
   return (
     <div
@@ -38,7 +36,9 @@ export const ChannelsListItem = ({ channel }: Props) => {
             </small>
           )}
       </p>
-      <button onClick={() => channelsInstance.stopAll(channel.name)}>
+      <button
+        onClick={() => channelsInstance.stopAll({ channel: channel.name })}
+      >
         stop all sounds on this channel
       </button>
       <button onClick={fadeOut}>fade out</button>
@@ -53,7 +53,6 @@ export const ChannelsListItem = ({ channel }: Props) => {
           </button>
         ))}
       </div>
-      {analyser && <WaveView width={350} height={70} analyser={analyser} />}
     </div>
   );
 };
