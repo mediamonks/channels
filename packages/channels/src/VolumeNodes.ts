@@ -1,16 +1,9 @@
 import { tweenAudioParamToValue } from './util/fadeGain';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
-import { CanConnectMediaElement, Effects, HasVolume } from './types';
+import { CanConnectMediaElement, HasVolume, VolumeNodesOptions } from './types';
 import EventDispatcher from 'seng-event';
 import { createVolumeNodesGraph } from './util/createVolumeNodesGraph';
 import { PanningChangeEvent } from './event/PanningChangeEvent';
-
-type VolumeNodeOptions = {
-  volume?: number;
-  fadeVolume?: number;
-  panning?: number;
-  effects?: Effects;
-};
 
 /**
  * Class that creates two gainNodes, one for the user to freely set,
@@ -29,7 +22,7 @@ export class VolumeNodes implements CanConnectMediaElement {
     readonly audioContext: AudioContext,
     private readonly eventDispatcher: EventDispatcher,
     private readonly changeEventTarget: HasVolume, // todo: better name for var and type?
-    { volume = 1, fadeVolume = 1, effects, panning = 0 }: VolumeNodeOptions
+    { volume = 1, fadeVolume = 1, effects, panning = 0 }: VolumeNodesOptions
   ) {
     const { fadeGainNode, volumeGainNode, input, output, stereoPannerNode } =
       createVolumeNodesGraph({
@@ -125,8 +118,10 @@ export class VolumeNodes implements CanConnectMediaElement {
   };
 
   public setPanning = (value: number) => {
-    if(value < -1 || value > 1) {
-      throw new Error('Panning value can not be smaller than -1 or larger than 1.')
+    if (value < -1 || value > 1) {
+      throw new Error(
+        'Panning value can not be smaller than -1 or larger than 1.'
+      );
     }
     this.stereoPannerNode.pan.value = value;
     this.eventDispatcher.dispatchEvent(

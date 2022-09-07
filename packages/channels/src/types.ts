@@ -3,6 +3,25 @@ import { ICreateSample, ISample } from 'sample-manager';
 export type Sound = ISample;
 export type CreateSound = ICreateSample;
 
+export type VolumeNodesOptions = {
+  volume?: number;
+  fadeVolume?: number;
+  panning?: number;
+  effects?: Effects;
+};
+
+type VolumeNodesOptionsWithoutFadeVolume = Omit<
+  VolumeNodesOptions,
+  'fadeVolume'
+>;
+
+export type ChannelType = 'monophonic' | 'polyphonic';
+
+export type CreateChannelOptions = {
+  type?: ChannelType;
+  defaultPlayStopOptions?: PlayStopOptions;
+} & VolumeNodesOptionsWithoutFadeVolume;
+
 export interface HasVolume {
   // todo: rename to HasVolumeNodes? although volumenodes isnt covering everything in there anymore (has a lot more now)
   getFadeVolume: () => number;
@@ -25,11 +44,8 @@ export type PlayStopOptions = PlaySoundOptions & StopSoundOptions;
 export type PlaySoundOptions = {
   loop?: boolean;
   fadeInTime?: number;
-  volume?: number;
-  panning?: number;
-  effects?: Effects;
   channel?: string;
-};
+} & VolumeNodesOptionsWithoutFadeVolume;
 
 export type StopSoundOptions = {
   fadeOutTime?: number;

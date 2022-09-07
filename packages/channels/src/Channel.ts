@@ -2,20 +2,11 @@ import { Channels } from './Channels';
 import { VolumeNodes } from './VolumeNodes';
 import {
   CanConnectMediaElement,
-  Effects,
+  ChannelType,
+  CreateChannelOptions,
   PlayStopOptions,
   StopAllOptions,
 } from './types';
-
-export type ChannelType = 'monophonic' | 'polyphonic';
-
-export type CreateChannelOptions = {
-  type?: ChannelType;
-  volume?: number;
-  panning?: number;
-  effects?: Effects;
-  defaultPlayStopOptions?: PlayStopOptions;
-};
 
 type PlayParameters = Parameters<InstanceType<typeof Channels>['play']>;
 

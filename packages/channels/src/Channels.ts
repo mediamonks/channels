@@ -1,4 +1,5 @@
 import {
+  CreateChannelOptions,
   CreateSound,
   Effects,
   HasVolume,
@@ -8,7 +9,7 @@ import {
 import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
 import { VolumeNodes } from './VolumeNodes';
-import { CreateChannelOptions, Channel } from './Channel';
+import { Channel } from './Channel';
 import { PlayingSound } from './PlayingSound';
 import EventDispatcher from 'seng-event';
 import { ChannelsEvent } from './event/ChannelsEvent';
