@@ -387,7 +387,7 @@ channelsInstance.setVolume(0.5);
 
 > When calling `mute()` the `volume` will be set to `0`, with the additional effect that the previous volume value will be stored and used when calling `unmute()` 
 
-> Pan values should be between `-1` and `1`.
+> Pan values should be between `-1` (left) and `1` (right).
 
 ### Listening to volume/pan changes
 To keep track of volume or panning changes, you can listen to events on the `Channels` instance. The `event` in the callback contains info about where the volume change happened.
