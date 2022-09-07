@@ -11,7 +11,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --project ./tsconfig.build.json",
     "test": "jest --config ./jest.config.js",
     "lint": "eslint --ignore-path ../../.gitignore --ext .ts .",
     "typecheck": "tsc --project tsconfig.json --noEmit",
