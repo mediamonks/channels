@@ -2,19 +2,11 @@ import { Channels } from './Channels';
 import { VolumeNodes } from './VolumeNodes';
 import {
   CanConnectMediaElement,
-  Effects,
+  ChannelType,
+  CreateChannelOptions,
   PlayStopOptions,
   StopAllOptions,
 } from './types';
-
-export type ChannelType = 'monophonic' | 'polyphonic';
-
-export type CreateChannelOptions = {
-  type?: ChannelType;
-  volume?: number;
-  effects?: Effects;
-  defaultPlayStopOptions?: PlayStopOptions;
-};
 
 type PlayParameters = Parameters<InstanceType<typeof Channels>['play']>;
 
@@ -30,6 +22,7 @@ export class Channel implements CanConnectMediaElement {
       volume,
       type = 'polyphonic',
       effects,
+      pan,
       defaultPlayStopOptions,
     }: CreateChannelOptions = {}
   ) {
@@ -42,6 +35,7 @@ export class Channel implements CanConnectMediaElement {
       this,
       {
         volume,
+        pan,
         effects,
       }
     );
@@ -82,4 +76,6 @@ export class Channel implements CanConnectMediaElement {
   public setVolume = (value: number) => this.volumeNodes.setVolume(value);
   public connectMediaElement = (element: HTMLMediaElement) =>
     this.volumeNodes.connectMediaElement(element);
+  public getPan = () => this.volumeNodes.getPan();
+  public setPan = (value: number) => this.volumeNodes.setPan(value);
 }

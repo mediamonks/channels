@@ -1,14 +1,9 @@
 import { tweenAudioParamToValue } from './util/fadeGain';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
-import { CanConnectMediaElement, Effects, HasVolume } from './types';
+import { CanConnectMediaElement, HasVolume, VolumeNodesOptions } from './types';
 import EventDispatcher from 'seng-event';
 import { createVolumeNodesGraph } from './util/createVolumeNodesGraph';
-
-type VolumeNodeOptions = {
-  volume?: number;
-  fadeVolume?: number;
-  effects?: Effects;
-};
+import { PanChangeEvent } from './event/PanChangeEvent';
 
 /**
  * Class that creates two gainNodes, one for the user to freely set,
@@ -17,6 +12,7 @@ type VolumeNodeOptions = {
 export class VolumeNodes implements CanConnectMediaElement {
   private readonly volumeGainNode: GainNode;
   private readonly fadeGainNode: GainNode;
+  private readonly stereoPannerNode: StereoPannerNode;
   public readonly input: AudioNode;
   public readonly output: AudioNode;
 
@@ -25,10 +21,10 @@ export class VolumeNodes implements CanConnectMediaElement {
   constructor(
     readonly audioContext: AudioContext,
     private readonly eventDispatcher: EventDispatcher,
-    private readonly volumeTarget: HasVolume,
-    { volume = 1, fadeVolume = 1, effects }: VolumeNodeOptions
+    private readonly changeEventTarget: HasVolume, // todo: better name for var and type?
+    { volume = 1, fadeVolume = 1, effects, pan = 0 }: VolumeNodesOptions
   ) {
-    const { fadeGainNode, volumeGainNode, input, output } =
+    const { fadeGainNode, volumeGainNode, input, output, stereoPannerNode } =
       createVolumeNodesGraph({
         audioContext,
         effects,
@@ -36,12 +32,14 @@ export class VolumeNodes implements CanConnectMediaElement {
 
     this.volumeGainNode = volumeGainNode;
     this.fadeGainNode = fadeGainNode;
+    this.stereoPannerNode = stereoPannerNode;
     this.input = input;
     this.output = output;
 
     this.setVolume(volume);
 
     this.fadeGainNode.gain.value = fadeVolume;
+    this.stereoPannerNode.pan.value = pan;
   }
 
   public fadeTo = (
@@ -63,7 +61,7 @@ export class VolumeNodes implements CanConnectMediaElement {
   private dispatchVolumeChange() {
     this.eventDispatcher.dispatchEvent(
       new VolumeChangeEvent(VolumeChangeEvent.types.VOLUME_CHANGE, {
-        target: this.volumeTarget,
+        target: this.changeEventTarget,
       })
     );
   }
@@ -118,4 +116,20 @@ export class VolumeNodes implements CanConnectMediaElement {
       this.audioContext.createMediaElementSource(element);
     mediaElementSource.connect(this.input);
   };
+
+  public setPan = (value: number) => {
+    if (value < -1 || value > 1) {
+      throw new Error(
+        'Panning value can not be smaller than -1 or larger than 1.'
+      );
+    }
+    this.stereoPannerNode.pan.value = value;
+    this.eventDispatcher.dispatchEvent(
+      new PanChangeEvent(PanChangeEvent.types.PAN_CHANGE, {
+        target: this.changeEventTarget,
+      })
+    );
+  };
+
+  public getPan = () => this.stereoPannerNode.pan.value;
 }

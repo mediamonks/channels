@@ -3,14 +3,36 @@ import { ICreateSample, ISample } from 'sample-manager';
 export type Sound = ISample;
 export type CreateSound = ICreateSample;
 
+export type VolumeNodesOptions = {
+  volume?: number;
+  fadeVolume?: number;
+  pan?: number;
+  effects?: Effects;
+};
+
+type VolumeNodesOptionsWithoutFadeVolume = Omit<
+  VolumeNodesOptions,
+  'fadeVolume'
+>;
+
+export type ChannelType = 'monophonic' | 'polyphonic';
+
+export type CreateChannelOptions = {
+  type?: ChannelType;
+  defaultPlayStopOptions?: PlayStopOptions;
+} & VolumeNodesOptionsWithoutFadeVolume;
+
 export interface HasVolume {
-  getFadeVolume(): number;
-  getVolume(): number;
-  setVolume(value: number): void;
+  // todo: rename to HasVolumeNodes? although volumenodes isnt covering everything in there anymore (has a lot more now)
+  getFadeVolume: () => number;
+  getVolume: () => number;
+  setVolume: (value: number) => void;
   mute: () => void;
   unmute: () => void;
   fadeOut: (duration: number, onComplete?: () => void) => void;
   fadeIn: (duration: number, onComplete?: () => void) => void;
+  setPan: (value: number) => void;
+  getPan: () => number;
 }
 
 export interface CanConnectMediaElement extends HasVolume {
@@ -22,10 +44,8 @@ export type PlayStopOptions = PlaySoundOptions & StopSoundOptions;
 export type PlaySoundOptions = {
   loop?: boolean;
   fadeInTime?: number;
-  volume?: number;
-  effects?: Effects;
   channel?: string;
-};
+} & VolumeNodesOptionsWithoutFadeVolume;
 
 export type StopSoundOptions = {
   fadeOutTime?: number;

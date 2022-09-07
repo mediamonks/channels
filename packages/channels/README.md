@@ -148,6 +148,10 @@ channelsInstance.play('sound', {
     channel: 'channel1',
     loop: true,
     fadeInTime: 2,
+    pan: 1, // between -1 and 1
+    effects: {
+        preVolume: myEffectsChain,
+    }
 });
 ```
 
@@ -191,8 +195,14 @@ Second parameter can be used for some optional properties.
 channelsInstance.createChannel('my-channel',{
     type: 'monophonic',
     volume: 0.5,
+    pan: 1,
+    effects: {
+        preVolume: myEffectsChain,
+    }
 });
 ```
+> Check the Audio Effects section for more information about the `effects` option.
+
 
 A reference to a channel is returned when creating it, or can be retrieved afterwards.
 ```javascript
@@ -235,6 +245,10 @@ myChannel.play('sound', {
     volume: 0.5,
     loop: true,
     fadeInTime: 2,
+    pan: 1,
+    effects: {
+        preVolume: myEffectsChain,
+    }
 });
 ```
 
@@ -261,7 +275,11 @@ const sound = channelsInstance.play({
     loop: true,
     fadeInTime: 1,
     volume: 0.5,
-    channel: 'my-channel'
+    channel: 'my-channel',
+    pan: -1,
+    effects: {
+        preVolume: myEffectsChain,
+    }
 });
 
 // options for stop
@@ -275,6 +293,10 @@ const defaultStartStopProps = {
     fadeInTime: 1,
     volume: 0.5,
     fadeOutTime: 1,
+    pan: -1,
+    effects: {
+        preVolume: myEffectsChain,
+    }
 };
 // can be set on creation as part of channel options
 channelsInstance.createChannel('my-channel', { defaultStartStopProps });
@@ -283,10 +305,7 @@ channelsInstance.createChannel('my-channel', { defaultStartStopProps });
 myChannel.defaultStartStopProps = defaultStartStopProps;
 
 ```
-
-
-
-> Passing props to`play()` or `stop()` will **always** override the defaultStartStopProps of a channel.  
+> Passing props to`play()` or `stop()` will override the defaultStartStopProps of a channel.
 
 Default props (in combination with a `monophonic` channel) can be very helpful when creating a background music layer with music loops that need to change now and then:
 
@@ -340,12 +359,14 @@ const channelsInstance = new Channels({...});
 const myChannel = channelsInstance.getChannel('my-channel');
 
 // on a channel
-myChannel.setVolume(0.5);
+myChannel.setVolume(0.5); 
 myChannel.getVolume();
 myChannel.mute();
 myChannel.unmute();
-myChannel.fadeOut(1);
+myChannel.fadeOut(1); // time in seconds
 myChannel.fadeIn(1);
+myChannel.setPan(1); // value between -1 and 1
+myChannel.getPan();
 
 // all these also exist on a playing sound
 const playingSound = channelsInstance.play('my-sound');
@@ -359,14 +380,24 @@ channelsInstance.setVolume(0.5);
 
 > When calling `mute()` the `volume` will be set to `0`, with the additional effect that the previous volume value will be stored and used when calling `unmute()` 
 
-### Listening to volume changes
-To keep track of volume changes, you can listen to events on the `Channels` instance. The `event` in the callback contains info about where the volume change happened. 
+### Listening to volume/pan  changes
+To keep track of volume or panning changes, you can listen to events on the `Channels` instance. The `event` in the callback contains info about where the volume change happened.
 
 ```javascript
+const myChannel;
 channelsInstance.addEventListener("VOLUME_CHANGE", (event) => {
     // event.data.target is either an instance of a channel, 
     // a playing sound or the main Channels instance.
+    if(event.data.target === myChannel) {
+        console.log(myChannel.getVolume())
+    }
 })
+
+channelsInstance.addEventListener("PAN_CHANGE", (event) => {
+    if(event.data.target === myChannel) {
+        console.log(myChannel.getPan())
+    }
+});
 ```
 
 #### React hook
@@ -387,25 +418,40 @@ useVolumeChange({
 
 ## Audio effects
 
-An effect is defined as an object with an `input` and an `output`, both of type `AudioNode`. They can contain either a single node (with `input` and `output` pointing to the same `AudioNode`), or a long chain or multiple nodes - as long there is an `input` and an `output` (which obviously need to be connected in some way). 
+An `EffectsChain` can be defined as an object with an `input` and an `output`, both of type `AudioNode`. They can be a single node (with `input` and `output` pointing to the same `AudioNode`), or a long chain or multiple nodes - as long there is an `input` (to connect to) and an `output` (to take the resulting audio from). 
 
-Effects can be placed on either a **channel** or the **main output**.
+These `EffectsChain` can be placed on a **channel**, a **playing sound** and the **main output**. In all of these cases, you can apply these **before** or **after** the volume is applied (or both).
 
 ```javascript
 const filter = audioContext.createBiquadFilter();
-const myEffect = {
+const myEffectsChain = {
     input: filter,
     output: filter,
 }
-// setting an effect on the main output 
+// setting an effect on the main output, before the volume
 const channelsInstance = new Channels({
     soundsExtension,
     soundsPath,
-    effectsChain: myEffect,
+    effects: {
+        preVolume: myEffectsChain
+    },
 });
 
-// setting it on a channel
-channelsInstance.createChannel('effect-channel', { effectsChain: myEffect })
+// setting it on a channel, after the volume
+channelsInstance.createChannel('effect-channel', {
+    effects: {
+        postVolume: myEffectsChain,
+    } 
+})
+
+// on a sound, before and after the volume
+channelsInstance.play('my-sound', {
+    effects: {
+        pretVolume: myEffectsChain,
+        postVolume: myOtherEffectsChain,
+    }
+})
+
 ```
 > The effects chain is always placed **before** the volume gain node.
 

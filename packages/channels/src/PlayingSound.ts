@@ -21,8 +21,9 @@ export class PlayingSound implements HasVolume {
     const {
       loop = false,
       fadeInTime = 0,
-      volume = 1,
+      volume,
       effects,
+      pan,
     } = playSoundOptions;
 
     if (!sound.audioBuffer) {
@@ -48,6 +49,7 @@ export class PlayingSound implements HasVolume {
         volume,
         fadeVolume: fadeInTime > 0 ? 0 : 1, // when fading in, initial fade volume is 0
         effects,
+        pan,
       }
     );
 
@@ -111,4 +113,6 @@ export class PlayingSound implements HasVolume {
   public getFadeVolume = () => this.volumeNodes.getFadeVolume();
   public getVolume = () => this.volumeNodes.getVolume();
   public setVolume = (value: number) => this.volumeNodes.setVolume(value);
+  public getPan = () => this.volumeNodes.getPan();
+  public setPan = (value: number) => this.volumeNodes.setPan(value);
 }

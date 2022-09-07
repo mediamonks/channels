@@ -16,6 +16,9 @@ export const mockXMLHttpRequest = () => {
 };
 
 export const createMockChannelsInstance = (sounds?: Array<CreateSound>) => {
+  (window as any).WebAudioTestAPI.setState({
+    'AudioContext#createStereoPanner': 'enabled',
+  });
   const channelsInstance = new Channels({
     soundsPath: 'path',
     soundsExtension: 'mp3',
@@ -37,6 +40,7 @@ type SimpleAudioGraphNode = {
   inputs: Array<SimpleAudioGraphNode>;
   outputs: Array<SimpleAudioGraphNode>;
   gain?: { value?: number };
+  pan?: { value?: number };
 };
 
 /**

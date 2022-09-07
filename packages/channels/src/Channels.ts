@@ -1,4 +1,5 @@
 import {
+  CreateChannelOptions,
   CreateSound,
   Effects,
   HasVolume,
@@ -8,7 +9,7 @@ import {
 import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
 import { VolumeNodes } from './VolumeNodes';
-import { CreateChannelOptions, Channel } from './Channel';
+import { Channel } from './Channel';
 import { PlayingSound } from './PlayingSound';
 import EventDispatcher from 'seng-event';
 import { ChannelsEvent } from './event/ChannelsEvent';
@@ -54,7 +55,7 @@ export class Channels extends EventDispatcher implements HasVolume {
       this.sampleManager.addSamples(sounds);
     }
 
-    // everything connect to the main volume controls
+    // everything connect to the main volume controls.
     this.volumeNodes = new VolumeNodes(this.audioContext, this, this, {
       effects,
     });
@@ -243,4 +244,6 @@ export class Channels extends EventDispatcher implements HasVolume {
   public setVolume = (value: number) => this.volumeNodes.setVolume(value);
   public connectMediaElement = (element: HTMLMediaElement) =>
     this.volumeNodes.connectMediaElement(element);
+  public getPan = () => this.volumeNodes.getPan();
+  public setPan = (value: number) => this.volumeNodes.setPan(value);
 }
