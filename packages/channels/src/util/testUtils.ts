@@ -40,6 +40,7 @@ type SimpleAudioGraphNode = {
   inputs: Array<SimpleAudioGraphNode>;
   outputs: Array<SimpleAudioGraphNode>;
   gain?: { value?: number };
+  pan?: { value?: number };
 };
 
 /**

@@ -11,6 +11,7 @@ import {
   getNodeChain,
   mockXMLHttpRequest,
 } from './util/testUtils';
+import { PanningChangeEvent } from './event/PanningChangeEvent';
 
 mockXMLHttpRequest();
 
@@ -94,10 +95,21 @@ describe('Channel', () => {
 
       expect(channelGainNode.name).toBe('GainNode');
       expect(channelGainNode.gain?.value).toBe(0.5);
-      expect(channelGainNode.gain?.value).toBe(0.5);
       expect(channelsInstance.getChannel('ch').getVolume()).toBe(0.5);
     });
-    it('Has default volume', () => {
+    it('sets channel panning', () => {
+      const channel = channelsInstance.createChannel('ch');
+
+      channel.setPanning(0.75);
+      const [, , , , , channelPanningNode] = getNodeChain(
+        getAudioGraph(channelsInstance)
+      );
+
+      expect(channelPanningNode.name).toBe('StereoPannerNode');
+      expect(channelPanningNode.pan?.value).toBe(0.75);
+      expect(channelsInstance.getChannel('ch').getPanning()).toBe(0.75);
+    });
+    it('Has default volume and panning', () => {
       const channel = channelsInstance.createChannel('ch');
 
       const [
@@ -106,6 +118,7 @@ describe('Channel', () => {
         mainPanner,
         channelFadeNode,
         channelGainNode,
+        channelPanningNode,
       ] = getNodeChain(getAudioGraph(channelsInstance));
 
       expect(mainFade.name).toBe('GainNode');
@@ -115,8 +128,10 @@ describe('Channel', () => {
       expect(channelGainNode.name).toBe('GainNode');
       expect(channelGainNode.gain?.value).toBe(1);
       expect(channelFadeNode.gain?.value).toBe(1);
+      expect(channelPanningNode.pan?.value).toBe(0);
       expect(channel.getVolume()).toBe(1);
       expect(channel.getFadeVolume()).toBe(1);
+      expect(channel.getPanning()).toBe(0);
     });
     it("dispatches an event when setting a channel's volume", () => {
       const listener = jest.fn();
@@ -126,6 +141,20 @@ describe('Channel', () => {
       );
       const channel = channelsInstance.createChannel('ch');
       channel.setVolume(0.5);
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ target: channel }),
+        })
+      );
+    });
+    it("dispatches an event when setting a channel's panning", () => {
+      const listener = jest.fn();
+      channelsInstance.addEventListener(
+        PanningChangeEvent.types.PANNING_CHANGE,
+        listener
+      );
+      const channel = channelsInstance.createChannel('ch');
+      channel.setPanning(0.5);
       expect(listener).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({ target: channel }),
@@ -142,6 +171,17 @@ describe('Channel', () => {
       expect(channelGainNode.name).toBe('GainNode');
       expect(channelGainNode.gain?.value).toBe(0.5);
       expect(channel.getVolume()).toBe(0.5);
+    });
+    it('creates channel with initial panning', () => {
+      const channel = channelsInstance.createChannel('channel', {
+        panning: 0.75,
+      });
+      const [, , , , , channelPanningNode] = getNodeChain(
+        getAudioGraph(channelsInstance)
+      );
+      expect(channelPanningNode.name).toBe('StereoPannerNode');
+      expect(channelPanningNode.pan?.value).toBe(0.75);
+      expect(channel.getPanning()).toBe(0.75);
     });
     it('adds preVolume effect', () => {
       const filter = channelsInstance.audioContext.createBiquadFilter();

@@ -81,16 +81,19 @@ describe('Channels instance', () => {
       expect(gainNode.inputs.length).toBe(1);
       expect(pannerNode.inputs.length).toBe(0);
     });
-    it('Has default volume', () => {
-      const [fadeNode, gainNode] = getNodeChain(
+    it('Has default volume and panning', () => {
+      const [fadeNode, gainNode, pannerNode] = getNodeChain(
         getAudioGraph(channelsInstance)
       );
 
       expect(gainNode.gain?.value).toBe(1);
       expect(fadeNode.gain?.value).toBe(1);
+      expect(pannerNode.pan?.value).toBe(0);
       expect(channelsInstance.getVolume()).toBe(1);
       expect(channelsInstance.getFadeVolume()).toBe(1);
+      expect(channelsInstance.getPanning()).toBe(0);
     });
+
     it('Sets volume', () => {
       channelsInstance.setVolume(0.5);
       const [fadeNode, gainNode] = getNodeChain(
@@ -101,6 +104,13 @@ describe('Channels instance', () => {
       expect(fadeNode.gain?.value).toBe(1);
       expect(channelsInstance.getVolume()).toBe(0.5);
       expect(channelsInstance.getFadeVolume()).toBe(1);
+    });
+    it('Sets panning', () => {
+      channelsInstance.setPanning(0.75);
+      const [, , panNode] = getNodeChain(getAudioGraph(channelsInstance));
+
+      expect(panNode.pan?.value).toBe(0.75);
+      expect(channelsInstance.getPanning()).toBe(0.75);
     });
     it('dispatches an event when setting main volume', () => {
       const listener = jest.fn();

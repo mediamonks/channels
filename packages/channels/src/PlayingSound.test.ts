@@ -6,6 +6,8 @@ import {
 } from './util/testUtils';
 import { Channels } from './Channels';
 import 'web-audio-test-api';
+import { VolumeChangeEvent } from './event/VolumeChangeEvent';
+import { PanningChangeEvent } from './event/PanningChangeEvent';
 
 mockXMLHttpRequest();
 
@@ -37,6 +39,63 @@ describe('Playing Sound', () => {
     expect(soundVolumeGain.name).toBe('GainNode');
     expect(soundPannerNode.name).toBe('StereoPannerNode');
     expect(bufferSourceNode.name).toBe('AudioBufferSourceNode');
+  });
+  it('has default volume and panning when playing a sound', () => {
+    const sound = channelsInstance.play('sound');
+    const [, , , , soundVolumeGain, soundPannerNode] = getNodeChain(
+      getAudioGraph(channelsInstance)
+    );
+
+    expect(soundVolumeGain.name).toBe('GainNode');
+    expect(soundPannerNode.name).toBe('StereoPannerNode');
+    expect(soundVolumeGain.gain?.value).toBe(1);
+    expect(soundPannerNode.pan?.value).toBe(0);
+    expect(sound.getVolume()).toBe(1);
+    expect(sound.getPanning()).toBe(0);
+  });
+  it('can set initial volume and panning when playing a sound', () => {
+    const sound = channelsInstance.play('sound', {
+      volume: 0.5,
+      panning: 0.75,
+    });
+    const [, , , , soundVolumeGain, soundPannerNode] = getNodeChain(
+      getAudioGraph(channelsInstance)
+    );
+
+    expect(soundVolumeGain.name).toBe('GainNode');
+    expect(soundPannerNode.name).toBe('StereoPannerNode');
+    expect(soundVolumeGain.gain?.value).toBe(0.5);
+    expect(soundPannerNode.pan?.value).toBe(0.75);
+    expect(sound.getVolume()).toBe(0.5);
+    expect(sound.getPanning()).toBe(0.75);
+  });
+  it("dispatches an event when setting a sound's volume", () => {
+    const listener = jest.fn();
+    channelsInstance.addEventListener(
+      VolumeChangeEvent.types.VOLUME_CHANGE,
+      listener
+    );
+    const sound = channelsInstance.play('sound');
+    sound.setVolume(0.5);
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ target: sound }),
+      })
+    );
+  });
+  it("dispatches an event when setting a sound's panning", () => {
+    const listener = jest.fn();
+    channelsInstance.addEventListener(
+      PanningChangeEvent.types.PANNING_CHANGE,
+      listener
+    );
+    const sound = channelsInstance.play('sound');
+    sound.setPanning(0.5);
+    expect(listener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ target: sound }),
+      })
+    );
   });
   it('adds pre-volume effects for a playing sound', () => {
     const filter = channelsInstance.audioContext.createBiquadFilter();
