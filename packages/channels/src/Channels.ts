@@ -2,17 +2,17 @@ import {
   CreateChannelOptions,
   CreateSound,
   Effects,
-  HasVolume,
+  HasSignalModifier,
   PlaySoundOptions,
   StopAllOptions,
 } from './types';
 import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
-import { VolumeNodes } from './VolumeNodes';
 import { Channel } from './Channel';
 import { PlayingSound } from './PlayingSound';
 import EventDispatcher from 'seng-event';
 import { ChannelsEvent } from './event/ChannelsEvent';
+import { SignalModifier } from './SignalModifier';
 
 type ConstructorProps = {
   soundsPath: string;
@@ -22,12 +22,12 @@ type ConstructorProps = {
   effects?: Effects;
 };
 
-export class Channels extends EventDispatcher implements HasVolume {
+export class Channels extends EventDispatcher implements HasSignalModifier {
   public readonly audioContext: AudioContext;
   private readonly channelsByName: Record<string, Channel> = {};
   private readonly playingSounds: Array<PlayingSound> = [];
   public readonly sampleManager: SampleManager;
-  public readonly volumeNodes: VolumeNodes;
+  public readonly signalModifier: SignalModifier;
 
   constructor({
     audioContext,
@@ -56,10 +56,10 @@ export class Channels extends EventDispatcher implements HasVolume {
     }
 
     // everything connect to the main volume controls.
-    this.volumeNodes = new VolumeNodes(this.audioContext, this, this, {
+    this.signalModifier = new SignalModifier(this.audioContext, this, this, {
       effects,
     });
-    this.volumeNodes.output.connect(this.audioContext.destination);
+    this.signalModifier.output.connect(this.audioContext.destination);
   }
 
   /**
@@ -212,7 +212,7 @@ export class Channels extends EventDispatcher implements HasVolume {
     const playingSound = new PlayingSound(
       this,
       sound,
-      (channelForSound?.volumeNodes || this.volumeNodes).input,
+      (channelForSound?.signalModifier || this.signalModifier).input,
       channelForSound,
       mergedPlaySoundOptions
     );
@@ -231,19 +231,19 @@ export class Channels extends EventDispatcher implements HasVolume {
   };
 
   /*
-  HasVolume implementations
+  HasSignalModifier implementations
    */
   public fadeIn = (duration: number, onComplete?: () => void): void =>
-    this.volumeNodes.fadeIn(duration, onComplete);
+    this.signalModifier.fadeIn(duration, onComplete);
   public fadeOut = (duration: number, onComplete?: () => void): void =>
-    this.volumeNodes.fadeOut(duration, onComplete);
-  public mute = () => this.volumeNodes.mute();
-  public unmute = () => this.volumeNodes.unmute();
-  public getFadeVolume = () => this.volumeNodes.getFadeVolume();
-  public getVolume = () => this.volumeNodes.getVolume();
-  public setVolume = (value: number) => this.volumeNodes.setVolume(value);
+    this.signalModifier.fadeOut(duration, onComplete);
+  public mute = () => this.signalModifier.mute();
+  public unmute = () => this.signalModifier.unmute();
+  public getFadeVolume = () => this.signalModifier.getFadeVolume();
+  public getVolume = () => this.signalModifier.getVolume();
+  public setVolume = (value: number) => this.signalModifier.setVolume(value);
   public connectMediaElement = (element: HTMLMediaElement) =>
-    this.volumeNodes.connectMediaElement(element);
-  public getPan = () => this.volumeNodes.getPan();
-  public setPan = (value: number) => this.volumeNodes.setPan(value);
+    this.signalModifier.connectMediaElement(element);
+  public getPan = () => this.signalModifier.getPan();
+  public setPan = (value: number) => this.signalModifier.setPan(value);
 }

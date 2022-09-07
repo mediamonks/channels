@@ -1,15 +1,19 @@
 import { tweenAudioParamToValue } from './util/fadeGain';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
-import { CanConnectMediaElement, HasVolume, VolumeNodesOptions } from './types';
+import {
+  CanConnectMediaElement,
+  HasSignalModifier,
+  SignalModifierOptions,
+} from './types';
 import EventDispatcher from 'seng-event';
-import { createVolumeNodesGraph } from './util/createVolumeNodesGraph';
+
 import { PanChangeEvent } from './event/PanChangeEvent';
+import { createSignalModifierGraph } from './util/createSignalModifierGraph';
 
 /**
- * Class that creates two gainNodes, one for the user to freely set,
- * one for applying fades.
+ * Represents a chain of nodes to apply volume changes, panning or effects.
  */
-export class VolumeNodes implements CanConnectMediaElement {
+export class SignalModifier implements CanConnectMediaElement {
   private readonly volumeGainNode: GainNode;
   private readonly fadeGainNode: GainNode;
   private readonly stereoPannerNode: StereoPannerNode;
@@ -21,11 +25,11 @@ export class VolumeNodes implements CanConnectMediaElement {
   constructor(
     readonly audioContext: AudioContext,
     private readonly eventDispatcher: EventDispatcher,
-    private readonly changeEventTarget: HasVolume, // todo: better name for var and type?
-    { volume = 1, fadeVolume = 1, effects, pan = 0 }: VolumeNodesOptions
+    private readonly changeEventTarget: HasSignalModifier, // todo: better name for var and type?
+    { volume = 1, fadeVolume = 1, effects, pan = 0 }: SignalModifierOptions
   ) {
     const { fadeGainNode, volumeGainNode, input, output, stereoPannerNode } =
-      createVolumeNodesGraph({
+      createSignalModifierGraph({
         audioContext,
         effects,
       });

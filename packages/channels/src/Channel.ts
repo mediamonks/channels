@@ -1,5 +1,4 @@
 import { Channels } from './Channels';
-import { VolumeNodes } from './VolumeNodes';
 import {
   CanConnectMediaElement,
   ChannelType,
@@ -7,12 +6,13 @@ import {
   PlayStopOptions,
   StopAllOptions,
 } from './types';
+import { SignalModifier } from './SignalModifier';
 
 type PlayParameters = Parameters<InstanceType<typeof Channels>['play']>;
 
 export class Channel implements CanConnectMediaElement {
   public readonly type: ChannelType;
-  public readonly volumeNodes: VolumeNodes;
+  public readonly signalModifier: SignalModifier;
   public readonly defaultPlayStopOptions: PlayStopOptions | undefined;
 
   constructor(
@@ -29,7 +29,7 @@ export class Channel implements CanConnectMediaElement {
     this.type = type;
     this.defaultPlayStopOptions = defaultPlayStopOptions;
 
-    this.volumeNodes = new VolumeNodes(
+    this.signalModifier = new SignalModifier(
       channelsInstance.audioContext,
       channelsInstance,
       this,
@@ -40,7 +40,9 @@ export class Channel implements CanConnectMediaElement {
       }
     );
 
-    this.volumeNodes.output.connect(this.channelsInstance.volumeNodes.input);
+    this.signalModifier.output.connect(
+      this.channelsInstance.signalModifier.input
+    );
   }
 
   /**
@@ -63,19 +65,19 @@ export class Channel implements CanConnectMediaElement {
   };
 
   /*
-  HasVolume implementations
+  HasSignalModifier implementations
    */
   public fadeIn = (duration: number, onComplete?: () => void): void =>
-    this.volumeNodes.fadeIn(duration, onComplete);
+    this.signalModifier.fadeIn(duration, onComplete);
   public fadeOut = (duration: number, onComplete?: () => void): void =>
-    this.volumeNodes.fadeOut(duration, onComplete);
-  public mute = () => this.volumeNodes.mute();
-  public unmute = () => this.volumeNodes.unmute();
-  public getFadeVolume = () => this.volumeNodes.getFadeVolume();
-  public getVolume = () => this.volumeNodes.getVolume();
-  public setVolume = (value: number) => this.volumeNodes.setVolume(value);
+    this.signalModifier.fadeOut(duration, onComplete);
+  public mute = () => this.signalModifier.mute();
+  public unmute = () => this.signalModifier.unmute();
+  public getFadeVolume = () => this.signalModifier.getFadeVolume();
+  public getVolume = () => this.signalModifier.getVolume();
+  public setVolume = (value: number) => this.signalModifier.setVolume(value);
   public connectMediaElement = (element: HTMLMediaElement) =>
-    this.volumeNodes.connectMediaElement(element);
-  public getPan = () => this.volumeNodes.getPan();
-  public setPan = (value: number) => this.volumeNodes.setPan(value);
+    this.signalModifier.connectMediaElement(element);
+  public getPan = () => this.signalModifier.getPan();
+  public setPan = (value: number) => this.signalModifier.setPan(value);
 }
