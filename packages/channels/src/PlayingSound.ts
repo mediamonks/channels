@@ -21,8 +21,9 @@ export class PlayingSound implements HasVolume {
     const {
       loop = false,
       fadeInTime = 0,
-      volume = 1,
+      volume,
       effects,
+      panning,
     } = playSoundOptions;
 
     if (!sound.audioBuffer) {
@@ -48,6 +49,7 @@ export class PlayingSound implements HasVolume {
         volume,
         fadeVolume: fadeInTime > 0 ? 0 : 1, // when fading in, initial fade volume is 0
         effects,
+        panning,
       }
     );
 

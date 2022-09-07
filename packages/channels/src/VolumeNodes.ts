@@ -8,6 +8,7 @@ import { PanningChangeEvent } from './event/PanningChangeEvent';
 type VolumeNodeOptions = {
   volume?: number;
   fadeVolume?: number;
+  panning?: number;
   effects?: Effects;
 };
 
@@ -28,7 +29,7 @@ export class VolumeNodes implements CanConnectMediaElement {
     readonly audioContext: AudioContext,
     private readonly eventDispatcher: EventDispatcher,
     private readonly changeEventTarget: HasVolume, // todo: better name for var and type?
-    { volume = 1, fadeVolume = 1, effects }: VolumeNodeOptions
+    { volume = 1, fadeVolume = 1, effects, panning = 0 }: VolumeNodeOptions
   ) {
     const { fadeGainNode, volumeGainNode, input, output, stereoPannerNode } =
       createVolumeNodesGraph({
@@ -45,6 +46,7 @@ export class VolumeNodes implements CanConnectMediaElement {
     this.setVolume(volume);
 
     this.fadeGainNode.gain.value = fadeVolume;
+    this.stereoPannerNode.pan.value = panning;
   }
 
   public fadeTo = (

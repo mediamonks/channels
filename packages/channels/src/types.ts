@@ -26,6 +26,7 @@ export type PlaySoundOptions = {
   loop?: boolean;
   fadeInTime?: number;
   volume?: number;
+  panning?: number;
   effects?: Effects;
   channel?: string;
 };
