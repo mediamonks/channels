@@ -22,11 +22,11 @@ describe('Playing Sound', () => {
     channelsInstance.play('sound');
     const [
       fadeGain,
-      pannerNode,
       volumeGain,
+      pannerNode,
       soundFadeGain,
-      soundPannerNode,
       soundVolumeGain,
+      soundPannerNode,
       bufferSourceNode,
     ] = getNodeChain(getAudioGraph(channelsInstance));
 
@@ -45,11 +45,11 @@ describe('Playing Sound', () => {
     });
     const [
       fadeGain,
-      pannerNode,
       volumeGain,
+      pannerNode,
       soundFadeGain,
-      soundPannerNode,
       soundVolumeGain,
+      soundPannerNode,
       filterNode,
       bufferSourceNode,
     ] = getNodeChain(getAudioGraph(channelsInstance));
@@ -70,12 +70,12 @@ describe('Playing Sound', () => {
     });
     const [
       fadeGain,
-      pannerNode,
       volumeGain,
+      pannerNode,
       filterNode,
       soundFadeGain,
-      soundPannerNode,
       soundVolumeGain,
+      soundPannerNode,
       bufferSourceNode,
     ] = getNodeChain(getAudioGraph(channelsInstance));
 
@@ -99,12 +99,12 @@ describe('Playing Sound', () => {
     });
     const [
       fadeGain,
-      pannerNode,
       volumeGain,
+      pannerNode,
       filterNode,
       soundFadeGain,
-      soundPannerNode,
       soundVolumeGain,
+      soundPannerNode,
       convolverNode,
       bufferSourceNode,
     ] = getNodeChain(getAudioGraph(channelsInstance));

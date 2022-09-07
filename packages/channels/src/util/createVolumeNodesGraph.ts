@@ -17,8 +17,8 @@ export const createVolumeNodesGraph = ({ audioContext, effects }: Props) => {
 
   const nodesChain: Array<AudioNode> = [
     effects?.preVolume?.output,
-    volumeGainNode,
     stereoPannerNode,
+    volumeGainNode,
     fadeGainNode,
     effects?.postVolume?.input,
   ].filter((node): node is AudioNode => node !== undefined);

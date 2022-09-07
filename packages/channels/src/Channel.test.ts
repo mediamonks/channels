@@ -44,11 +44,11 @@ describe('Channel', () => {
 
       const [
         mainFadeNode,
-        mainPannerNode,
         mainGainNode,
+        mainPannerNode,
         channelFadeNode,
-        channelPannerNode,
         channelGainNode,
+        channelPannerNode,
       ] = getNodeChain(getAudioGraph(channelsInstance));
       expect(mainGainNode.name).toBe('GainNode');
       expect(mainFadeNode.name).toBe('GainNode');
@@ -65,8 +65,8 @@ describe('Channel', () => {
       expect(mainGainNode.inputs.length).toBe(1);
       expect(mainPannerNode.inputs.length).toBe(1);
       expect(channelFadeNode.inputs.length).toBe(1);
-      expect(channelPannerNode.inputs.length).toBe(1);
-      expect(channelGainNode.inputs.length).toBe(0);
+      expect(channelGainNode.inputs.length).toBe(1);
+      expect(channelPannerNode.inputs.length).toBe(0);
     });
 
     it('connects two channels to the main output', () => {
@@ -74,12 +74,12 @@ describe('Channel', () => {
       channelsInstance?.createChannel('ch2');
       const destinationNode = getAudioGraph(channelsInstance);
       const mainFadeNode = destinationNode.inputs[0];
-      const mainPannerNode = mainFadeNode.inputs[0];
-      const mainGainNode = mainPannerNode.inputs[0];
+      const mainGainNode = mainFadeNode.inputs[0];
+      const mainPannerNode = mainGainNode.inputs[0];
 
       expect(mainFadeNode.inputs.length).toBe(1);
-      expect(mainPannerNode.inputs.length).toBe(1);
-      expect(mainGainNode.inputs.length).toBe(2);
+      expect(mainGainNode.inputs.length).toBe(1);
+      expect(mainPannerNode.inputs.length).toBe(2);
     });
   });
 
@@ -88,10 +88,11 @@ describe('Channel', () => {
       const channel = channelsInstance.createChannel('ch');
 
       channel.setVolume(0.5);
-      const [, , , , , channelGainNode] = getNodeChain(
+      const [, , , , channelGainNode] = getNodeChain(
         getAudioGraph(channelsInstance)
       );
 
+      expect(channelGainNode.name).toBe('GainNode');
       expect(channelGainNode.gain?.value).toBe(0.5);
       expect(channelGainNode.gain?.value).toBe(0.5);
       expect(channelsInstance.getChannel('ch').getVolume()).toBe(0.5);
@@ -99,10 +100,19 @@ describe('Channel', () => {
     it('Has default volume', () => {
       const channel = channelsInstance.createChannel('ch');
 
-      const [, , channelFadeNode, channelGainNode] = getNodeChain(
-        getAudioGraph(channelsInstance)
-      );
+      const [
+        mainFade,
+        mainVolume,
+        mainPanner,
+        channelFadeNode,
+        channelGainNode,
+      ] = getNodeChain(getAudioGraph(channelsInstance));
 
+      expect(mainFade.name).toBe('GainNode');
+      expect(mainVolume.name).toBe('GainNode');
+      expect(mainPanner.name).toBe('StereoPannerNode');
+      expect(channelFadeNode.name).toBe('GainNode');
+      expect(channelGainNode.name).toBe('GainNode');
       expect(channelGainNode.gain?.value).toBe(1);
       expect(channelFadeNode.gain?.value).toBe(1);
       expect(channel.getVolume()).toBe(1);
@@ -126,9 +136,10 @@ describe('Channel', () => {
       const channel = channelsInstance.createChannel('channel', {
         volume: 0.5,
       });
-      const [, , , , , channelGainNode] = getNodeChain(
+      const [, , , , channelGainNode] = getNodeChain(
         getAudioGraph(channelsInstance)
       );
+      expect(channelGainNode.name).toBe('GainNode');
       expect(channelGainNode.gain?.value).toBe(0.5);
       expect(channel.getVolume()).toBe(0.5);
     });
@@ -141,11 +152,11 @@ describe('Channel', () => {
 
       const [
         mainFade,
-        mainPanner,
         mainVolume,
+        mainPanner,
         channelFade,
-        channelPanner,
         channelVolume,
+        channelPanner,
         filterNode,
       ] = getNodeChain(getAudioGraph(channelsInstance));
 
@@ -166,12 +177,12 @@ describe('Channel', () => {
 
       const [
         mainFade,
-        mainPanner,
         mainVolume,
+        mainPanner,
         filterNode,
         channelFade,
-        channelPanner,
         channelVolume,
+        channelPanner,
       ] = getNodeChain(getAudioGraph(channelsInstance));
 
       expect(mainFade.name).toBe('GainNode');
@@ -195,12 +206,12 @@ describe('Channel', () => {
 
       const [
         mainFade,
-        mainPanner,
         mainVolume,
+        mainPanner,
         filterNode,
         channelFade,
-        channelPanner,
         channelVolume,
+        channelPanner,
         convolverNode,
       ] = getNodeChain(getAudioGraph(channelsInstance));
 
