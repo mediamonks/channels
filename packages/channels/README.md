@@ -354,7 +354,7 @@ A `SignalModifier` always contains the following nodes:
 
 Optionally, custom effects chains can be added before or after these nodes. 
 
-<div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/volume-diagram.png?raw=true"/></div>
+<div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/signal-modifier-diagram.png?raw=true"/></div>
 
 
 
