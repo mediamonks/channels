@@ -125,6 +125,9 @@ export class VolumeNodes implements CanConnectMediaElement {
   };
 
   public setPanning = (value: number) => {
+    if(value < -1 || value > 1) {
+      throw new Error('Panning value can not be smaller than -1 or larger than 1.')
+    }
     this.stereoPannerNode.pan.value = value;
     this.eventDispatcher.dispatchEvent(
       new PanningChangeEvent(PanningChangeEvent.types.PANNING_CHANGE, {
