@@ -22,7 +22,7 @@ export class Channel implements CanConnectMediaElement {
       volume,
       type = 'polyphonic',
       effects,
-      panning,
+      pan,
       defaultPlayStopOptions,
     }: CreateChannelOptions = {}
   ) {
@@ -35,7 +35,7 @@ export class Channel implements CanConnectMediaElement {
       this,
       {
         volume,
-        panning,
+        pan,
         effects,
       }
     );
@@ -76,6 +76,6 @@ export class Channel implements CanConnectMediaElement {
   public setVolume = (value: number) => this.volumeNodes.setVolume(value);
   public connectMediaElement = (element: HTMLMediaElement) =>
     this.volumeNodes.connectMediaElement(element);
-  public getPanning = () => this.volumeNodes.getPanning();
-  public setPanning = (value: number) => this.volumeNodes.setPanning(value);
+  public getPan = () => this.volumeNodes.getPan();
+  public setPan = (value: number) => this.volumeNodes.setPan(value);
 }

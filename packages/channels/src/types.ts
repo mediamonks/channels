@@ -6,7 +6,7 @@ export type CreateSound = ICreateSample;
 export type VolumeNodesOptions = {
   volume?: number;
   fadeVolume?: number;
-  panning?: number;
+  pan?: number;
   effects?: Effects;
 };
 
@@ -31,8 +31,8 @@ export interface HasVolume {
   unmute: () => void;
   fadeOut: (duration: number, onComplete?: () => void) => void;
   fadeIn: (duration: number, onComplete?: () => void) => void;
-  setPanning: (value: number) => void;
-  getPanning: () => number;
+  setPan: (value: number) => void;
+  getPan: () => number;
 }
 
 export interface CanConnectMediaElement extends HasVolume {

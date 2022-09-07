@@ -4,4 +4,4 @@ export * from './Channel';
 export * from './PlayingSound';
 export * from './event/ChannelsEvent';
 export * from './event/VolumeChangeEvent';
-export * from './event/PanningChangeEvent';
+export * from './event/PanChangeEvent';

@@ -3,7 +3,7 @@ import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 import { CanConnectMediaElement, HasVolume, VolumeNodesOptions } from './types';
 import EventDispatcher from 'seng-event';
 import { createVolumeNodesGraph } from './util/createVolumeNodesGraph';
-import { PanningChangeEvent } from './event/PanningChangeEvent';
+import { PanChangeEvent } from './event/PanChangeEvent';
 
 /**
  * Class that creates two gainNodes, one for the user to freely set,
@@ -22,7 +22,7 @@ export class VolumeNodes implements CanConnectMediaElement {
     readonly audioContext: AudioContext,
     private readonly eventDispatcher: EventDispatcher,
     private readonly changeEventTarget: HasVolume, // todo: better name for var and type?
-    { volume = 1, fadeVolume = 1, effects, panning = 0 }: VolumeNodesOptions
+    { volume = 1, fadeVolume = 1, effects, pan = 0 }: VolumeNodesOptions
   ) {
     const { fadeGainNode, volumeGainNode, input, output, stereoPannerNode } =
       createVolumeNodesGraph({
@@ -39,7 +39,7 @@ export class VolumeNodes implements CanConnectMediaElement {
     this.setVolume(volume);
 
     this.fadeGainNode.gain.value = fadeVolume;
-    this.stereoPannerNode.pan.value = panning;
+    this.stereoPannerNode.pan.value = pan;
   }
 
   public fadeTo = (
@@ -117,7 +117,7 @@ export class VolumeNodes implements CanConnectMediaElement {
     mediaElementSource.connect(this.input);
   };
 
-  public setPanning = (value: number) => {
+  public setPan = (value: number) => {
     if (value < -1 || value > 1) {
       throw new Error(
         'Panning value can not be smaller than -1 or larger than 1.'
@@ -125,11 +125,11 @@ export class VolumeNodes implements CanConnectMediaElement {
     }
     this.stereoPannerNode.pan.value = value;
     this.eventDispatcher.dispatchEvent(
-      new PanningChangeEvent(PanningChangeEvent.types.PANNING_CHANGE, {
+      new PanChangeEvent(PanChangeEvent.types.PAN_CHANGE, {
         target: this.changeEventTarget,
       })
     );
   };
 
-  public getPanning = () => this.stereoPannerNode.pan.value;
+  public getPan = () => this.stereoPannerNode.pan.value;
 }

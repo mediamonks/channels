@@ -346,8 +346,8 @@ myChannel.mute();
 myChannel.unmute();
 myChannel.fadeOut(1); // time in seconds
 myChannel.fadeIn(1);
-myChannel.setPanning(1); // value between -1 and 1
-myChannel.getPanning();
+myChannel.setPan(1); // value between -1 and 1
+myChannel.getPan();
 
 // all these also exist on a playing sound
 const playingSound = channelsInstance.play('my-sound');
@@ -361,7 +361,7 @@ channelsInstance.setVolume(0.5);
 
 > When calling `mute()` the `volume` will be set to `0`, with the additional effect that the previous volume value will be stored and used when calling `unmute()` 
 
-### Listening to volume/panning changes
+### Listening to volume/pan  changes
 To keep track of volume or panning changes, you can listen to events on the `Channels` instance. The `event` in the callback contains info about where the volume change happened.
 
 ```javascript
@@ -374,9 +374,9 @@ channelsInstance.addEventListener("VOLUME_CHANGE", (event) => {
     }
 })
 
-channelsInstance.addEventListener("PANNING_CHANGE", (event) => {
+channelsInstance.addEventListener("PAN_CHANGE", (event) => {
     if(event.data.target === myChannel) {
-        console.log(myChannel.getPanning())
+        console.log(myChannel.getPan())
     }
 });
 ```
