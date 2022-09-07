@@ -12,6 +12,7 @@ npm install @mediamonks/use-channels
 - `ChannelsProvider`: component that creates a `Channels` instance 
 - `useChannels`: returns the `Channels` instance 
 - `useVolumeChange`: adds listeners for volume changes
+- `usePanningChange`: adds listeners for pan changes
 - `usePlayingSounds`: keeps track of sounds that are being played
 
 ### ChannelsProvider
