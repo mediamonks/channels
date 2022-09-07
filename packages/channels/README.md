@@ -354,13 +354,13 @@ A `SignalModifier` always contains the following nodes:
 
 Optionally, custom effects chains can be added before or after these nodes. 
 
-<div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/volume-diagram.png?raw=true"/></div>
+<div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/signal-modifier-diagram.png?raw=true"/></div>
 
 
 
 ### Modifying the signal
 
-To modify the volume, the three places that have a `SignalModifier` (sound, channel or main output) all have a set of methods implemented:
+The three places that have a `SignalModifier` (sound, channel or main output) all have a set of methods implemented:
 
 ```javascript
 const myChannel = channelsInstance.getChannel('my-channel');
@@ -426,10 +426,18 @@ useVolumeChange({
 
 
 ## Audio effects
+Effects can be placed in the chain of a `SignalModifier` and are therefor available on the three places that have a `SignalModifier`: 
+- on the **main output**
+- on a **channel**
+- on a **playing sound** 
+ 
+In all of these cases, effects can be inserted **before** and/or **after** the volume is applied.
 
-An `EffectsChain` can be defined as an object with an `input` and an `output`, both of type `AudioNode`. They can be a single node (with `input` and `output` pointing to the same `AudioNode`), or a long chain or multiple nodes - as long there is an `input` (to connect to) and an `output` (to take the resulting audio from). 
+<div align="center"><img src="https://github.com/mediamonks/channels/blob/develop/assets/signal-modifier-diagram.png?raw=true"/></div>
 
-These `EffectsChain` can be placed on a **channel**, a **playing sound** and the **main output**. In all of these cases, you can apply these **before** or **after** the volume is applied (or both).
+Effects have to be defined as an `EffectsChain`, which is an object with an `input` and an `output` (both of type `AudioNode`). An effect can be a single node (with `input` and `output` pointing to the same `AudioNode`), or a long chain or multiple nodes. 
+
+Once an `EffectsChain` has been created, it can be used in the `preVolume` or `postVolume` prop of the `effects` prop. 
 
 ```javascript
 const filter = audioContext.createBiquadFilter();
@@ -456,13 +464,12 @@ channelsInstance.createChannel('effect-channel', {
 // on a sound, before and after the volume
 channelsInstance.play('my-sound', {
     effects: {
-        pretVolume: myEffectsChain,
+        preVolume: myEffectsChain,
         postVolume: myOtherEffectsChain,
     }
 })
 
 ```
-> The effects chain is always placed **before** the volume gain node.
 
 > Both input and output use the in/out with index `0` to connect, which will work for nearly all cases. If for some reason you need to use a different index, you can add a `GainNode` before/after your effects as a solution. 
 
