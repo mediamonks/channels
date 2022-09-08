@@ -1,12 +1,7 @@
 import { ChannelsProvider, useChannels } from './useChannels';
 import { render, renderHook } from '@testing-library/react';
 import { Channels } from '@mediamonks/channels';
-import 'web-audio-test-api';
-import { ChannelsProviderWrapper } from './testUtils';
-
-(window as any).WebAudioTestAPI.setState({
-  'AudioContext#createStereoPanner': 'enabled',
-});
+import { ChannelsProviderWrapper } from './test/ChannelsProviderWrapper';
 
 describe('useChannels', () => {
   it('Provides a channel instance through useChannels hook', () => {

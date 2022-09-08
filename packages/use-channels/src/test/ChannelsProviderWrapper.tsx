@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { ChannelsProvider } from './useChannels';
+import { ChannelsProvider } from '../useChannels';
 
 export const ChannelsProviderWrapper = ({
   children,

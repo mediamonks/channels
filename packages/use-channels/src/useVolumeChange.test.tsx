@@ -1,14 +1,8 @@
 import { act, renderHook } from '@testing-library/react';
 import { useChannels } from './useChannels';
-import 'web-audio-test-api';
 import { Channels } from '@mediamonks/channels';
-
 import { useVolumeChange } from './useVolumeChange';
-import { ChannelsProviderWrapper } from './testUtils';
-
-(window as any).WebAudioTestAPI.setState({
-  'AudioContext#createStereoPanner': 'enabled',
-});
+import { ChannelsProviderWrapper } from './test/ChannelsProviderWrapper';
 
 describe('useVolumeChange', () => {
   it('Listens to main volume changes', () => {

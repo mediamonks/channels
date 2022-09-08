@@ -1,19 +1,8 @@
 import { act, renderHook } from '@testing-library/react';
-import { ChannelsProvider, useChannels } from './useChannels';
-import 'web-audio-test-api';
+import { useChannels } from './useChannels';
 import { Channels } from '@mediamonks/channels';
-import { ReactNode } from 'react';
 import { usePanningChange } from './usePanningChange';
-
-(window as any).WebAudioTestAPI.setState({
-  'AudioContext#createStereoPanner': 'enabled',
-});
-
-const wrapper = ({ children }: { children: ReactNode }) => (
-  <ChannelsProvider soundsExtension="mp3" soundsPath="path/">
-    {children}
-  </ChannelsProvider>
-);
+import { ChannelsProviderWrapper } from './test/ChannelsProviderWrapper';
 
 describe('usePanningChange', () => {
   it('Listens to main panning changes', () => {
@@ -25,7 +14,7 @@ describe('usePanningChange', () => {
         usePanningChange({ onChange: onPanChange });
       },
       {
-        wrapper,
+        wrapper: ChannelsProviderWrapper,
       }
     );
 
@@ -45,7 +34,7 @@ describe('usePanningChange', () => {
         usePanningChange({ onChange: onPanChange, target: channel });
       },
       {
-        wrapper,
+        wrapper: ChannelsProviderWrapper,
       }
     );
 
