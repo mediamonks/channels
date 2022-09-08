@@ -47,9 +47,7 @@ export class PlayingSound extends HasSignalModifier {
     this.signalModifier.output.connect(destination);
     this.bufferSourceNode.connect(this.signalModifier.input);
 
-    this.bufferSourceNode.onended = () => {
-      this.removePlayingSound();
-    };
+    this.bufferSourceNode.onended = this.onEnded;
 
     this.startedAt = this.channelsInstance.audioContext.currentTime;
     this.bufferSourceNode.start(0);
@@ -59,8 +57,9 @@ export class PlayingSound extends HasSignalModifier {
     }
   }
 
-  private removePlayingSound = () => {
+  private onEnded = () => {
     this.channelsInstance.removePlayingSound(this);
+    this.destruct();
   };
 
   public stop = (stopSoundOptions: StopSoundOptions = {}) => {

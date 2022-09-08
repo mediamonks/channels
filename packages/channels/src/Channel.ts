@@ -5,8 +5,6 @@ import {
   PlayStopOptions,
   StopAllOptions,
 } from './types';
-import { VolumeChangeEvent } from './event/VolumeChangeEvent';
-import { PanChangeEvent } from './event/PanChangeEvent';
 import { HasSignalModifier } from './HasSignalModifier';
 
 type PlayParameters = Parameters<InstanceType<typeof Channels>['play']>;
@@ -36,20 +34,6 @@ export class Channel extends HasSignalModifier {
     this.defaultPlayStopOptions = defaultPlayStopOptions;
 
     this.signalModifier.output.connect(channelsInstance.getInput());
-
-    // redispatch events from signal modifier
-    this.signalModifier.addEventListener(
-      VolumeChangeEvent.types.VOLUME_CHANGE,
-      event => {
-        this.dispatchEvent(event);
-      }
-    );
-    this.signalModifier.addEventListener(
-      PanChangeEvent.types.PAN_CHANGE,
-      event => {
-        this.dispatchEvent(event);
-      }
-    );
   }
 
   /**

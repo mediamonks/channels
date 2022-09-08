@@ -1,6 +1,8 @@
 import EventDispatcher from 'seng-event';
 import { SignalModifier } from './SignalModifier';
 import { SignalModifierOptions } from './types';
+import { VolumeChangeEvent } from './event/VolumeChangeEvent';
+import { PanChangeEvent } from './event/PanChangeEvent';
 
 export class HasSignalModifier extends EventDispatcher {
   protected readonly signalModifier: SignalModifier;
@@ -15,7 +17,21 @@ export class HasSignalModifier extends EventDispatcher {
       audioContext,
       signalModifierOptions
     );
+
+    // redispatch events from signal modifier
+    this.signalModifier.addEventListener(
+      VolumeChangeEvent.types.VOLUME_CHANGE,
+      event => this.dispatchEvent(event.clone())
+    );
+    this.signalModifier.addEventListener(
+      PanChangeEvent.types.PAN_CHANGE,
+      event => this.dispatchEvent(event.clone())
+    );
   }
+
+  public destruct = () => {
+    this.signalModifier.removeAllEventListeners();
+  };
 
   public fadeIn = (duration: number, onComplete?: () => void): void =>
     this.signalModifier.fadeIn(duration, onComplete);
