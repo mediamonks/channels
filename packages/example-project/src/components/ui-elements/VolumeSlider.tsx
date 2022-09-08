@@ -9,22 +9,21 @@ type Props = {
 };
 
 export const VolumeSlider = ({ entity }: Props) => {
-  const [volumeSliderValue, setVolumeSliderValue] = useState(
-    entity.getVolume()
-  );
+  const [sliderValue, setSliderValue] = useState(entity.getVolume());
 
   useVolumeChange({
     target: entity,
     onChange: (value: number) => {
-      setVolumeSliderValue(value);
+      setSliderValue(value);
     },
   });
 
   return (
     <Slider
+      label={'volume'}
       min={0}
       max={1}
-      value={volumeSliderValue}
+      value={sliderValue}
       onChange={value => {
         entity.setVolume(value);
       }}

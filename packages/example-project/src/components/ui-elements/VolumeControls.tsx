@@ -15,7 +15,6 @@ export const VolumeControls = ({ entity, showFade = true }: Props) => {
       <div>
         <MuteButtons mute={entity.mute} unmute={entity.unmute} />
       </div>
-
       <div>
         <VolumeSlider entity={entity} />
       </div>

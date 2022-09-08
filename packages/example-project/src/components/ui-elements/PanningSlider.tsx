@@ -9,17 +9,19 @@ type Props = {
 };
 
 export const PanningSlider = ({ entity }: Props) => {
-  const [panningSliderValue, setPanningSliderValue] = useState(entity.getPan());
+  const [sliderValue, setSliderValue] = useState(entity.getPan());
+
   usePanningChange({
-    onChange: value => setPanningSliderValue(value),
+    onChange: value => setSliderValue(value),
     target: entity,
   });
 
   return (
     <Slider
+      label={'pan'}
       min={-1}
       max={1}
-      value={panningSliderValue}
+      value={sliderValue}
       onChange={value => {
         entity.setPan(value);
       }}

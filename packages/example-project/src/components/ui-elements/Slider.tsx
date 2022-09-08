@@ -1,6 +1,7 @@
 import { ChangeEvent } from 'react';
 
 type Props = {
+  label?: string;
   enabled?: boolean;
   min: number;
   max: number;
@@ -32,22 +33,33 @@ export const Slider = ({
   min,
   max,
   value,
+  label,
   sliderMax = 100,
 }: Props) => {
   const onSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const parsedSliderValue = parseInt(event.target.value);
+    const parsedSliderValue = Number(event.target.value);
+
     if (!isNaN(parsedSliderValue)) {
       onChange?.(sliderValueToValue(parsedSliderValue, min, max, sliderMax));
     }
   };
 
   return (
-    <input
-      type="range"
-      onChange={onSliderChange}
-      value={valueToSliderValue(value, min, max, sliderMax)}
-      max={sliderMax}
-      disabled={!enabled}
-    />
+    <div style={{ display: 'flex' }}>
+      {label && (
+        <div style={{ width: 50, opacity: 0.8 }}>
+          <small>
+            <strong>{label}</strong>
+          </small>
+        </div>
+      )}
+      <input
+        type="range"
+        onChange={onSliderChange}
+        value={valueToSliderValue(value, min, max, sliderMax)}
+        max={sliderMax}
+        disabled={!enabled}
+      />
+    </div>
   );
 };
