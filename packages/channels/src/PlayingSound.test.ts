@@ -70,6 +70,16 @@ describe('Playing Sound', () => {
     expect(sound.getVolume()).toBe(0.5);
     expect(sound.getPan()).toBe(0.75);
   });
+  it('lists playing sounds', () => {
+    const listener = jest.fn();
+    channelsInstance.addEventListener(
+      ChannelsEvent.types.PLAYING_SOUNDS_CHANGE,
+      listener
+    );
+    const sound = channelsInstance.play('sound');
+    expect(channelsInstance.getPlayingSounds().length).toBe(1);
+    expect(channelsInstance.getPlayingSounds()[0]).toBe(sound);
+  });
   it('dispatches an event when playing a sound', () => {
     const listener = jest.fn();
     channelsInstance.addEventListener(

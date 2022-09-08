@@ -37,6 +37,13 @@ describe('Channel', () => {
       channelsInstance.createChannel('channel');
       expect(listener).toHaveBeenCalled();
     });
+    it('has a lists of created channels', () => {
+      const ch1 = channelsInstance.createChannel('channel1');
+      const ch2 = channelsInstance.createChannel('channel2');
+      expect(channelsInstance.getChannels()).toContain(ch1);
+      expect(channelsInstance.getChannels()).toContain(ch2);
+      expect(channelsInstance.getChannels().length).toBe(2);
+    });
 
     it('creates and connects volume nodes for channel', () => {
       channelsInstance?.createChannel('name');
