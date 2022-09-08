@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
 import { ChannelsProvider, useChannels } from './useChannels';
 import { render, renderHook } from '@testing-library/react';
 import { Channels } from '@mediamonks/channels';
 import 'web-audio-test-api';
+import { ChannelsProviderWrapper } from './testUtils';
 
 (window as any).WebAudioTestAPI.setState({
   'AudioContext#createStereoPanner': 'enabled',
@@ -10,13 +10,9 @@ import 'web-audio-test-api';
 
 describe('useChannels', () => {
   it('Provides a channel instance through useChannels hook', () => {
-    const wrapper = ({ children }: { children: ReactNode }) => (
-      <ChannelsProvider soundsExtension="mp3" soundsPath="path/">
-        {children}
-      </ChannelsProvider>
-    );
-
-    const { result } = renderHook(() => useChannels(), { wrapper });
+    const { result } = renderHook(() => useChannels(), {
+      wrapper: ChannelsProviderWrapper,
+    });
     expect(result.current).toBeInstanceOf(Channels);
   });
   it('Provides a channel instance through child render function', () => {
