@@ -9,14 +9,14 @@ import { useVolumeChange } from './useVolumeChange';
   'AudioContext#createStereoPanner': 'enabled',
 });
 
+const wrapper = ({ children }: { children: ReactNode }) => (
+  <ChannelsProvider soundsExtension="mp3" soundsPath="path/">
+    {children}
+  </ChannelsProvider>
+);
+
 describe('useVolumeChange', () => {
   it('Listens to main volume changes', () => {
-    const wrapper = ({ children }: { children: ReactNode }) => (
-      <ChannelsProvider soundsExtension="mp3" soundsPath="path/">
-        {children}
-      </ChannelsProvider>
-    );
-
     const onVolumeChange = jest.fn();
     let channels: Channels;
     renderHook(
@@ -36,12 +36,6 @@ describe('useVolumeChange', () => {
     expect(onVolumeChange).toHaveBeenCalledWith(0.5);
   });
   it('Listens to channel volume changes', () => {
-    const wrapper = ({ children }: { children: ReactNode }) => (
-      <ChannelsProvider soundsExtension="mp3" soundsPath="path/">
-        {children}
-      </ChannelsProvider>
-    );
-
     const onVolumeChange = jest.fn();
     let channels: Channels;
     renderHook(

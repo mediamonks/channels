@@ -1,48 +1,58 @@
-import { fireEvent, render } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { ChannelsProvider, useChannels } from './useChannels';
 import 'web-audio-test-api';
-import { ReactNode, useState } from 'react';
+import { Channels } from '@mediamonks/channels';
+import { ReactNode } from 'react';
 import { usePanningChange } from './usePanningChange';
 
 (window as any).WebAudioTestAPI.setState({
   'AudioContext#createStereoPanner': 'enabled',
 });
 
-const ComponentThatChangesMainPan = () => {
-  const channels = useChannels();
-  const [pan, setPan] = useState(channels.getPan());
-
-  usePanningChange({
-    onChange: value => {
-      setPan(value);
-    },
-  });
-
-  return (
-    <>
-      <button onClick={() => channels.setPan(-1)}>set volume pan</button>
-      <div data-testid="pan">{pan}</div>
-    </>
-  );
-};
-
-const TestProviderComponent = ({ children }: { children: ReactNode }) => {
-  return (
-    <ChannelsProvider soundsExtension="mp3" soundsPath="path/">
-      {children}
-    </ChannelsProvider>
-  );
-};
+const wrapper = ({ children }: { children: ReactNode }) => (
+  <ChannelsProvider soundsExtension="mp3" soundsPath="path/">
+    {children}
+  </ChannelsProvider>
+);
 
 describe('usePanningChange', () => {
-  it('Listens to main pan change', () => {
-    const { getByRole, getByTestId } = render(
-      <TestProviderComponent>
-        <ComponentThatChangesMainPan />
-      </TestProviderComponent>
+  it('Listens to main panning changes', () => {
+    const onPanChange = jest.fn();
+    let channels: Channels;
+    renderHook(
+      () => {
+        channels = useChannels();
+        usePanningChange({ onChange: onPanChange });
+      },
+      {
+        wrapper,
+      }
     );
-    expect(getByTestId('pan').textContent).toBe('0');
-    fireEvent.click(getByRole('button'));
-    expect(getByTestId('pan').textContent).toBe('-1');
+
+    act(() => {
+      channels.setPan(0.5);
+    });
+
+    expect(onPanChange).toHaveBeenCalledWith(0.5);
+  });
+  it('Listens to channel pan changes', () => {
+    const onPanChange = jest.fn();
+    let channels: Channels;
+    renderHook(
+      () => {
+        channels = useChannels();
+        const channel = channels.createChannel('channel');
+        usePanningChange({ onChange: onPanChange, target: channel });
+      },
+      {
+        wrapper,
+      }
+    );
+
+    act(() => {
+      channels.getChannel('channel').setPan(0.5);
+    });
+
+    expect(onPanChange).toHaveBeenCalledWith(0.5);
   });
 });
