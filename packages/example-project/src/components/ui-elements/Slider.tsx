@@ -34,10 +34,10 @@ export const Slider = ({
   max,
   value,
   label,
-  sliderMax = 100,
+  sliderMax = 1000,
 }: Props) => {
   const onSliderChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const parsedSliderValue = Number(event.target.value);
+    const parsedSliderValue = parseFloat(event.target.value);
 
     if (!isNaN(parsedSliderValue)) {
       onChange?.(sliderValueToValue(parsedSliderValue, min, max, sliderMax));
