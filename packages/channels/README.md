@@ -79,7 +79,7 @@ new Channels({
 
 ### React
 
-For React projects, you can install [useChannels](https://www.npmjs.com/package/@mediamonks/use-channels) to (amongst other things) easily create and provide a `Channels` instance.
+For React projects, there is a [use-channels hook](https://www.npmjs.com/package/@mediamonks/use-channels) to easily work with a `Channels` instance.
 
 ### Suspended state
 
@@ -389,39 +389,41 @@ channelsInstance.setVolume(0.5);
 
 > Pan values should be between `-1` (left) and `1` (right).
 
-### Listening to volume/pan changes
-To keep track of volume or panning changes, you can listen to events on the `Channels` instance. The `event` in the callback contains info about where the volume change happened.
+## Events
+
+There are a few things in `Channels` that dispatch events. First of all: **volume** and **pan** changes on either a **channel**, a **sound** or the **main instance**.  
 
 ```javascript
-const myChannel;
-channelsInstance.addEventListener("VOLUME_CHANGE", (event) => {
-    // event.data.target is either an instance of a channel, 
-    // a playing sound or the main Channels instance.
-    if(event.data.target === myChannel) {
-        console.log(myChannel.getVolume())
-    }
+// listening to main volume changes
+channelsInstance.addEventListener('VOLUME_CHANGE', (event) => {
+    console.log(event.data.volume);
+})
+// or a channel
+channel.addEventListener('VOLUME_CHANGE', (event) => {
+    console.log(event.data.volume);
+})
+// or a playing sound
+playingSound.addEventListener('VOLUME_CHANGE', (event) => {
+    console.log(event.data.volume);
 })
 
-channelsInstance.addEventListener("PAN_CHANGE", (event) => {
-    if(event.data.target === myChannel) {
-        console.log(myChannel.getPan())
-    }
-});
+// all these three also dispatch pan changes
+channel.addEventListener('PAN_CHANGE', (event) => {
+    console.log(event.data.pan);
+})
 ```
+> When using React, there are some [hooks](https://www.npmjs.com/package/@mediamonks/use-channels) available to work with volume or pan changes.
 
-#### React hook
 
-For react, you can use the `useVolumeChange` hook to subscribe to changes.
-
+Apart from that, the main instance notifies when the list of channels or playing sounds updates:
 ```javascript
-import { useVolumeChange } from '@mediamonks/use-channels';
+channelsInstance.addEventListener('CHANNELS_CHANGE', () => {
+    console.log(channelsInstance.getChannels());
+})
 
-useVolumeChange({
-    target: myChannel, // can also be a playing sound, or left blank to reference the main output 
-    onChange: (value: number) => {
-        // ...
-    },
-});
+channelsInstance.addEventListener('PLAYING_SOUNDS_CHANGE', () => {
+    console.log(channelsInstance.getPlayingSounds());
+})
 ```
 
 

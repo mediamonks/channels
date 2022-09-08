@@ -9,6 +9,7 @@ import {
 } from './util/testUtils';
 import { createMockChannelsInstance } from './util/testUtils';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
+import { PanChangeEvent } from './event/PanChangeEvent';
 
 mockXMLHttpRequest();
 
@@ -121,7 +122,20 @@ describe('Channels instance', () => {
       channelsInstance.setVolume(0.5);
       expect(listener).toHaveBeenCalledWith(
         expect.objectContaining({
-          data: expect.objectContaining({ target: channelsInstance }),
+          data: expect.objectContaining({ volume: 0.5 }),
+        })
+      );
+    });
+    it('dispatches an event when setting main pan', () => {
+      const listener = jest.fn();
+      channelsInstance.addEventListener(
+        PanChangeEvent.types.PAN_CHANGE,
+        listener
+      );
+      channelsInstance.setPan(0.5);
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ pan: 0.5 }),
         })
       );
     });

@@ -8,6 +8,7 @@ import { Channels } from './Channels';
 import 'web-audio-test-api';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 import { PanChangeEvent } from './event/PanChangeEvent';
+import { ChannelsEvent } from './event/ChannelsEvent';
 
 mockXMLHttpRequest();
 
@@ -69,31 +70,44 @@ describe('Playing Sound', () => {
     expect(sound.getVolume()).toBe(0.5);
     expect(sound.getPan()).toBe(0.75);
   });
-  it("dispatches an event when setting a sound's volume", () => {
+  it('lists playing sounds', () => {
     const listener = jest.fn();
     channelsInstance.addEventListener(
-      VolumeChangeEvent.types.VOLUME_CHANGE,
+      ChannelsEvent.types.PLAYING_SOUNDS_CHANGE,
       listener
     );
     const sound = channelsInstance.play('sound');
+    expect(channelsInstance.getPlayingSounds().length).toBe(1);
+    expect(channelsInstance.getPlayingSounds()[0]).toBe(sound);
+  });
+  it('dispatches an event when playing a sound', () => {
+    const listener = jest.fn();
+    channelsInstance.addEventListener(
+      ChannelsEvent.types.PLAYING_SOUNDS_CHANGE,
+      listener
+    );
+    channelsInstance.play('sound');
+    expect(listener).toHaveBeenCalled();
+  });
+  it("dispatches an event when setting a sound's volume", () => {
+    const listener = jest.fn();
+    const sound = channelsInstance.play('sound');
+    sound.addEventListener(VolumeChangeEvent.types.VOLUME_CHANGE, listener);
     sound.setVolume(0.5);
     expect(listener).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({ target: sound }),
+        data: expect.objectContaining({ volume: 0.5 }),
       })
     );
   });
   it("dispatches an event when setting a sound's panning", () => {
     const listener = jest.fn();
-    channelsInstance.addEventListener(
-      PanChangeEvent.types.PAN_CHANGE,
-      listener
-    );
     const sound = channelsInstance.play('sound');
+    sound.addEventListener(PanChangeEvent.types.PAN_CHANGE, listener);
     sound.setPan(0.5);
     expect(listener).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({ target: sound }),
+        data: expect.objectContaining({ pan: 0.5 }),
       })
     );
   });
