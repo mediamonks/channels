@@ -8,6 +8,7 @@ import { Channels } from './Channels';
 import 'web-audio-test-api';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 import { PanChangeEvent } from './event/PanChangeEvent';
+import { ChannelsEvent } from './event/ChannelsEvent';
 
 mockXMLHttpRequest();
 
@@ -68,6 +69,15 @@ describe('Playing Sound', () => {
     expect(soundPannerNode.pan?.value).toBe(0.75);
     expect(sound.getVolume()).toBe(0.5);
     expect(sound.getPan()).toBe(0.75);
+  });
+  it('dispatches an event when playing a sound', () => {
+    const listener = jest.fn();
+    channelsInstance.addEventListener(
+      ChannelsEvent.types.PLAYING_SOUNDS_CHANGE,
+      listener
+    );
+    channelsInstance.play('sound');
+    expect(listener).toHaveBeenCalled();
   });
   it("dispatches an event when setting a sound's volume", () => {
     const listener = jest.fn();
