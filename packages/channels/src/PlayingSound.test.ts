@@ -2,15 +2,12 @@ import {
   createMockChannelsInstance,
   getAudioGraph,
   getNodeChain,
-  mockXMLHttpRequest,
-} from './util/testUtils';
+} from './testing/testUtils';
 import { Channels } from './Channels';
 import 'web-audio-test-api';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 import { PanChangeEvent } from './event/PanChangeEvent';
 import { ChannelsEvent } from './event/ChannelsEvent';
-
-mockXMLHttpRequest();
 
 describe('Playing Sound', () => {
   let channelsInstance: Channels;

@@ -3,15 +3,12 @@ import 'web-audio-test-api';
 import SampleManager from 'sample-manager';
 import { AudioContext } from './util/audioContext';
 import {
+  createMockChannelsInstance,
   getAudioGraph,
   getNodeChain,
-  mockXMLHttpRequest,
-} from './util/testUtils';
-import { createMockChannelsInstance } from './util/testUtils';
+} from './testing/testUtils';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 import { PanChangeEvent } from './event/PanChangeEvent';
-
-mockXMLHttpRequest();
 
 describe('Channels instance', () => {
   let channelsInstance: Channels;

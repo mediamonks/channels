@@ -1,7 +1,7 @@
 import { ChannelsProvider, useChannels } from './useChannels';
 import { render, renderHook } from '@testing-library/react';
 import { Channels } from '@mediamonks/channels';
-import { ChannelsProviderWrapper } from './test/ChannelsProviderWrapper';
+import { ChannelsProviderWrapper } from './testing/ChannelsProviderWrapper';
 
 describe('useChannels', () => {
   it('Provides a channel instance through useChannels hook', () => {

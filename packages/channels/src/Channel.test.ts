@@ -1,15 +1,13 @@
 import { Channel } from './Channel';
 import { ChannelsEvent } from './event/ChannelsEvent';
 import { Channels } from './Channels';
-import 'web-audio-test-api';
-
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 import {
   createMockChannelsInstance,
   getAudioGraph,
   getNodeChain,
   mockXMLHttpRequest,
-} from './util/testUtils';
+} from './testing/testUtils';
 import { PanChangeEvent } from './event/PanChangeEvent';
 
 mockXMLHttpRequest();

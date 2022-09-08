@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 import { useChannels } from './useChannels';
 import { Channels } from '@mediamonks/channels';
 import { usePanningChange } from './usePanningChange';
-import { ChannelsProviderWrapper } from './test/ChannelsProviderWrapper';
+import { ChannelsProviderWrapper } from './testing/ChannelsProviderWrapper';
 
 describe('usePanningChange', () => {
   it('Listens to main panning changes', () => {
