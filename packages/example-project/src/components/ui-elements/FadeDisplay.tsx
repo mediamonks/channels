@@ -14,5 +14,7 @@ export const FadeDisplay = ({ entity }: Props) => {
     setFadeValue(entity.getFadeVolume());
   }, 10);
 
-  return <Slider min={0} max={1} value={fadeValue} enabled={false} />;
+  return (
+    <Slider min={0} max={1} value={fadeValue} enabled={false} label={'fade'} />
+  );
 };

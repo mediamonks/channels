@@ -11,20 +11,18 @@ export const useVolumeChange = ({ onChange, target }: Props) => {
   const channelsInstance = useChannels();
 
   useEffect(() => {
-    const targetToUse = target || channelsInstance;
-    const listener = (event: VolumeChangeEvent) => {
-      if (event.data.target === targetToUse) {
-        onChange(targetToUse.getVolume());
-      }
+    const dispatcher = target || channelsInstance;
+    const listener = ({ data: { volume } }: VolumeChangeEvent) => {
+      onChange(volume);
     };
 
-    channelsInstance.addEventListener(
+    dispatcher.addEventListener(
       VolumeChangeEvent.types.VOLUME_CHANGE,
       listener
     );
 
     return () =>
-      channelsInstance.removeEventListener(
+      dispatcher.removeEventListener(
         VolumeChangeEvent.types.VOLUME_CHANGE,
         listener
       );

@@ -1,17 +1,14 @@
 import { Channel } from './Channel';
 import { ChannelsEvent } from './event/ChannelsEvent';
 import { Channels } from './Channels';
-import 'web-audio-test-api';
-
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 import {
   createMockChannelsInstance,
   getAudioGraph,
   getNodeChain,
   mockXMLHttpRequest,
-} from './util/testUtils';
+} from './testing/testUtils';
 import { PanChangeEvent } from './event/PanChangeEvent';
-import { SignalModifier } from './SignalModifier';
 
 mockXMLHttpRequest();
 
@@ -26,7 +23,6 @@ describe('Channel', () => {
     it('creates a channel', () => {
       const channel = channelsInstance.createChannel('channel');
       expect(channel).toBeInstanceOf(Channel);
-      expect(channel.signalModifier).toBeInstanceOf(SignalModifier);
       expect(channelsInstance.getChannels().length).toBe(1);
       expect(channelsInstance.getChannel('channel').name).toBe('channel');
     });
@@ -38,6 +34,13 @@ describe('Channel', () => {
       );
       channelsInstance.createChannel('channel');
       expect(listener).toHaveBeenCalled();
+    });
+    it('has a lists of created channels', () => {
+      const ch1 = channelsInstance.createChannel('channel1');
+      const ch2 = channelsInstance.createChannel('channel2');
+      expect(channelsInstance.getChannels()).toContain(ch1);
+      expect(channelsInstance.getChannels()).toContain(ch2);
+      expect(channelsInstance.getChannels().length).toBe(2);
     });
 
     it('creates and connects volume nodes for channel', () => {
@@ -135,29 +138,23 @@ describe('Channel', () => {
     });
     it("dispatches an event when setting a channel's volume", () => {
       const listener = jest.fn();
-      channelsInstance.addEventListener(
-        VolumeChangeEvent.types.VOLUME_CHANGE,
-        listener
-      );
       const channel = channelsInstance.createChannel('ch');
+      channel.addEventListener(VolumeChangeEvent.types.VOLUME_CHANGE, listener);
       channel.setVolume(0.5);
       expect(listener).toHaveBeenCalledWith(
         expect.objectContaining({
-          data: expect.objectContaining({ target: channel }),
+          data: expect.objectContaining({ volume: 0.5 }),
         })
       );
     });
     it("dispatches an event when setting a channel's panning", () => {
       const listener = jest.fn();
-      channelsInstance.addEventListener(
-        PanChangeEvent.types.PAN_CHANGE,
-        listener
-      );
       const channel = channelsInstance.createChannel('ch');
+      channel.addEventListener(PanChangeEvent.types.PAN_CHANGE, listener);
       channel.setPan(0.5);
       expect(listener).toHaveBeenCalledWith(
         expect.objectContaining({
-          data: expect.objectContaining({ target: channel }),
+          data: expect.objectContaining({ pan: 0.5 }),
         })
       );
     });

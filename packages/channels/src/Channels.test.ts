@@ -3,14 +3,12 @@ import 'web-audio-test-api';
 import SampleManager from 'sample-manager';
 import { AudioContext } from './util/audioContext';
 import {
+  createMockChannelsInstance,
   getAudioGraph,
   getNodeChain,
-  mockXMLHttpRequest,
-} from './util/testUtils';
-import { createMockChannelsInstance } from './util/testUtils';
+} from './testing/testUtils';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
-
-mockXMLHttpRequest();
+import { PanChangeEvent } from './event/PanChangeEvent';
 
 describe('Channels instance', () => {
   let channelsInstance: Channels;
@@ -121,7 +119,20 @@ describe('Channels instance', () => {
       channelsInstance.setVolume(0.5);
       expect(listener).toHaveBeenCalledWith(
         expect.objectContaining({
-          data: expect.objectContaining({ target: channelsInstance }),
+          data: expect.objectContaining({ volume: 0.5 }),
+        })
+      );
+    });
+    it('dispatches an event when setting main pan', () => {
+      const listener = jest.fn();
+      channelsInstance.addEventListener(
+        PanChangeEvent.types.PAN_CHANGE,
+        listener
+      );
+      channelsInstance.setPan(0.5);
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ pan: 0.5 }),
         })
       );
     });

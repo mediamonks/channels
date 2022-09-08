@@ -2,7 +2,6 @@ import {
   CreateChannelOptions,
   CreateSound,
   Effects,
-  HasSignalModifier,
   PlaySoundOptions,
   StopAllOptions,
 } from './types';
@@ -10,9 +9,8 @@ import { AudioContext } from './util/audioContext';
 import SampleManager from 'sample-manager';
 import { Channel } from './Channel';
 import { PlayingSound } from './PlayingSound';
-import EventDispatcher from 'seng-event';
 import { ChannelsEvent } from './event/ChannelsEvent';
-import { SignalModifier } from './SignalModifier';
+import { HasSignalModifier } from './HasSignalModifier';
 
 type ConstructorProps = {
   soundsPath: string;
@@ -22,12 +20,11 @@ type ConstructorProps = {
   effects?: Effects;
 };
 
-export class Channels extends EventDispatcher implements HasSignalModifier {
+export class Channels extends HasSignalModifier {
   public readonly audioContext: AudioContext;
   private readonly channelsByName: Record<string, Channel> = {};
   private readonly playingSounds: Array<PlayingSound> = [];
   public readonly sampleManager: SampleManager;
-  public readonly signalModifier: SignalModifier;
 
   constructor({
     audioContext,
@@ -36,14 +33,17 @@ export class Channels extends EventDispatcher implements HasSignalModifier {
     sounds,
     effects,
   }: ConstructorProps) {
-    super();
-    this.audioContext =
+    const context =
       audioContext ||
       new (window.AudioContext || (window as any).webkitAudioContext)();
 
-    if (!this.audioContext) {
+    if (!context) {
       throw new Error('Failed to create an AudioContext');
     }
+    super(context, {
+      effects,
+    });
+    this.audioContext = context;
 
     this.sampleManager = new SampleManager(
       this.audioContext,
@@ -56,9 +56,6 @@ export class Channels extends EventDispatcher implements HasSignalModifier {
     }
 
     // everything connect to the main volume controls.
-    this.signalModifier = new SignalModifier(this.audioContext, this, this, {
-      effects,
-    });
     this.signalModifier.output.connect(this.audioContext.destination);
   }
 
@@ -212,7 +209,7 @@ export class Channels extends EventDispatcher implements HasSignalModifier {
     const playingSound = new PlayingSound(
       this,
       sound,
-      (channelForSound?.signalModifier || this.signalModifier).input,
+      (channelForSound || this).getInput(),
       channelForSound,
       mergedPlaySoundOptions
     );
@@ -229,21 +226,4 @@ export class Channels extends EventDispatcher implements HasSignalModifier {
 
     return playingSound;
   };
-
-  /*
-  HasSignalModifier implementations
-   */
-  public fadeIn = (duration: number, onComplete?: () => void): void =>
-    this.signalModifier.fadeIn(duration, onComplete);
-  public fadeOut = (duration: number, onComplete?: () => void): void =>
-    this.signalModifier.fadeOut(duration, onComplete);
-  public mute = () => this.signalModifier.mute();
-  public unmute = () => this.signalModifier.unmute();
-  public getFadeVolume = () => this.signalModifier.getFadeVolume();
-  public getVolume = () => this.signalModifier.getVolume();
-  public setVolume = (value: number) => this.signalModifier.setVolume(value);
-  public connectMediaElement = (element: HTMLMediaElement) =>
-    this.signalModifier.connectMediaElement(element);
-  public getPan = () => this.signalModifier.getPan();
-  public setPan = (value: number) => this.signalModifier.setPan(value);
 }
