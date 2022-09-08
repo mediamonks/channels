@@ -1,18 +1,18 @@
 import { Channels } from './Channels';
 import {
-  CanConnectMediaElement,
   ChannelType,
   CreateChannelOptions,
   PlayStopOptions,
   StopAllOptions,
 } from './types';
-import { SignalModifier } from './SignalModifier';
+import { VolumeChangeEvent } from './event/VolumeChangeEvent';
+import { PanChangeEvent } from './event/PanChangeEvent';
+import { HasSignalModifier } from './HasSignalModifier';
 
 type PlayParameters = Parameters<InstanceType<typeof Channels>['play']>;
 
-export class Channel implements CanConnectMediaElement {
+export class Channel extends HasSignalModifier {
   public readonly type: ChannelType;
-  public readonly signalModifier: SignalModifier;
   public readonly defaultPlayStopOptions: PlayStopOptions | undefined;
 
   constructor(
@@ -26,22 +26,29 @@ export class Channel implements CanConnectMediaElement {
       defaultPlayStopOptions,
     }: CreateChannelOptions = {}
   ) {
+    super(channelsInstance.audioContext, {
+      volume,
+      pan,
+      effects,
+    });
+
     this.type = type;
     this.defaultPlayStopOptions = defaultPlayStopOptions;
 
-    this.signalModifier = new SignalModifier(
-      channelsInstance.audioContext,
-      channelsInstance,
-      this,
-      {
-        volume,
-        pan,
-        effects,
+    this.signalModifier.output.connect(channelsInstance.getInput());
+
+    // redispatch events from signal modifier
+    this.signalModifier.addEventListener(
+      VolumeChangeEvent.types.VOLUME_CHANGE,
+      event => {
+        this.dispatchEvent(event);
       }
     );
-
-    this.signalModifier.output.connect(
-      this.channelsInstance.signalModifier.input
+    this.signalModifier.addEventListener(
+      PanChangeEvent.types.PAN_CHANGE,
+      event => {
+        this.dispatchEvent(event);
+      }
     );
   }
 
@@ -63,21 +70,4 @@ export class Channel implements CanConnectMediaElement {
   public stopAll = ({ immediate }: Omit<StopAllOptions, 'channel'>) => {
     this.channelsInstance.stopAll({ channel: this.name, immediate });
   };
-
-  /*
-  HasSignalModifier implementations
-   */
-  public fadeIn = (duration: number, onComplete?: () => void): void =>
-    this.signalModifier.fadeIn(duration, onComplete);
-  public fadeOut = (duration: number, onComplete?: () => void): void =>
-    this.signalModifier.fadeOut(duration, onComplete);
-  public mute = () => this.signalModifier.mute();
-  public unmute = () => this.signalModifier.unmute();
-  public getFadeVolume = () => this.signalModifier.getFadeVolume();
-  public getVolume = () => this.signalModifier.getVolume();
-  public setVolume = (value: number) => this.signalModifier.setVolume(value);
-  public connectMediaElement = (element: HTMLMediaElement) =>
-    this.signalModifier.connectMediaElement(element);
-  public getPan = () => this.signalModifier.getPan();
-  public setPan = (value: number) => this.signalModifier.setPan(value);
 }

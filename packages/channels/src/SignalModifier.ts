@@ -1,19 +1,15 @@
 import { tweenAudioParamToValue } from './util/fadeGain';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
-import {
-  CanConnectMediaElement,
-  HasSignalModifier,
-  SignalModifierOptions,
-} from './types';
+import { SignalModifierOptions } from './types';
 import EventDispatcher from 'seng-event';
-
 import { PanChangeEvent } from './event/PanChangeEvent';
 import { createSignalModifierGraph } from './util/createSignalModifierGraph';
 
 /**
  * Represents a chain of nodes to apply volume changes, panning or effects.
+ * Is used on the main output, on a channel and on  a playing sound.
  */
-export class SignalModifier implements CanConnectMediaElement {
+export class SignalModifier extends EventDispatcher {
   private readonly volumeGainNode: GainNode;
   private readonly fadeGainNode: GainNode;
   private readonly stereoPannerNode: StereoPannerNode;
@@ -24,10 +20,9 @@ export class SignalModifier implements CanConnectMediaElement {
 
   constructor(
     readonly audioContext: AudioContext,
-    private readonly eventDispatcher: EventDispatcher,
-    private readonly changeEventTarget: HasSignalModifier, // todo: better name for var and type?
     { volume = 1, fadeVolume = 1, effects, pan = 0 }: SignalModifierOptions
   ) {
+    super();
     const { fadeGainNode, volumeGainNode, input, output, stereoPannerNode } =
       createSignalModifierGraph({
         audioContext,
@@ -62,10 +57,10 @@ export class SignalModifier implements CanConnectMediaElement {
     return this.volumeGainNode.gain.value;
   }
 
-  private dispatchVolumeChange() {
-    this.eventDispatcher.dispatchEvent(
+  private dispatchVolumeChange(volume: number) {
+    this.dispatchEvent(
       new VolumeChangeEvent(VolumeChangeEvent.types.VOLUME_CHANGE, {
-        target: this.changeEventTarget,
+        volume,
       })
     );
   }
@@ -84,7 +79,7 @@ export class SignalModifier implements CanConnectMediaElement {
     } else {
       this.volumeValueBeforeMute = undefined;
     }
-    this.dispatchVolumeChange();
+    this.dispatchVolumeChange(value);
 
     this.volumeGainNode.gain.value = value;
   }
@@ -95,15 +90,16 @@ export class SignalModifier implements CanConnectMediaElement {
       this.volumeValueBeforeMute = volume;
       this.volumeGainNode.gain.value = 0;
 
-      this.dispatchVolumeChange();
+      this.dispatchVolumeChange(0);
     }
   };
 
   public unmute = () => {
     if (this.getVolume() === 0) {
-      this.volumeGainNode.gain.value = this.volumeValueBeforeMute ?? 1;
+      const value = this.volumeValueBeforeMute ?? 1;
+      this.volumeGainNode.gain.value = value;
 
-      this.dispatchVolumeChange();
+      this.dispatchVolumeChange(value);
     }
   };
 
@@ -128,9 +124,9 @@ export class SignalModifier implements CanConnectMediaElement {
       );
     }
     this.stereoPannerNode.pan.value = value;
-    this.eventDispatcher.dispatchEvent(
+    this.dispatchEvent(
       new PanChangeEvent(PanChangeEvent.types.PAN_CHANGE, {
-        target: this.changeEventTarget,
+        pan: value,
       })
     );
   };

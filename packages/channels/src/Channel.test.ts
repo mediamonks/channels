@@ -11,7 +11,6 @@ import {
   mockXMLHttpRequest,
 } from './util/testUtils';
 import { PanChangeEvent } from './event/PanChangeEvent';
-import { SignalModifier } from './SignalModifier';
 
 mockXMLHttpRequest();
 
@@ -26,7 +25,6 @@ describe('Channel', () => {
     it('creates a channel', () => {
       const channel = channelsInstance.createChannel('channel');
       expect(channel).toBeInstanceOf(Channel);
-      expect(channel.signalModifier).toBeInstanceOf(SignalModifier);
       expect(channelsInstance.getChannels().length).toBe(1);
       expect(channelsInstance.getChannel('channel').name).toBe('channel');
     });
