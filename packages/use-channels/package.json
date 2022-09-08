@@ -12,14 +12,20 @@
   },
   "scripts": {
     "build": "tsc --project ./tsconfig.build.json",
-    "test": "",
+    "test": "jest --config ./jest.config.js",
     "lint": "eslint --ignore-path ../../.gitignore --ext .ts .",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "@mediamonks/channels": "*"
+    "@mediamonks/channels": "*",
+    "react": "^18.2.0"
   },
-  "homepage": "https://github.com/mediamonks/channels/"
+  "homepage": "https://github.com/mediamonks/channels/",
+  "devDependencies": {
+    "@testing-library/react": "^13.4.0",
+    "jest-environment-jsdom": "^29.0.2",
+    "ts-jest": "^28.0.8",
+    "web-audio-test-api": "^0.5.2"
+  }
 }
