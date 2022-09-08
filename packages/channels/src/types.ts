@@ -22,22 +22,22 @@ export type CreateChannelOptions = {
   defaultPlayStopOptions?: PlayStopOptions;
 } & SignalModifierOptionsWithoutFadeVolume;
 
-export interface HasSignalModifier {
-  // todo: rename to HasVolumeNodes? although volumenodes isnt covering everything in there anymore (has a lot more now)
-  getFadeVolume: () => number;
-  getVolume: () => number;
-  setVolume: (value: number) => void;
-  mute: () => void;
-  unmute: () => void;
-  fadeOut: (duration: number, onComplete?: () => void) => void;
-  fadeIn: (duration: number, onComplete?: () => void) => void;
-  setPan: (value: number) => void;
-  getPan: () => number;
-}
+// export interface HasSignalModifier {
+//   // todo: rename to HasVolumeNodes? although volumenodes isnt covering everything in there anymore (has a lot more now)
+//   getFadeVolume: () => number;
+//   getVolume: () => number;
+//   setVolume: (value: number) => void;
+//   mute: () => void;
+//   unmute: () => void;
+//   fadeOut: (duration: number, onComplete?: () => void) => void;
+//   fadeIn: (duration: number, onComplete?: () => void) => void;
+//   setPan: (value: number) => void;
+//   getPan: () => number;
+// }
 
-export interface CanConnectMediaElement extends HasSignalModifier {
-  connectMediaElement: (element: HTMLMediaElement) => void;
-}
+// export interface CanConnectMediaElement extends HasSignalModifier {
+//   connectMediaElement: (element: HTMLMediaElement) => void;
+// }
 
 export type PlayStopOptions = PlaySoundOptions & StopSoundOptions;
 

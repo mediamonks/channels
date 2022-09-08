@@ -1,35 +1,34 @@
-import {
-  HasSignalModifier,
-  PlaySoundOptions,
-  Sound,
-  StopSoundOptions,
-} from './types';
+import { PlaySoundOptions, Sound, StopSoundOptions } from './types';
 import { Channels } from './Channels';
 import { Channel } from './Channel';
-import { SignalModifier } from './SignalModifier';
+import { HasSignalModifier } from './HasSignalModifier';
 
 /**
  * Represents a playing sound.
  */
-export class PlayingSound implements HasSignalModifier {
+export class PlayingSound extends HasSignalModifier {
   private readonly bufferSourceNode: AudioBufferSourceNode;
   private readonly startedAt: number;
-  public readonly signalModifier: SignalModifier;
 
   constructor(
     private readonly channelsInstance: Channels,
     public readonly sound: Sound,
     private readonly destination: AudioNode,
     public readonly channel?: Channel,
-    playSoundOptions: Omit<PlaySoundOptions, 'channel'> = {}
-  ) {
-    const {
+    {
       loop = false,
       fadeInTime = 0,
       volume,
       effects,
       pan,
-    } = playSoundOptions;
+    }: Omit<PlaySoundOptions, 'channel'> = {}
+  ) {
+    super(channelsInstance.audioContext, {
+      volume,
+      fadeVolume: fadeInTime > 0 ? 0 : 1, // when fading in, initial fade volume is 0
+      effects,
+      pan,
+    });
 
     if (!sound.audioBuffer) {
       // todo: check how/if this works, audioBuffer seems to always exist on Sound/ISample
@@ -45,25 +44,10 @@ export class PlayingSound implements HasSignalModifier {
     this.bufferSourceNode.buffer = sound.audioBuffer;
     this.bufferSourceNode.loop = loop;
 
-    // create and connect volume nodes
-    this.signalModifier = new SignalModifier(
-      channelsInstance.audioContext,
-      channelsInstance,
-      this,
-      {
-        volume,
-        fadeVolume: fadeInTime > 0 ? 0 : 1, // when fading in, initial fade volume is 0
-        effects,
-        pan,
-      }
-    );
-
     this.signalModifier.output.connect(destination);
     this.bufferSourceNode.connect(this.signalModifier.input);
 
-    this.bufferSourceNode.onended = () => {
-      this.removePlayingSound();
-    };
+    this.bufferSourceNode.onended = this.onEnded;
 
     this.startedAt = this.channelsInstance.audioContext.currentTime;
     this.bufferSourceNode.start(0);
@@ -73,8 +57,9 @@ export class PlayingSound implements HasSignalModifier {
     }
   }
 
-  private removePlayingSound = () => {
+  private onEnded = () => {
     this.channelsInstance.removePlayingSound(this);
+    this.destruct();
   };
 
   public stop = (stopSoundOptions: StopSoundOptions = {}) => {
@@ -105,19 +90,4 @@ export class PlayingSound implements HasSignalModifier {
       1
     );
   };
-
-  /*
-  HasSignalModifier implementations
-   */
-  public fadeIn = (duration: number, onComplete?: () => void): void =>
-    this.signalModifier.fadeIn(duration, onComplete);
-  public fadeOut = (duration: number, onComplete?: () => void): void =>
-    this.signalModifier.fadeOut(duration, onComplete);
-  public mute = () => this.signalModifier.mute();
-  public unmute = () => this.signalModifier.unmute();
-  public getFadeVolume = () => this.signalModifier.getFadeVolume();
-  public getVolume = () => this.signalModifier.getVolume();
-  public setVolume = (value: number) => this.signalModifier.setVolume(value);
-  public getPan = () => this.signalModifier.getPan();
-  public setPan = (value: number) => this.signalModifier.setPan(value);
 }
