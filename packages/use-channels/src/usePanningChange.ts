@@ -1,9 +1,9 @@
 import { useChannels } from './useChannels';
 import { useEffect } from 'react';
-import { Channel, PanChangeEvent, PlayingSound } from '@mediamonks/channels';
+import { HasSignalModifier, PanChangeEvent } from '@mediamonks/channels';
 
 type Props = {
-  target?: PlayingSound | Channel;
+  target?: HasSignalModifier;
   onChange: (value: number) => void;
 };
 
