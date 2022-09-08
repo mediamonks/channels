@@ -71,29 +71,23 @@ describe('Playing Sound', () => {
   });
   it("dispatches an event when setting a sound's volume", () => {
     const listener = jest.fn();
-    channelsInstance.addEventListener(
-      VolumeChangeEvent.types.VOLUME_CHANGE,
-      listener
-    );
     const sound = channelsInstance.play('sound');
+    sound.addEventListener(VolumeChangeEvent.types.VOLUME_CHANGE, listener);
     sound.setVolume(0.5);
     expect(listener).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({ target: sound }),
+        data: expect.objectContaining({ volume: 0.5 }),
       })
     );
   });
   it("dispatches an event when setting a sound's panning", () => {
     const listener = jest.fn();
-    channelsInstance.addEventListener(
-      PanChangeEvent.types.PAN_CHANGE,
-      listener
-    );
     const sound = channelsInstance.play('sound');
+    sound.addEventListener(PanChangeEvent.types.PAN_CHANGE, listener);
     sound.setPan(0.5);
     expect(listener).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({ target: sound }),
+        data: expect.objectContaining({ pan: 0.5 }),
       })
     );
   });

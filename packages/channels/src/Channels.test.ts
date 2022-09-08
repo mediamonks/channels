@@ -121,7 +121,7 @@ describe('Channels instance', () => {
       channelsInstance.setVolume(0.5);
       expect(listener).toHaveBeenCalledWith(
         expect.objectContaining({
-          data: expect.objectContaining({ target: channelsInstance }),
+          data: expect.objectContaining({ volume: 0.5 }),
         })
       );
     });

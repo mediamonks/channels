@@ -133,29 +133,23 @@ describe('Channel', () => {
     });
     it("dispatches an event when setting a channel's volume", () => {
       const listener = jest.fn();
-      channelsInstance.addEventListener(
-        VolumeChangeEvent.types.VOLUME_CHANGE,
-        listener
-      );
       const channel = channelsInstance.createChannel('ch');
+      channel.addEventListener(VolumeChangeEvent.types.VOLUME_CHANGE, listener);
       channel.setVolume(0.5);
       expect(listener).toHaveBeenCalledWith(
         expect.objectContaining({
-          data: expect.objectContaining({ target: channel }),
+          data: expect.objectContaining({ volume: 0.5 }),
         })
       );
     });
     it("dispatches an event when setting a channel's panning", () => {
       const listener = jest.fn();
-      channelsInstance.addEventListener(
-        PanChangeEvent.types.PAN_CHANGE,
-        listener
-      );
       const channel = channelsInstance.createChannel('ch');
+      channel.addEventListener(PanChangeEvent.types.PAN_CHANGE, listener);
       channel.setPan(0.5);
       expect(listener).toHaveBeenCalledWith(
         expect.objectContaining({
-          data: expect.objectContaining({ target: channel }),
+          data: expect.objectContaining({ pan: 0.5 }),
         })
       );
     });
