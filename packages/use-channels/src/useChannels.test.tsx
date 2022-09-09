@@ -1,7 +1,8 @@
-import { ChannelsProvider, useChannels } from './useChannels';
+import { useChannels } from './useChannels';
 import { render, renderHook } from '@testing-library/react';
 import { Channels } from '@mediamonks/channels';
 import { ChannelsProviderWrapper } from './testing/ChannelsProviderWrapper';
+import { ChannelsProvider } from './ChannelsProvider';
 
 describe('useChannels', () => {
   it('Provides a channel instance through useChannels hook', () => {
@@ -10,6 +11,7 @@ describe('useChannels', () => {
     });
     expect(result.current).toBeInstanceOf(Channels);
   });
+
   it('Provides a channel instance through child render function', () => {
     const childRenderFunction = jest.fn();
     render(

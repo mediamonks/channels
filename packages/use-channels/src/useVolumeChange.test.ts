@@ -24,12 +24,14 @@ describe('useVolumeChange', () => {
 
     expect(onVolumeChange).toHaveBeenCalledWith(0.5);
   });
-  it('Listens to channel volume changes', () => {
+  it('Listens to channel volume changes', async () => {
     const onVolumeChange = jest.fn();
     let channels: Channels;
     renderHook(
       () => {
         channels = useChannels();
+
+        //  await channels.loadSounds();
         const channel = channels.createChannel('channel');
         useVolumeChange({ onChange: onVolumeChange, target: channel });
       },
