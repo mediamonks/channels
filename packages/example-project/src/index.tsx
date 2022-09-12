@@ -3,14 +3,19 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { ChannelsProvider } from '@mediamonks/use-channels';
+import { ChannelsProvider } from '@mediamonks/use-channels/dist/ChannelsProvider';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-const soundsToLoad: Array<any> = ['bd', 'transeuro', 'sine'].map(name => ({
+const soundsToLoad: Array<{ name: string; extension?: string }> = [
+  'bd',
+  'transeuro',
+  'sine',
+].map(name => ({
   name,
+  extension: undefined,
 }));
 soundsToLoad.push({ name: 'drwho', extension: 'mp3' });
 

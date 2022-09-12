@@ -1,19 +1,5 @@
-import { newServer } from 'mock-xmlhttprequest';
 import { Channels } from '../Channels';
 import { CreateSound } from '../types';
-
-export const mockXMLHttpRequest = () => {
-  const server = newServer({
-    get: [
-      () => true,
-      {
-        status: 200,
-        body: new ArrayBuffer(10000000),
-      } as any,
-    ],
-  });
-  server.install();
-};
 
 export const createMockChannelsInstance = (sounds?: Array<CreateSound>) => {
   const channelsInstance = new Channels({
