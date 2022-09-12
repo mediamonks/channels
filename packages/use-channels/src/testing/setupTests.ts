@@ -5,7 +5,7 @@ import { newServer } from 'mock-xmlhttprequest';
   'AudioContext#createStereoPanner': 'enabled',
 });
 
-export const mockXMLHttpRequest = () => {
+const mockXMLHttpRequest = () => {
   const server = newServer({
     get: [
       () => true,
@@ -17,3 +17,5 @@ export const mockXMLHttpRequest = () => {
   });
   server.install();
 };
+
+mockXMLHttpRequest();

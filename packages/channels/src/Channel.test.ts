@@ -6,11 +6,8 @@ import {
   createMockChannelsInstance,
   getAudioGraph,
   getNodeChain,
-  mockXMLHttpRequest,
 } from './testing/testUtils';
 import { PanChangeEvent } from './event/PanChangeEvent';
-
-mockXMLHttpRequest();
 
 describe('Channel', () => {
   let channelsInstance: Channels;
