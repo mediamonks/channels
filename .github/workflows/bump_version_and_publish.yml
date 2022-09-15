@@ -45,6 +45,8 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
+      - name: build (for testing)
+        run: npm run build -w packages/channels -w packages/use-channels
       - name: bump version
         run: |
           echo "1. cd packages/${{ github.event.inputs.package }}" 
