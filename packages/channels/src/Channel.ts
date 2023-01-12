@@ -45,7 +45,7 @@ export class Channel extends HasSignalModifier {
     name: PlayParameters[0],
     options: Omit<PlayParameters[1], 'channel'> = {}
   ) => {
-    this.channelsInstance.play(name, { channel: this.name, ...options });
+    return this.channelsInstance.play(name, { channel: this.name, ...options });
   };
 
   /**
