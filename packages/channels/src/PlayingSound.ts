@@ -7,7 +7,7 @@ import { HasSignalModifier } from './HasSignalModifier';
  * Represents a playing sound.
  */
 export class PlayingSound extends HasSignalModifier {
-  private readonly bufferSourceNode: AudioBufferSourceNode;
+  public readonly bufferSourceNode: AudioBufferSourceNode;
   private readonly startedAt: number;
 
   constructor(
