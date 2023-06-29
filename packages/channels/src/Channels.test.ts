@@ -2,11 +2,7 @@ import { Channels } from './Channels';
 import 'web-audio-test-api';
 import SampleManager from 'sample-manager';
 import { AudioContext } from './util/audioContext';
-import {
-  createMockChannelsInstance,
-  getAudioGraph,
-  getNodeChain,
-} from './testing/testUtils';
+import { createMockChannelsInstance, getAudioGraph, getNodeChain } from './testing/testUtils';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
 import { PanChangeEvent } from './event/PanChangeEvent';
 
@@ -35,12 +31,8 @@ describe('Channels instance', () => {
       soundsExtension: 'mp3',
       sounds: [{ name: 'sound1' }],
     });
-    expect(
-      channelsInstanceWithSounds.sampleManager.getAllSamples().length
-    ).toBe(1);
-    expect(
-      channelsInstanceWithSounds.sampleManager.getAllSamples()[0].name
-    ).toBe('sound1');
+    expect(channelsInstanceWithSounds.sampleManager.getAllSamples().length).toBe(1);
+    expect(channelsInstanceWithSounds.sampleManager.getAllSamples()[0].name).toBe('sound1');
   });
   it('Throws error when playing an unknown sound', () => {
     expect(() => {
@@ -58,16 +50,14 @@ describe('Channels instance', () => {
     it('loads a sample that has been set after creation', async () => {
       channelsInstance.sampleManager.addSample({ name: 'sound' });
       await channelsInstance.loadSounds();
-      expect(
-        channelsInstance.sampleManager.getSampleByName('sound').audioBuffer
-      ).toBeInstanceOf(AudioBuffer);
+      expect(channelsInstance.sampleManager.getSampleByName('sound').audioBuffer).toBeInstanceOf(
+        AudioBuffer,
+      );
     });
   });
   describe('Main Volume', function () {
     it('creates main volume nodes', () => {
-      const [fadeNode, gainNode, pannerNode] = getNodeChain(
-        getAudioGraph(channelsInstance)
-      );
+      const [fadeNode, gainNode, pannerNode] = getNodeChain(getAudioGraph(channelsInstance));
 
       expect(gainNode.name).toBe('GainNode');
       expect(fadeNode.name).toBe('GainNode');
@@ -80,9 +70,7 @@ describe('Channels instance', () => {
       expect(pannerNode.inputs.length).toBe(0);
     });
     it('Has default volume and panning', () => {
-      const [fadeNode, gainNode, pannerNode] = getNodeChain(
-        getAudioGraph(channelsInstance)
-      );
+      const [fadeNode, gainNode, pannerNode] = getNodeChain(getAudioGraph(channelsInstance));
 
       expect(gainNode.gain?.value).toBe(1);
       expect(fadeNode.gain?.value).toBe(1);
@@ -94,9 +82,7 @@ describe('Channels instance', () => {
 
     it('Sets volume', () => {
       channelsInstance.setVolume(0.5);
-      const [fadeNode, gainNode] = getNodeChain(
-        getAudioGraph(channelsInstance)
-      );
+      const [fadeNode, gainNode] = getNodeChain(getAudioGraph(channelsInstance));
 
       expect(gainNode.gain?.value).toBe(0.5);
       expect(fadeNode.gain?.value).toBe(1);
@@ -112,35 +98,27 @@ describe('Channels instance', () => {
     });
     it('dispatches an event when setting main volume', () => {
       const listener = jest.fn();
-      channelsInstance.addEventListener(
-        VolumeChangeEvent.types.VOLUME_CHANGE,
-        listener
-      );
+      channelsInstance.addEventListener(VolumeChangeEvent.types.VOLUME_CHANGE, listener);
       channelsInstance.setVolume(0.5);
       expect(listener).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({ volume: 0.5 }),
-        })
+        }),
       );
     });
     it('dispatches an event when setting main pan', () => {
       const listener = jest.fn();
-      channelsInstance.addEventListener(
-        PanChangeEvent.types.PAN_CHANGE,
-        listener
-      );
+      channelsInstance.addEventListener(PanChangeEvent.types.PAN_CHANGE, listener);
       channelsInstance.setPan(0.5);
       expect(listener).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({ pan: 0.5 }),
-        })
+        }),
       );
     });
     it('mutes main volume', () => {
       channelsInstance.mute();
-      const [fadeNode, gainNode] = getNodeChain(
-        getAudioGraph(channelsInstance)
-      );
+      const [fadeNode, gainNode] = getNodeChain(getAudioGraph(channelsInstance));
 
       expect(channelsInstance.getVolume()).toBe(0);
       expect(gainNode.gain?.value).toBe(0);
@@ -150,9 +128,7 @@ describe('Channels instance', () => {
       channelsInstance.setVolume(0.5);
       channelsInstance.mute();
       channelsInstance.unmute();
-      const [fadeNode, gainNode] = getNodeChain(
-        getAudioGraph(channelsInstance)
-      );
+      const [fadeNode, gainNode] = getNodeChain(getAudioGraph(channelsInstance));
 
       expect(channelsInstance.getVolume()).toBe(0.5);
       expect(gainNode.gain?.value).toBe(0.5);
@@ -172,8 +148,9 @@ describe('Channels instance', () => {
         },
       });
 
-      const [mainFadeNode, mainGainNode, mainPannerNode, filterNode] =
-        getNodeChain(getAudioGraph(channelsInstance));
+      const [mainFadeNode, mainGainNode, mainPannerNode, filterNode] = getNodeChain(
+        getAudioGraph(channelsInstance),
+      );
 
       expect(filterNode.name).toBe('BiquadFilterNode');
       expect(mainPannerNode.name).toBe('StereoPannerNode');
@@ -192,8 +169,9 @@ describe('Channels instance', () => {
         },
       });
 
-      const [filterNode, mainFadeNode, mainGainNode, mainPannerNode] =
-        getNodeChain(getAudioGraph(channelsInstance));
+      const [filterNode, mainFadeNode, mainGainNode, mainPannerNode] = getNodeChain(
+        getAudioGraph(channelsInstance),
+      );
 
       expect(filterNode.name).toBe('BiquadFilterNode');
       expect(mainFadeNode.name).toBe('GainNode');
@@ -214,13 +192,9 @@ describe('Channels instance', () => {
         },
       });
 
-      const [
-        filterNode,
-        mainFadeNode,
-        mainGainNode,
-        mainPannerNode,
-        convolverNode,
-      ] = getNodeChain(getAudioGraph(channelsInstance));
+      const [filterNode, mainFadeNode, mainGainNode, mainPannerNode, convolverNode] = getNodeChain(
+        getAudioGraph(channelsInstance),
+      );
 
       expect(filterNode.name).toBe('BiquadFilterNode');
       expect(mainFadeNode.name).toBe('GainNode');

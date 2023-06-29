@@ -10,10 +10,7 @@ export type SignalModifierOptions = {
   effects?: Effects;
 };
 
-type SignalModifierOptionsWithoutFadeVolume = Omit<
-  SignalModifierOptions,
-  'fadeVolume'
->;
+type SignalModifierOptionsWithoutFadeVolume = Omit<SignalModifierOptions, 'fadeVolume'>;
 
 export type ChannelType = 'monophonic' | 'polyphonic';
 
@@ -56,10 +53,7 @@ export type StopAllOptions = {
   immediate?: boolean;
 };
 
-export type EffectsChain<
-  I extends AudioNode = AudioNode,
-  O extends AudioNode = AudioNode
-> = {
+export type EffectsChain<I extends AudioNode = AudioNode, O extends AudioNode = AudioNode> = {
   input: I;
   output: O;
 };

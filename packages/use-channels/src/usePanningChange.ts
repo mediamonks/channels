@@ -18,7 +18,6 @@ export const usePanningChange = ({ onChange, target }: Props) => {
 
     dispatcher.addEventListener(PanChangeEvent.types.PAN_CHANGE, listener);
 
-    return () =>
-      dispatcher.removeEventListener(PanChangeEvent.types.PAN_CHANGE, listener);
+    return () => dispatcher.removeEventListener(PanChangeEvent.types.PAN_CHANGE, listener);
   }, [channelsInstance, onChange, target]);
 };

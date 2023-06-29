@@ -26,16 +26,9 @@ export class Channels extends HasSignalModifier {
   private readonly playingSounds: Array<PlayingSound> = [];
   public readonly sampleManager: SampleManager;
 
-  constructor({
-    audioContext,
-    soundsExtension,
-    soundsPath,
-    sounds,
-    effects,
-  }: ConstructorProps) {
+  constructor({ audioContext, soundsExtension, soundsPath, sounds, effects }: ConstructorProps) {
     const context =
-      audioContext ||
-      new (window.AudioContext || (window as any).webkitAudioContext)();
+      audioContext || new (window.AudioContext || (window as any).webkitAudioContext)();
 
     if (!context) {
       throw new Error('Failed to create an AudioContext');
@@ -45,11 +38,7 @@ export class Channels extends HasSignalModifier {
     });
     this.audioContext = context;
 
-    this.sampleManager = new SampleManager(
-      this.audioContext,
-      soundsPath,
-      soundsExtension
-    );
+    this.sampleManager = new SampleManager(this.audioContext, soundsPath, soundsExtension);
 
     if (sounds) {
       this.sampleManager.addSamples(sounds);
@@ -63,9 +52,7 @@ export class Channels extends HasSignalModifier {
    * Resumes the audioContext if it's in the suspended state.
    */
   public resumeContext = () => {
-    return this.contextIsSuspended
-      ? this.audioContext.resume()
-      : Promise.resolve();
+    return this.contextIsSuspended ? this.audioContext.resume() : Promise.resolve();
   };
 
   /**
@@ -104,7 +91,7 @@ export class Channels extends HasSignalModifier {
    */
   public createChannel = (
     name: string,
-    createChannelOptions: CreateChannelOptions = {}
+    createChannelOptions: CreateChannelOptions = {},
   ): Channel => {
     if (name === '') {
       throw new Error('Channel name cannot be blank');
@@ -126,9 +113,7 @@ export class Channels extends HasSignalModifier {
    * Gets a list of all available channels.
    */
   public getChannels = (): Array<Channel> => {
-    return Object.keys(this.channelsByName).map(
-      channelName => this.channelsByName[channelName]
-    );
+    return Object.keys(this.channelsByName).map((channelName) => this.channelsByName[channelName]);
   };
 
   /**
@@ -140,12 +125,10 @@ export class Channels extends HasSignalModifier {
     const index = this.playingSounds.indexOf(playingSound);
     if (index > -1) {
       this.playingSounds.splice(index, 1);
-      this.dispatchEvent(
-        new ChannelsEvent(ChannelsEvent.types.PLAYING_SOUNDS_CHANGE)
-      );
+      this.dispatchEvent(new ChannelsEvent(ChannelsEvent.types.PLAYING_SOUNDS_CHANGE));
     } else {
       throw new Error(
-        `Trying to remove a playing sound that is not listed: ${playingSound.sound.name}`
+        `Trying to remove a playing sound that is not listed: ${playingSound.sound.name}`,
       );
     }
   };
@@ -161,10 +144,8 @@ export class Channels extends HasSignalModifier {
 
     const stopProps = immediate ? { fadeOutTime: undefined } : undefined;
     this.playingSounds
-      .filter(({ channel }) =>
-        channelToStop ? channel === channelToStop : true
-      )
-      .forEach(playingSound => {
+      .filter(({ channel }) => (channelToStop ? channel === channelToStop : true))
+      .forEach((playingSound) => {
         playingSound.stop(stopProps);
       });
   };
@@ -189,10 +170,7 @@ export class Channels extends HasSignalModifier {
    * @param name
    * @param playSoundOptions
    */
-  public play = (
-    name: string,
-    playSoundOptions: PlaySoundOptions = {}
-  ): PlayingSound => {
+  public play = (name: string, playSoundOptions: PlaySoundOptions = {}): PlayingSound => {
     const sound = this.sampleManager.getSampleByName(name);
     const { channel } = playSoundOptions;
     if (!sound) {
@@ -203,7 +181,7 @@ export class Channels extends HasSignalModifier {
     // if there is a channel with defaultPlayStopOptions, merge them
     const mergedPlaySoundOptions = Object.assign(
       channelForSound?.defaultPlayStopOptions || {},
-      playSoundOptions
+      playSoundOptions,
     );
 
     const playingSound = new PlayingSound(
@@ -211,7 +189,7 @@ export class Channels extends HasSignalModifier {
       sound,
       (channelForSound || this).getInput(),
       channelForSound,
-      mergedPlaySoundOptions
+      mergedPlaySoundOptions,
     );
 
     if (channelForSound?.type === 'monophonic') {
@@ -220,9 +198,7 @@ export class Channels extends HasSignalModifier {
 
     this.playingSounds.push(playingSound);
 
-    this.dispatchEvent(
-      new ChannelsEvent(ChannelsEvent.types.PLAYING_SOUNDS_CHANGE)
-    );
+    this.dispatchEvent(new ChannelsEvent(ChannelsEvent.types.PLAYING_SOUNDS_CHANGE));
 
     return playingSound;
   };

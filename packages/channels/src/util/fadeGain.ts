@@ -16,7 +16,7 @@ export const tweenAudioParamToValue = (
   audioParam: AudioParam,
   value: number,
   duration: number,
-  onComplete?: () => void
+  onComplete?: () => void,
 ) => {
   gsap.killTweensOf(audioParam);
   gsap.fromTo(
@@ -26,6 +26,6 @@ export const tweenAudioParamToValue = (
       value: value,
       duration: duration,
       onComplete,
-    }
+    },
   );
 };

@@ -15,13 +15,7 @@ export class PlayingSound extends HasSignalModifier {
     public readonly sound: Sound,
     private readonly destination: AudioNode,
     public readonly channel?: Channel,
-    {
-      loop = false,
-      fadeInTime = 0,
-      volume,
-      effects,
-      pan,
-    }: Omit<PlaySoundOptions, 'channel'> = {}
+    { loop = false, fadeInTime = 0, volume, effects, pan }: Omit<PlaySoundOptions, 'channel'> = {},
   ) {
     super(channelsInstance.audioContext, {
       volume,
@@ -65,7 +59,7 @@ export class PlayingSound extends HasSignalModifier {
   public stop = (stopSoundOptions: StopSoundOptions = {}) => {
     const mergedOptions = Object.assign(
       this.channel?.defaultPlayStopOptions || {},
-      stopSoundOptions
+      stopSoundOptions,
     );
 
     const { fadeOutTime } = mergedOptions;

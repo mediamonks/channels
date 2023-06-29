@@ -2,11 +2,7 @@ import { Channel } from './Channel';
 import { ChannelsEvent } from './event/ChannelsEvent';
 import { Channels } from './Channels';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
-import {
-  createMockChannelsInstance,
-  getAudioGraph,
-  getNodeChain,
-} from './testing/testUtils';
+import { createMockChannelsInstance, getAudioGraph, getNodeChain } from './testing/testUtils';
 import { PanChangeEvent } from './event/PanChangeEvent';
 
 describe('Channel', () => {
@@ -25,10 +21,7 @@ describe('Channel', () => {
     });
     it('dispatches an event when creating a channel', () => {
       const listener = jest.fn();
-      channelsInstance.addEventListener(
-        ChannelsEvent.types.CHANNELS_CHANGE,
-        listener
-      );
+      channelsInstance.addEventListener(ChannelsEvent.types.CHANNELS_CHANGE, listener);
       channelsInstance.createChannel('channel');
       expect(listener).toHaveBeenCalled();
     });
@@ -89,9 +82,7 @@ describe('Channel', () => {
       const channel = channelsInstance.createChannel('ch');
 
       channel.setVolume(0.5);
-      const [, , , , channelGainNode] = getNodeChain(
-        getAudioGraph(channelsInstance)
-      );
+      const [, , , , channelGainNode] = getNodeChain(getAudioGraph(channelsInstance));
 
       expect(channelGainNode.name).toBe('GainNode');
       expect(channelGainNode.gain?.value).toBe(0.5);
@@ -101,9 +92,7 @@ describe('Channel', () => {
       const channel = channelsInstance.createChannel('ch');
 
       channel.setPan(0.75);
-      const [, , , , , channelPanningNode] = getNodeChain(
-        getAudioGraph(channelsInstance)
-      );
+      const [, , , , , channelPanningNode] = getNodeChain(getAudioGraph(channelsInstance));
 
       expect(channelPanningNode.name).toBe('StereoPannerNode');
       expect(channelPanningNode.pan?.value).toBe(0.75);
@@ -141,7 +130,7 @@ describe('Channel', () => {
       expect(listener).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({ volume: 0.5 }),
-        })
+        }),
       );
     });
     it("dispatches an event when setting a channel's panning", () => {
@@ -152,16 +141,14 @@ describe('Channel', () => {
       expect(listener).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({ pan: 0.5 }),
-        })
+        }),
       );
     });
     it('creates channel with initial volume', () => {
       const channel = channelsInstance.createChannel('channel', {
         volume: 0.5,
       });
-      const [, , , , channelGainNode] = getNodeChain(
-        getAudioGraph(channelsInstance)
-      );
+      const [, , , , channelGainNode] = getNodeChain(getAudioGraph(channelsInstance));
       expect(channelGainNode.name).toBe('GainNode');
       expect(channelGainNode.gain?.value).toBe(0.5);
       expect(channel.getVolume()).toBe(0.5);
@@ -170,9 +157,7 @@ describe('Channel', () => {
       const channel = channelsInstance.createChannel('channel', {
         pan: 0.75,
       });
-      const [, , , , , channelPanningNode] = getNodeChain(
-        getAudioGraph(channelsInstance)
-      );
+      const [, , , , , channelPanningNode] = getNodeChain(getAudioGraph(channelsInstance));
       expect(channelPanningNode.name).toBe('StereoPannerNode');
       expect(channelPanningNode.pan?.value).toBe(0.75);
       expect(channel.getPan()).toBe(0.75);

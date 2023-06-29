@@ -7,25 +7,17 @@ import { PanChangeEvent } from './event/PanChangeEvent';
 export class HasSignalModifier extends EventDispatcher {
   protected readonly signalModifier: SignalModifier;
 
-  constructor(
-    audioContext: AudioContext,
-    signalModifierOptions: SignalModifierOptions
-  ) {
+  constructor(audioContext: AudioContext, signalModifierOptions: SignalModifierOptions) {
     super();
 
-    this.signalModifier = new SignalModifier(
-      audioContext,
-      signalModifierOptions
-    );
+    this.signalModifier = new SignalModifier(audioContext, signalModifierOptions);
 
     // redispatch events from signal modifier
-    this.signalModifier.addEventListener(
-      VolumeChangeEvent.types.VOLUME_CHANGE,
-      event => this.dispatchEvent(event.clone())
+    this.signalModifier.addEventListener(VolumeChangeEvent.types.VOLUME_CHANGE, (event) =>
+      this.dispatchEvent(event.clone()),
     );
-    this.signalModifier.addEventListener(
-      PanChangeEvent.types.PAN_CHANGE,
-      event => this.dispatchEvent(event.clone())
+    this.signalModifier.addEventListener(PanChangeEvent.types.PAN_CHANGE, (event) =>
+      this.dispatchEvent(event.clone()),
     );
   }
 

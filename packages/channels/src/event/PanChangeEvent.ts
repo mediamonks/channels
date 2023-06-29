@@ -4,6 +4,4 @@ export type PanChangeData = {
   pan: number;
 };
 
-export class PanChangeEvent extends createEventClass<PanChangeData>()(
-  'PAN_CHANGE'
-) {}
+export class PanChangeEvent extends createEventClass<PanChangeData>()('PAN_CHANGE') {}

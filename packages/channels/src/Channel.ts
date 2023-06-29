@@ -1,10 +1,5 @@
 import { Channels } from './Channels';
-import {
-  ChannelType,
-  CreateChannelOptions,
-  PlayStopOptions,
-  StopAllOptions,
-} from './types';
+import { ChannelType, CreateChannelOptions, PlayStopOptions, StopAllOptions } from './types';
 import { HasSignalModifier } from './HasSignalModifier';
 
 type PlayParameters = Parameters<InstanceType<typeof Channels>['play']>;
@@ -22,7 +17,7 @@ export class Channel extends HasSignalModifier {
       effects,
       pan,
       defaultPlayStopOptions,
-    }: CreateChannelOptions = {}
+    }: CreateChannelOptions = {},
   ) {
     super(channelsInstance.audioContext, {
       volume,
@@ -41,10 +36,7 @@ export class Channel extends HasSignalModifier {
    * @param name
    * @param options
    */
-  public play = (
-    name: PlayParameters[0],
-    options: Omit<PlayParameters[1], 'channel'> = {}
-  ) => {
+  public play = (name: PlayParameters[0], options: Omit<PlayParameters[1], 'channel'> = {}) => {
     return this.channelsInstance.play(name, { channel: this.name, ...options });
   };
 

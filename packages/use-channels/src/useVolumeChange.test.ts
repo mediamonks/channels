@@ -15,7 +15,7 @@ describe('useVolumeChange', () => {
       },
       {
         wrapper: ChannelsProviderWrapper,
-      }
+      },
     );
 
     act(() => {
@@ -37,7 +37,7 @@ describe('useVolumeChange', () => {
       },
       {
         wrapper: ChannelsProviderWrapper,
-      }
+      },
     );
 
     act(() => {

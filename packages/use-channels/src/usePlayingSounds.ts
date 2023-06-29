@@ -13,12 +13,12 @@ export const usePlayingSounds = () => {
 
     channelsInstance.addEventListener(
       ChannelsEvent.types.PLAYING_SOUNDS_CHANGE,
-      onPlayingSoundsUpdate
+      onPlayingSoundsUpdate,
     );
     return () =>
       channelsInstance.removeEventListener(
         ChannelsEvent.types.PLAYING_SOUNDS_CHANGE,
-        onPlayingSoundsUpdate
+        onPlayingSoundsUpdate,
       );
   }, [channelsInstance]);
 

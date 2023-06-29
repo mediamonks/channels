@@ -4,6 +4,4 @@ export type VolumeChangeData = {
   volume: number;
 };
 
-export class VolumeChangeEvent extends createEventClass<VolumeChangeData>()(
-  'VOLUME_CHANGE'
-) {}
+export class VolumeChangeEvent extends createEventClass<VolumeChangeData>()('VOLUME_CHANGE') {}

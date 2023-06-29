@@ -15,7 +15,7 @@ describe('usePanningChange', () => {
       },
       {
         wrapper: ChannelsProviderWrapper,
-      }
+      },
     );
 
     act(() => {
@@ -35,7 +35,7 @@ describe('usePanningChange', () => {
       },
       {
         wrapper: ChannelsProviderWrapper,
-      }
+      },
     );
 
     act(() => {

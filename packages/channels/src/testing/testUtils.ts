@@ -15,8 +15,7 @@ export const createMockChannelsInstance = (sounds?: Array<CreateSound>) => {
   return channelsInstance;
 };
 
-export const getAudioGraph = (channels: Channels) =>
-  (channels.audioContext as any).toJSON();
+export const getAudioGraph = (channels: Channels) => (channels.audioContext as any).toJSON();
 
 type SimpleAudioGraphNode = {
   name: string;
@@ -35,7 +34,7 @@ type SimpleAudioGraphNode = {
  */
 export const getNodeChain = (
   jsonGraph: SimpleAudioGraphNode,
-  chain: Array<SimpleAudioGraphNode> = []
+  chain: Array<SimpleAudioGraphNode> = [],
 ): Array<SimpleAudioGraphNode> => {
   if (jsonGraph.inputs.length === 0) {
     return chain;

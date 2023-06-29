@@ -20,7 +20,7 @@ export class SignalModifier extends EventDispatcher {
 
   constructor(
     readonly audioContext: AudioContext,
-    { volume = 1, fadeVolume = 1, effects, pan = 0 }: SignalModifierOptions
+    { volume = 1, fadeVolume = 1, effects, pan = 0 }: SignalModifierOptions,
   ) {
     super();
     const { fadeGainNode, volumeGainNode, input, output, stereoPannerNode } =
@@ -41,11 +41,7 @@ export class SignalModifier extends EventDispatcher {
     this.stereoPannerNode.pan.value = pan;
   }
 
-  public fadeTo = (
-    value: number,
-    duration: number,
-    onComplete?: () => void
-  ) => {
+  public fadeTo = (value: number, duration: number, onComplete?: () => void) => {
     tweenAudioParamToValue(this.fadeGainNode.gain, value, duration, onComplete);
   };
 
@@ -61,7 +57,7 @@ export class SignalModifier extends EventDispatcher {
     this.dispatchEvent(
       new VolumeChangeEvent(VolumeChangeEvent.types.VOLUME_CHANGE, {
         volume,
-      })
+      }),
     );
   }
 
@@ -112,22 +108,19 @@ export class SignalModifier extends EventDispatcher {
   };
 
   public connectMediaElement = (element: HTMLMediaElement) => {
-    const mediaElementSource =
-      this.audioContext.createMediaElementSource(element);
+    const mediaElementSource = this.audioContext.createMediaElementSource(element);
     mediaElementSource.connect(this.input);
   };
 
   public setPan = (value: number) => {
     if (value < -1 || value > 1) {
-      throw new Error(
-        'Panning value can not be smaller than -1 or larger than 1.'
-      );
+      throw new Error('Panning value can not be smaller than -1 or larger than 1.');
     }
     this.stereoPannerNode.pan.value = value;
     this.dispatchEvent(
       new PanChangeEvent(PanChangeEvent.types.PAN_CHANGE, {
         pan: value,
-      })
+      }),
     );
   };
 

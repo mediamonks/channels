@@ -1,8 +1,4 @@
-import {
-  createMockChannelsInstance,
-  getAudioGraph,
-  getNodeChain,
-} from './testing/testUtils';
+import { createMockChannelsInstance, getAudioGraph, getNodeChain } from './testing/testUtils';
 import { Channels } from './Channels';
 import 'web-audio-test-api';
 import { VolumeChangeEvent } from './event/VolumeChangeEvent';
@@ -41,7 +37,7 @@ describe('Playing Sound', () => {
   it('has default volume and panning when playing a sound', () => {
     const sound = channelsInstance.play('sound');
     const [, , , , soundVolumeGain, soundPannerNode] = getNodeChain(
-      getAudioGraph(channelsInstance)
+      getAudioGraph(channelsInstance),
     );
 
     expect(soundVolumeGain.name).toBe('GainNode');
@@ -57,7 +53,7 @@ describe('Playing Sound', () => {
       pan: 0.75,
     });
     const [, , , , soundVolumeGain, soundPannerNode] = getNodeChain(
-      getAudioGraph(channelsInstance)
+      getAudioGraph(channelsInstance),
     );
 
     expect(soundVolumeGain.name).toBe('GainNode');
@@ -69,20 +65,14 @@ describe('Playing Sound', () => {
   });
   it('lists playing sounds', () => {
     const listener = jest.fn();
-    channelsInstance.addEventListener(
-      ChannelsEvent.types.PLAYING_SOUNDS_CHANGE,
-      listener
-    );
+    channelsInstance.addEventListener(ChannelsEvent.types.PLAYING_SOUNDS_CHANGE, listener);
     const sound = channelsInstance.play('sound');
     expect(channelsInstance.getPlayingSounds().length).toBe(1);
     expect(channelsInstance.getPlayingSounds()[0]).toBe(sound);
   });
   it('dispatches an event when playing a sound', () => {
     const listener = jest.fn();
-    channelsInstance.addEventListener(
-      ChannelsEvent.types.PLAYING_SOUNDS_CHANGE,
-      listener
-    );
+    channelsInstance.addEventListener(ChannelsEvent.types.PLAYING_SOUNDS_CHANGE, listener);
     channelsInstance.play('sound');
     expect(listener).toHaveBeenCalled();
   });
@@ -94,7 +84,7 @@ describe('Playing Sound', () => {
     expect(listener).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({ volume: 0.5 }),
-      })
+      }),
     );
   });
   it("dispatches an event when setting a sound's panning", () => {
@@ -105,7 +95,7 @@ describe('Playing Sound', () => {
     expect(listener).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({ pan: 0.5 }),
-      })
+      }),
     );
   });
   it('adds pre-volume effects for a playing sound', () => {

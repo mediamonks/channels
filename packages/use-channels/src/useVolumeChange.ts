@@ -16,15 +16,8 @@ export const useVolumeChange = ({ onChange, target }: Props) => {
       onChange(volume);
     };
 
-    dispatcher.addEventListener(
-      VolumeChangeEvent.types.VOLUME_CHANGE,
-      listener
-    );
+    dispatcher.addEventListener(VolumeChangeEvent.types.VOLUME_CHANGE, listener);
 
-    return () =>
-      dispatcher.removeEventListener(
-        VolumeChangeEvent.types.VOLUME_CHANGE,
-        listener
-      );
+    return () => dispatcher.removeEventListener(VolumeChangeEvent.types.VOLUME_CHANGE, listener);
   }, [channelsInstance, onChange, target]);
 };
