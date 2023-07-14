@@ -7,6 +7,9 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "url": "https://github.com/mediamonks/channels"
+  },
   "publishConfig": {
     "access": "public"
   },
