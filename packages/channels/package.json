@@ -1,6 +1,6 @@
 {
   "name": "@mediamonks/channels",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Channel-based sound player",
   "main": "dist/index.js",
   "types": "./dist/index.d.ts",
