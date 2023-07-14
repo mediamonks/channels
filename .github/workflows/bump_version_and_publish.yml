@@ -25,7 +25,10 @@ on:
 
 jobs:
   bump-version:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Check out source
         uses: actions/checkout@v3
@@ -73,7 +76,7 @@ jobs:
         run: |
           cd packages/${{ github.event.inputs.package }}
           npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
-          npm publish
+          npm publish --provenance
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Push latest version
