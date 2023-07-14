@@ -5,7 +5,10 @@
     "packages/*"
   ],
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "format": "npm run format --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "build": "npm run build --workspace=packages/channels --workspace=packages/use-channels"
   },
   "lint-staged": {
     "packages/**/*.ts?(x)": "eslint"
