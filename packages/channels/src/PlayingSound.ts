@@ -87,7 +87,7 @@ export class PlayingSound extends HasSignalModifier {
    * Gets the current progress of the playing sound (between 0 and 1)
    */
   public getProgress = () => {
-    return (this.getCurrentTime() / this.sound.audioBuffer.duration) % 1;
+    return this.getCurrentTime() / this.sound.audioBuffer.duration;
   };
 
   /**

@@ -149,6 +149,7 @@ channelsInstance.play('sound', {
     loop: true,
     fadeInTime: 2,
     pan: 1, // between -1 and 1
+    startTimeOffset: 0, // in seconds
     effects: {
         preVolume: myEffectsChain,
     }
