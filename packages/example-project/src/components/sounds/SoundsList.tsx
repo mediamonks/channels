@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useChannels } from '@mediamonks/use-channels';
 import { SoundsListItem } from './SoundsListItem';
-import { EffectsChain } from '@mediamonks/channels';
+import { EffectsChain, PlaySoundOptions } from '@mediamonks/channels';
 
 type Props = {
   effectsChain?: EffectsChain;
@@ -12,17 +12,20 @@ export const SoundsList = ({ effectsChain }: Props) => {
   const [loopIsChecked, setLoopIsChecked] = useState(false);
   const [fadeInTime, setFadeInTime] = useState(0);
   const [applyEffect, setApplyEffect] = useState(false);
+  const [startTimeOffset, setStartTimeOffset] = useState(0);
 
   const playSound = (
     soundName: string,
     channelName: string | undefined,
-    usePlayOptions: boolean
+    usePlayOptions: boolean,
   ) => {
-    const options: any = { channel: channelName };
+    const options: PlaySoundOptions = { channel: channelName };
     if (usePlayOptions) {
       options.loop = loopIsChecked;
       options.fadeInTime = fadeInTime;
-      options.effectsChain = applyEffect ? effectsChain : undefined;
+      // todo: take a look at this (i changed options type from any to PlaySoundOptions, now gives error on this prop. not sure if effectsChain worked before
+      // options.effectsChain = applyEffect ? effectsChain : undefined;
+      options.startTimeOffset = startTimeOffset;
     }
     channelsInstance.play(soundName, options);
   };
@@ -36,7 +39,7 @@ export const SoundsList = ({ effectsChain }: Props) => {
           <input
             type="checkbox"
             checked={loopIsChecked}
-            onChange={() => setLoopIsChecked(value => !value)}
+            onChange={() => setLoopIsChecked((value) => !value)}
           />
         </label>
         {effectsChain && (
@@ -45,7 +48,7 @@ export const SoundsList = ({ effectsChain }: Props) => {
             <input
               type="checkbox"
               checked={applyEffect}
-              onChange={() => setApplyEffect(value => !value)}
+              onChange={() => setApplyEffect((value) => !value)}
             />
           </label>
         )}
@@ -60,9 +63,20 @@ export const SoundsList = ({ effectsChain }: Props) => {
             }}
           />
         </label>
+        <label>
+          start time
+          <input
+            style={{ width: 30 }}
+            type="text"
+            value={startTimeOffset}
+            onChange={({ target }) => {
+              setStartTimeOffset(parseFloat(target.value));
+            }}
+          />
+        </label>
       </div>
       <ul className="blocks">
-        {channelsInstance.getSounds().map(sound => (
+        {channelsInstance.getSounds().map((sound) => (
           <li key={sound.name}>
             <SoundsListItem sound={sound} playSound={playSound} />
           </li>

@@ -9,13 +9,21 @@ import { HasSignalModifier } from './HasSignalModifier';
 export class PlayingSound extends HasSignalModifier {
   public readonly bufferSourceNode: AudioBufferSourceNode;
   private readonly startedAt: number;
+  private readonly startTimeOffset: number;
 
   constructor(
     private readonly channelsInstance: Channels,
     public readonly sound: Sound,
-    private readonly destination: AudioNode,
+    private readonly destination: AudioNode, // todo not used? why is this here
     public readonly channel?: Channel,
-    { loop = false, fadeInTime = 0, volume, effects, pan }: Omit<PlaySoundOptions, 'channel'> = {},
+    {
+      loop = false,
+      fadeInTime = 0,
+      volume,
+      effects,
+      pan,
+      startTimeOffset = 0,
+    }: Omit<PlaySoundOptions, 'channel'> = {},
   ) {
     super(channelsInstance.audioContext, {
       volume,
@@ -44,7 +52,8 @@ export class PlayingSound extends HasSignalModifier {
     this.bufferSourceNode.onended = this.onEnded;
 
     this.startedAt = this.channelsInstance.audioContext.currentTime;
-    this.bufferSourceNode.start(0);
+    this.startTimeOffset = startTimeOffset;
+    this.bufferSourceNode.start(0, this.startTimeOffset);
 
     if (fadeInTime) {
       this.signalModifier.fadeIn(fadeInTime);
@@ -78,10 +87,13 @@ export class PlayingSound extends HasSignalModifier {
    * Gets the current progress of the playing sound (between 0 and 1)
    */
   public getProgress = () => {
-    return (
-      ((this.channelsInstance.audioContext.currentTime - this.startedAt) /
-        this.sound.audioBuffer.duration) %
-      1
-    );
+    return (this.getCurrentTime() / this.sound.audioBuffer.duration) % 1;
+  };
+
+  /**
+   * Gets the current time of the playing sound (in seconds).
+   */
+  public getCurrentTime = () => {
+    return this.channelsInstance.audioContext.currentTime - this.startedAt + this.startTimeOffset;
   };
 }

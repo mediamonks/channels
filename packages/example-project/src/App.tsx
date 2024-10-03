@@ -83,8 +83,11 @@ function App() {
             </div>
           </div>
           <video
-            ref={element => {
+            ref={(element) => {
               setVideoElement(element);
+            }}
+            onEnded={() => {
+              console.log('ended');
             }}
             src={`${process.env.PUBLIC_URL}/example-vid.mp4`}
             controls

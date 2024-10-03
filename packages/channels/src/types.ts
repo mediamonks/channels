@@ -42,6 +42,7 @@ export type PlaySoundOptions = {
   loop?: boolean;
   fadeInTime?: number;
   channel?: string;
+  startTimeOffset?: number;
 } & SignalModifierOptionsWithoutFadeVolume;
 
 export type StopSoundOptions = {
