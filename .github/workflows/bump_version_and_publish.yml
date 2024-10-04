@@ -63,14 +63,19 @@ jobs:
           echo "2. npm version ${{ github.event.inputs.version }}" 
           npm version ${{ github.event.inputs.version }} --no-git-tag-version
           
+          version=$(npm pkg get version | tr -d '{}' | tr -d '"' | awk -F ': ' '{ print $2 }' | tr -d '\n')
+          
           echo "3. git add"
           git add .
           
-          echo "4. git commit ${{ github.event.inputs.package }} v$(npm pkg get version | head -n 1 | tr -d '"')"
-          git commit -m "${{ github.event.inputs.package }} v$(npm pkg get version | head -n 1 | tr -d '"')"
+          echo "4. git commit -m ${{ github.event.inputs.package }} v$version"
+          git commit -m "${{ github.event.inputs.package }} v$version"
           
-          echo "5. git tag $(npm pkg get name | head -n 1 | tr -d '"' | sed -e 's/@mediamonks\///g')@$(npm pkg get version | head -n 1 | tr -d '"')"
-          git tag $(npm pkg get name | head -n 1 | tr -d '"' | sed -e 's/@mediamonks\///g')@$(npm pkg get version | head -n 1 | tr -d '"')
+          echo "5. git tag ${{ github.event.inputs.package }}@$version"
+          git tag ${{ github.event.inputs.package }}@$version
+      - name: Push latest version
+        if: ${{ github.event.inputs.dryrun == 'false' }}
+        run: git push origin main --tags
       - name: publish
         if: ${{ github.event.inputs.dryrun == 'false' }}
         run: |
@@ -78,6 +83,3 @@ jobs:
           npm publish --workspace=packages/${{ github.event.inputs.package }} --provenance
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Push latest version
-        if: ${{ github.event.inputs.dryrun == 'false' }}
-        run: git push origin main --tags
